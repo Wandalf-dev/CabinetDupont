@@ -1,0 +1,22 @@
+<?php include __DIR__ . '/templates/header.php'; ?>
+<main>
+  <section class="actu-create-section">
+    <form class="actu-create-form" method="post" action="actu-create-action.php">
+      <h2>Nouvelle actualité</h2>
+      <div class="actu-create-field">
+        <label for="titre">Titre de l'actualité</label>
+        <input type="text" id="titre" name="titre" required placeholder="Titre de l'article" />
+      </div>
+      <div class="actu-create-field">
+        <label for="contenu">Contenu</label>
+        <textarea id="contenu" name="contenu" rows="6" required placeholder="Rédigez votre actualité..."></textarea>
+      </div>
+      <div class="actu-create-field">
+        <label for="date">Date</label>
+        <input type="date" id="date" name="date" required />
+      </div>
+      <button type="submit" class="btn-actu-create">Publier l'actualité</button>
+    </form>
+  </section>
+</main>
+<?php include 'footer.php'; ?>

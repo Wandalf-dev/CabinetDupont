@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
+  <title id="title">DupontCare — Logo horizontal avec pictogramme</title>
+  <desc id="desc">Logo mot-symbole 'DupontCare' avec une icône en forme de croix médicale arrondie à gauche. Couleurs : anthracite et turquoise.</desc>
+  <defs>
+    <style>
+      @font-face {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 600;
+        src: local('Poppins Semibold'), local('Poppins-SemiBold');
+      }
+      text { font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+      .dark { fill: #22292f; } /* anthracite */
+      .accent { fill: #23b6b6; } /* turquoise */
+    </style>
+  </defs>
+
+  <!-- Icon: rounded medical cross -->
+  <g transform="translate(40,40)">
+    <!-- background (invisible to keep it minimal) -->
+    <g class="accent" transform="translate(0,0)">
+      <!-- Cross built from 5 rounded rectangles -->
+      <rect x="60" y="0" width="80" height="200" rx="24" ry="24"/>
+      <rect x="0" y="60" width="200" height="80" rx="24" ry="24"/>
+    </g>
+  </g>
+
+  <!-- Wordmark -->
+  <g transform="translate(280,205)">
+    <text class="dark" font-size="148" font-weight="600" y="0">
+      <tspan fill="#FFFFFF">Dupont</tspan><tspan class="accent">Care</tspan>
+    </text>
+  </g>
+</svg>

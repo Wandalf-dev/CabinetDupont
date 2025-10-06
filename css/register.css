@@ -1,0 +1,135 @@
+body {
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: #f4f6fb;
+  color: #1e2936;
+  margin: 0;
+  min-height: 100vh;
+}
+
+.register-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  padding: 40px 0;
+}
+
+.register-form {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(58,110,165,0.10);
+  padding: 38px 44px 28px 44px;
+  min-width: 340px;
+  max-width: 440px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  border: 1.5px solid rgba(0,198,255,0.08);
+}
+
+.register-form h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.45rem;
+  color: #3a6ea5;
+  font-weight: 700;
+  text-align: center;
+}
+
+.register-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.register-field label {
+  font-size: 1rem;
+  color: #234;
+  font-weight: 600;
+}
+
+.register-field input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #dbe7ff;
+  background: #f7fbff;
+  font-size: 1rem;
+  color: #1e2936;
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
+}
+
+.register-field input:focus {
+  border-color: #3a6ea5;
+  box-shadow: 0 0 0 2px rgba(0,198,255,0.13);
+}
+
+.btn-register {
+  margin-top: 8px;
+  padding: 12px 0;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.08rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,114,255,0.13);
+  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
+}
+
+.btn-register:hover {
+  opacity: 0.93;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,114,255,0.18);
+}
+
+.register-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.98rem;
+  margin-top: 8px;
+}
+
+.register-links a {
+  color: #3a6ea5;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.18s;
+}
+
+.register-links a:hover {
+  color: #0072ff;
+  text-decoration: underline;
+}
+
+input::placeholder {
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
+  color: #b0b8c9;
+  opacity: 1;
+}
+
+html, body {
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+main {
+  flex: 1 0 auto;
+}
+.site-footer {
+  flex-shrink: 0;
+}
+@media (max-width: 480px) {
+  .register-form {
+    min-width: unset;
+    padding: 22px 8px;
+  }
+}
