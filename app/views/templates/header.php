@@ -24,7 +24,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
 </head>
 <body>
-    <header>
+    <header style="position: relative;">
         <div class="container">
             <a href="index.php" class="logo">
                 <img src="/cabinetdupont/assets/dupontcare-logo-horizontal-DUPONT-white.svg" alt="DupontCare" />
@@ -45,4 +45,59 @@ if (session_status() === PHP_SESSION_NONE) {
                 </ul>
             </nav>
         </div>
+
+        <?php if (isset($_SESSION['user_id']) && isset($_SESSION['user_prenom']) && isset($_SESSION['user_nom'])): ?>
+            <div class="header-user-info">
+                <span class="user-avatar">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="11" cy="11" r="11" fill="#fff"/>
+                        <circle cx="11" cy="9" r="4" fill="#3a6ea5"/>
+                        <ellipse cx="11" cy="16.2" rx="6" ry="3.2" fill="#3a6ea5"/>
+                    </svg>
+                </span>
+                <span class="user-name">
+                    <?php echo htmlspecialchars($_SESSION['user_prenom'] . ' ' . $_SESSION['user_nom']); ?>
+                </span>
+            </div>
+        <?php endif; ?>
+<style>
+.header-user-info {
+    position: absolute;
+    top: 50%;
+    right: 2vw;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    gap: 0.5em;
+    background: linear-gradient(90deg, #3a6ea5 80%, #1a355b 100%);
+    border-radius: 2em;
+    padding: 0.3em 1.1em 0.3em 0.7em;
+    z-index: 10;
+}
+.header-user-info .user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.7em;
+    height: 1.7em;
+    background: none;
+    border-radius: 0;
+    margin-right: 0.2em;
+    box-shadow: none;
+}
+.header-user-info .user-avatar svg {
+    width: 1.3em;
+    height: 1.3em;
+    display: block;
+}
+.header-user-info .user-name {
+    white-space: nowrap;
+    font-size: 1em;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+</style>
     </header>

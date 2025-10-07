@@ -143,6 +143,9 @@ class UserController {
             }
 
             if ($updateSuccess) {
+                // Mettre à jour la session pour refléter les nouveaux nom/prénom
+                $_SESSION['user_prenom'] = $data['prenom'];
+                $_SESSION['user_nom'] = $data['nom'];
                 $_SESSION['success'] = "Profil mis à jour avec succès" . 
                     ($current_password ? " et mot de passe modifié" : "");
                 header('Location: index.php?page=user&action=profile');

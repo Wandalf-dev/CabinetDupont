@@ -39,14 +39,12 @@ class ActusController {
     public function show($id) {
         // Afficher une actualité spécifique
         $actu = $this->actuModel->getActuById($id);
-        
         if (!$actu) {
             $_SESSION['error'] = "Cette actualité n'existe pas";
             header('Location: index.php?page=actus');
             exit();
         }
-        
-        require_once 'app/views/actu.php';
+        require_once 'app/views/detail-actu.php';
     }
 
     public function create() {
@@ -173,7 +171,7 @@ class ActusController {
             $data = [
                 'titre' => trim($_POST['titre']),
                 'contenu' => trim($_POST['contenu']),
-                'statut' => $_POST['statut'] ?? 'BROUILLON' // Utiliser le statut soumis ou BROUILLON par défaut
+                'statut' => $_POST['statut'] ?? 'BROUILLON'
             ];
 
             if (empty($data['titre']) || empty($data['contenu'])) {
@@ -183,9 +181,43 @@ class ActusController {
                 exit();
             }
 
+            // Gestion de l'upload d'image
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $maxSize = 3 * 1024 * 1024; // 3 Mo
+                if ($_FILES['image']['size'] > $maxSize) {
+                    $_SESSION['error'] = "L'image ne doit pas dépasser 3 Mo.";
+                    $_SESSION['form_data'] = $data;
+                    header('Location: index.php?page=actus&action=edit&id=' . $id);
+                    exit();
+                }
+                $uploadDir = 'C:/xampp/htdocs/CabinetDupont/public/uploads/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                $fileName = uniqid() . '_' . basename($_FILES['image']['name']);
+                $uploadFile = $uploadDir . $fileName;
+                $fileType = mime_content_type($_FILES['image']['tmp_name']);
+                $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                if (in_array($fileType, $allowedTypes)) {
+                    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
+                        $data['image'] = $fileName;
+                    } else {
+                        $_SESSION['error'] = "Erreur lors de l'upload de l'image.";
+                        $_SESSION['form_data'] = $data;
+                        header('Location: index.php?page=actus&action=edit&id=' . $id);
+                        exit();
+                    }
+                } else {
+                    $_SESSION['error'] = "Format d'image non autorisé (jpg, png, gif, webp uniquement).";
+                    $_SESSION['form_data'] = $data;
+                    header('Location: index.php?page=actus&action=edit&id=' . $id);
+                    exit();
+                }
+            }
+
             if ($this->actuModel->updateActu($id, $data)) {
                 $_SESSION['success'] = "L'actualité a été modifiée avec succès";
-                header('Location: index.php?page=actus'); // Redirection vers la page de gestion
+                header('Location: index.php?page=actus');
                 exit();
             } else {
                 $_SESSION['error'] = "Une erreur est survenue lors de la modification de l'actualité";

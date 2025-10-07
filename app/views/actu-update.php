@@ -1,7 +1,7 @@
 <?php include __DIR__ . '/templates/header.php'; ?>
 <main>
   <section class="actu-create-section">
-    <form class="actu-create-form" method="post" action="index.php?page=actus&action=edit&id=<?php echo htmlspecialchars($actu['id']); ?>">
+  <form class="actu-create-form" method="post" enctype="multipart/form-data" action="index.php?page=actus&action=edit&id=<?php echo htmlspecialchars($actu['id']); ?>">
       <h2>Modifier l'actualité</h2>
       <div class="actu-create-field">
         <label for="titre">Titre de l'actualité</label>
@@ -20,6 +20,16 @@
         </select>
       </div>
       <input type="hidden" name="id" value="<?php echo htmlspecialchars($actu['id'] ?? ''); ?>" />
+      <div class="actu-create-field">
+        <label for="image">Image d'illustration</label>
+        <input type="file" id="image" name="image" accept="image/*">
+        <?php if (!empty($actu['image'])): ?>
+          <div style="margin-top:0.5em;">
+            <img src="/cabinetdupont/public/uploads/<?php echo htmlspecialchars($actu['image']); ?>" alt="Image actuelle" style="max-width:180px;max-height:120px;border-radius:8px;box-shadow:0 2px 8px #0001;">
+            <br><small>Image actuelle</small>
+          </div>
+        <?php endif; ?>
+      </div>
       <div class="actu-btn-row">
         <button type="submit" class="btn-actu-create">Enregistrer les modifications</button>
         <a href="index.php?page=actus" class="btn-actu-cancel">Annuler</a>
@@ -27,4 +37,4 @@
     </form>
   </section>
 </main>
-<?php include 'footer.php'; ?>
+<?php include __DIR__ . '/templates/footer.php'; ?>

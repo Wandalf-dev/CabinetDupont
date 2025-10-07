@@ -109,19 +109,26 @@ class ActuModel extends Model {
     }
 
     public function updateActu($id, $data) {
+        $params = [
+            $data['titre'],
+            $data['contenu'],
+            $data['statut'] ?? 'BROUILLON',
+        ];
+        $setImage = '';
+        if (isset($data['image']) && $data['image']) {
+            $setImage = ', image = ?';
+            $params[] = $data['image'];
+        }
+        $params[] = $id;
+        $params[] = $_SESSION['user_id'];
         $sql = "UPDATE actualite 
                 SET titre = ?, 
                     contenu = ?, 
                     statut = ?
+                    $setImage
                 WHERE id = ? AND auteur_id = ?";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
-            $data['titre'],
-            $data['contenu'],
-            $data['statut'] ?? 'BROUILLON',
-            $id,
-            $_SESSION['user_id'] // Sécurité : vérifier que l'utilisateur est l'auteur
-        ]);
+        return $stmt->execute($params);
     }
 
     public function deleteActu($id) {
