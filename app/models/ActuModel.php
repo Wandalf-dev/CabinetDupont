@@ -90,15 +90,16 @@ class ActuModel extends Model {
         // Nettoyage des données avant insertion
         $titre = html_entity_decode(strip_tags($data['titre']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $contenu = html_entity_decode(strip_tags($data['contenu']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        
-        $sql = "INSERT INTO actualite (auteur_id, titre, contenu, date_publication, statut) 
-                VALUES (?, ?, ?, ?, 'PUBLIE')";
+        $image = isset($data['image']) ? $data['image'] : null;
+        $sql = "INSERT INTO actualite (auteur_id, titre, contenu, image, date_publication, statut) 
+                VALUES (?, ?, ?, ?, ?, 'PUBLIE')";
         $stmt = $this->db->prepare($sql);
         $result = $stmt->execute([
             $data['auteur_id'],
             $titre,
             $contenu,
-            date('Y-m-d H:i:s') // On utilise la date et l'heure actuelles
+            $image,
+            date('Y-m-d H:i:s')
         ]);
 
         if ($result) {

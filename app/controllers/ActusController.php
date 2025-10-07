@@ -70,19 +70,31 @@ class ActusController {
             }
 
             // Gestion de l'upload d'image
+            error_log("Début du processus d'upload d'image");
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $uploadDir = __DIR__ . '/../../../uploads/';
+                error_log("Image reçue : " . print_r($_FILES['image'], true));
+                $uploadDir = 'C:/xampp/htdocs/CabinetDupont/public/uploads/';
                 if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                error_log("Dossier d'upload : " . $uploadDir);
+                if (!is_dir($uploadDir)) {
+                    error_log("Création du dossier d'upload");
                     mkdir($uploadDir, 0755, true);
                 }
                 $fileName = uniqid() . '_' . basename($_FILES['image']['name']);
                 $uploadFile = $uploadDir . $fileName;
+                error_log("Chemin complet du fichier : " . $uploadFile);
                 $fileType = mime_content_type($_FILES['image']['tmp_name']);
+                error_log("Type MIME détecté : " . $fileType);
                 $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
                 if (in_array($fileType, $allowedTypes)) {
+                    error_log("Type de fichier autorisé");
                     if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
+                        error_log("Fichier déplacé avec succès");
                         $data['image'] = $fileName; // À stocker dans la BDD
                     } else {
+                        error_log("Erreur lors du déplacement du fichier : " . error_get_last()['message']);
                         $_SESSION['error'] = "Erreur lors de l'upload de l'image.";
                         $_SESSION['form_data'] = $data;
                         header('Location: index.php?page=actus&action=create');
