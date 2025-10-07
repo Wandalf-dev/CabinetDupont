@@ -1,176 +1,232 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controllers;
 
 use App\Models\ActuModel;
+use App\Entities\Article;
 
-class ActusController {
-    private $actuModel;
+class ActusController
+{
+    private ActuModel $actuModel;
 
-    public function __construct() {
-        $this->actuModel = new ActuModel();
+    public function __construct(?ActuModel $actuModel = null)
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        $this->actuModel = $actuModel ?? new ActuModel();
+        $_SESSION['_token'] ??= bin2hex(random_bytes(16));
     }
 
-    private function checkAdminAccess() {
-        if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) || 
-            ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')) {
+    /** ---------- Helpers ---------- */
+    private function redirect(string $route): void
+    {
+        header('Location: index.php?page=' . $route);
+        exit();
+    }
+
+    private function clean(?string $v): string
+    {
+        return trim((string)($v ?? ''));
+    }
+
+    private function isAdmin(): bool
+    {
+        $role = $_SESSION['user_role'] ?? null;
+        return isset($_SESSION['user_id']) && ($role === 'MEDECIN' || $role === 'SECRETAIRE');
+    }
+
+    private function requireAdmin(): void
+    {
+        if (!$this->isAdmin()) {
             $_SESSION['error'] = "Accès non autorisé";
-            header('Location: index.php?page=actus');
-            exit();
+            $this->redirect('actus');
         }
     }
 
-    public function index() {
-        // Charger les actualités publiques pour tous les utilisateurs
+    private function requirePostAndCsrf(): void
+    {
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+            return;
+        }
+        if (!isset($_POST['_token']) || !hash_equals($_SESSION['_token'] ?? '', (string)$_POST['_token'])) {
+            $_SESSION['error'] = "Session expirée, veuillez réessayer.";
+            $this->redirect('actus');
+        }
+    }
+
+    /** ---------- Actions ---------- */
+
+    public function index(): void
+    {
+        // Actus publiques pour tout le monde
         $actus = $this->actuModel->getAllActus();
-        
-        // Si l'utilisateur est admin, charger aussi les actus admin
-        if (isset($_SESSION['user_id']) && isset($_SESSION['user_role']) && 
-            ($_SESSION['user_role'] === 'MEDECIN' || $_SESSION['user_role'] === 'SECRETAIRE')) {
-            $actusAdmin = $this->actuModel->getAllActusAdmin();
-            require_once 'app/views/actu-combined.php';
-        } else {
-            // Public : seulement les actus publiées
-            $actus = $this->actuModel->getAllActus();
-            require_once 'app/views/actu.php';
-        }
-    }
 
-    public function show($id) {
-        // Afficher une actualité spécifique
-        $actu = $this->actuModel->getActuById($id);
-        
-        if (!$actu) {
-            $_SESSION['error'] = "Cette actualité n'existe pas";
-            header('Location: index.php?page=actus');
-            exit();
+        if ($this->isAdmin()) {
+            $actusAdmin = $this->actuModel->getAllActusAdmin();
+            /** @noinspection PhpIncludeInspection */
+            require_once 'app/views/actu-combined.php';
+            return;
         }
-        
+
+        /** @noinspection PhpIncludeInspection */
         require_once 'app/views/actu.php';
     }
 
-    public function create() {
-        // Vérifier les droits d'accès
-        $this->checkAdminAccess();
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Récupérer et valider les données
-            $data = [
-                'titre' => trim($_POST['titre']),
-                'contenu' => trim($_POST['contenu']),
-                'auteur_id' => $_SESSION['user_id']
-            ];
-
-            // Vérifier que tous les champs sont remplis
-            if (!$data['titre'] || !$data['contenu']) {
-                $_SESSION['error'] = "Le titre et le contenu sont obligatoires";
-                $_SESSION['form_data'] = $data;
-                header('Location: index.php?page=actus&action=create');
-                exit();
-            }
-
-            // Créer l'actualité
-            if ($this->actuModel->createActu($data)) {
-                $_SESSION['success'] = "L'actualité a été créée avec succès";
-                header('Location: index.php?page=actus');
-                exit();
-            } else {
-                $_SESSION['error'] = "Une erreur est survenue lors de la création de l'actualité";
-                $_SESSION['form_data'] = $data;
-                header('Location: index.php?page=actus&action=create');
-                exit();
-            }
+    public function show(int $id): void
+    {
+        $actu = $this->actuModel->getActuById($id);
+        if (!$actu) {
+            $_SESSION['error'] = "Cette actualité n'existe pas";
+            $this->redirect('actus');
         }
 
-        // Afficher le formulaire de création avec les données précédentes en cas d'erreur
+        // Variable disponible pour la vue
+        $actus = [$actu]; // ou créer une vue dédiée actu-single.php
+
+        /** @noinspection PhpIncludeInspection */
+        require_once 'app/views/actu-single.php'; // Vue dédiée pour un article
+    }
+
+    public function create(): void
+    {
+        $this->requireAdmin();
+
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+            $this->requirePostAndCsrf();
+
+            $titre   = $this->clean($_POST['titre']   ?? '');
+            $contenu = $this->clean($_POST['contenu'] ?? '');
+            $statut  = $this->clean($_POST['statut']  ?? 'PUBLIE'); // ou BROUILLON
+
+            $formData = ['titre' => $titre, 'contenu' => $contenu, 'statut' => $statut];
+
+            if ($titre === '' || $contenu === '') {
+                $_SESSION['error'] = "Le titre et le contenu sont obligatoires";
+                $_SESSION['form_data'] = $formData;
+                $this->redirect('actus&action=create');
+            }
+
+            // Construire l'entité Article (datePublication = maintenant)
+            $article = new Article([
+                'auteurId'        => (int)$_SESSION['user_id'],
+                'titre'           => $titre,
+                'contenu'         => $contenu,
+                'datePublication' => new \DateTime('now'),
+                'statut'          => $statut,
+            ]);
+
+            $id = $this->actuModel->createActu($article);
+            if ($id > 0) {
+                $_SESSION['success'] = "L'actualité a été créée avec succès";
+                $this->redirect('actus');
+            }
+
+            $_SESSION['error'] = "Une erreur est survenue lors de la création de l'actualité";
+            $_SESSION['form_data'] = $formData;
+            $this->redirect('actus&action=create');
+        }
+
         $formData = $_SESSION['form_data'] ?? [];
         unset($_SESSION['form_data']);
+
+        /** @noinspection PhpIncludeInspection */
         require_once 'app/views/actu-create.php';
     }
 
-    public function search() {
-        // Vérifier si l'utilisateur est autorisé à accéder à la gestion
-        if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) || 
-            ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')) {
-            $_SESSION['error'] = "Accès non autorisé";
-            header('Location: index.php?page=actus');
-            exit();
-        }
-
-        $keyword = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_STRING);
-        if ($keyword) {
-            $actus = $this->actuModel->searchActus($keyword);
-        } else {
-            $actus = $this->actuModel->getAllActus();
-        }
+    public function search(): void
+    {
+        $q = $this->clean($_GET['q'] ?? '');
         
-        require_once 'app/views/actu-posts.php';
-    }
+        // Recherche publique ou admin selon le contexte
+        if ($this->isAdmin()) {
+            // Admin peut rechercher dans tous les articles (y compris brouillons)
+            $actus = $q !== '' ? $this->actuModel->searchActus($q) : $this->actuModel->getAllActusAdmin();
+        } else {
+            // Public ne voit que les articles publiés
+            $actus = $q !== '' ? $this->actuModel->searchActus($q) : $this->actuModel->getAllActus();
+        }
 
-    public function featured() {
-        // Page d'accueil ou section mise en avant
-        $featuredActus = $this->actuModel->getFeaturedActus();
+        /** @noinspection PhpIncludeInspection */
         require_once 'app/views/actu.php';
     }
 
-    public function edit($id) {
-        // Vérifier les droits d'accès admin
-        $this->checkAdminAccess();
+    public function featured(): void
+    {
+        $actus = $this->actuModel->getFeaturedActus(3);
 
-        // Utiliser getActuByIdAdmin pour récupérer l'actualité quel que soit son statut
+        /** @noinspection PhpIncludeInspection */
+        require_once 'app/views/actu.php';
+    }
+
+    public function edit(int $id): void
+    {
+        $this->requireAdmin();
+
+        // On récupère sans filtrer par statut côté modèle admin
         $actu = $this->actuModel->getActuByIdAdmin($id);
         if (!$actu) {
             $_SESSION['error'] = "Cette actualité n'existe pas";
-            header('Location: index.php?page=actus');
-            exit();
+            $this->redirect('actus');
         }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'titre' => trim($_POST['titre']),
-                'contenu' => trim($_POST['contenu']),
-                'statut' => $_POST['statut'] ?? 'BROUILLON' // Utiliser le statut soumis ou BROUILLON par défaut
-            ];
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+            $this->requirePostAndCsrf();
 
-            if (empty($data['titre']) || empty($data['contenu'])) {
+            $titre   = $this->clean($_POST['titre']   ?? '');
+            $contenu = $this->clean($_POST['contenu'] ?? '');
+            $statut  = $this->clean($_POST['statut']  ?? 'BROUILLON');
+
+            $formData = ['titre' => $titre, 'contenu' => $contenu, 'statut' => $statut];
+
+            if ($titre === '' || $contenu === '') {
                 $_SESSION['error'] = "Le titre et le contenu sont obligatoires";
-                $_SESSION['form_data'] = $data;
-                header('Location: index.php?page=actus&action=edit&id=' . $id);
-                exit();
+                $_SESSION['form_data'] = $formData;
+                $this->redirect('actus&action=edit&id=' . $id);
             }
 
-            if ($this->actuModel->updateActu($id, $data)) {
+            // On reconstruit une entité Article avec l'ID à mettre à jour
+            $article = new Article([
+                'id'              => (int)$id,
+                'auteurId'        => $actu->getAuteurId(), // on conserve l'auteur
+                'titre'           => $titre,
+                'contenu'         => $contenu,
+                // si pas de date fournie, on garde l'ancienne; sinon, tu peux décider de la MAJ
+                'datePublication' => $actu->getDatePublication(),
+                'statut'          => $statut,
+            ]);
+
+            if ($this->actuModel->updateActu($article)) {
                 $_SESSION['success'] = "L'actualité a été modifiée avec succès";
-                header('Location: index.php?page=actus'); // Redirection vers la page de gestion
-                exit();
-            } else {
-                $_SESSION['error'] = "Une erreur est survenue lors de la modification de l'actualité";
-                $_SESSION['form_data'] = $data;
-                header('Location: index.php?page=actus&action=edit&id=' . $id);
-                exit();
+                $this->redirect('actus');
             }
+
+            $_SESSION['error'] = "Une erreur est survenue lors de la modification de l'actualité";
+            $_SESSION['form_data'] = $formData;
+            $this->redirect('actus&action=edit&id=' . $id);
         }
 
-        // Afficher le formulaire d'édition
-        $formData = $_SESSION['form_data'] ?? $actu;
+        $formData = $_SESSION['form_data'] ?? [
+            'titre'   => $actu->getTitre(),
+            'contenu' => $actu->getContenu(),
+            'statut'  => $actu->getStatut(),
+        ];
         unset($_SESSION['form_data']);
+
+        /** @noinspection PhpIncludeInspection */
         require_once 'app/views/actu-update.php';
     }
 
-    public function delete($id) {
-        if (!isset($_SESSION['user_id'])) {
-            $_SESSION['error'] = "Vous devez être connecté pour supprimer une actualité";
-            header('Location: index.php?page=login');
-            exit();
-        }
+    public function delete(int $id): void
+    {
+        $this->requireAdmin();
 
         if ($this->actuModel->deleteActu($id)) {
             $_SESSION['success'] = "L'actualité a été supprimée avec succès";
         } else {
             $_SESSION['error'] = "Une erreur est survenue lors de la suppression de l'actualité";
         }
-
-        header('Location: index.php?page=actus');
-        exit();
+        $this->redirect('actus');
     }
 }
