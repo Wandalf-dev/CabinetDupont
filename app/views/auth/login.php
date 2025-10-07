@@ -1,6 +1,15 @@
 <?php include __DIR__ . '/../templates/header.php'; ?>
+<!-- Font Awesome pour les icônes -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <main>
+  <?php if (isset($_SESSION['success'])): ?>
+    <div class="alert-popup success">
+        <i class="fas fa-check-circle"></i>
+        <span class="message"><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></span>
+    </div>
+  <?php endif; ?>
+  
   <section class="login-section">
     <form class="login-form" method="post" action="index.php?page=auth&action=login">
       <?php if (isset($_SESSION['error'])): ?>
@@ -26,5 +35,7 @@
     </form>
   </section>
 </main>
+
+<script src="js/alerts.js"></script>
 
 <?php include __DIR__ . '/../templates/footer.php'; ?>

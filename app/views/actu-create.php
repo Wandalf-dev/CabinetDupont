@@ -14,7 +14,10 @@ include __DIR__ . '/templates/flash-messages.php';
         <label for="contenu">Contenu</label>
         <textarea id="contenu" name="contenu" rows="6" required placeholder="Rédigez votre actualité..."></textarea>
       </div>
-      <button type="submit" class="btn-actu-create">Publier l'actualité</button>
+      <div class="actu-btn-row">
+        <button type="submit" class="btn-actu-create">Publier l'actualité</button>
+        <a href="index.php?page=actus" class="btn-actu-cancel">Annuler</a>
+      </div>
     </form>
   </section>
 </main>

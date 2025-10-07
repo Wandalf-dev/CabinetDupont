@@ -60,6 +60,7 @@ class AuthController {
                 'password' => $_POST['password'] ?? '',
                 'password_confirm' => $_POST['password_confirm'] ?? '',
                 'telephone' => filter_input(INPUT_POST, 'telephone', FILTER_SANITIZE_STRING),
+                'date_naissance' => filter_input(INPUT_POST, 'date_naissance', FILTER_SANITIZE_STRING),
                 'role' => 'PATIENT' // Par défaut, les nouveaux inscrits sont des patients
             ];
 

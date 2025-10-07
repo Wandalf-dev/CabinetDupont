@@ -21,8 +21,8 @@ class UserModel extends Model {
     }
 
     public function createUser($data) {
-        $sql = "INSERT INTO utilisateur (role, nom, prenom, email, password_hash, telephone) 
-                VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO utilisateur (role, nom, prenom, email, password_hash, telephone, date_naissance) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)";
                 
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
@@ -31,7 +31,8 @@ class UserModel extends Model {
             $data['prenom'],
             $data['email'],
             password_hash($data['password'], PASSWORD_DEFAULT),
-            $data['telephone'] ?? null
+            $data['telephone'] ?? null,
+            $data['date_naissance'] ?? null
         ]);
     }
 
@@ -47,7 +48,8 @@ class UserModel extends Model {
                 nom = ?, 
                 prenom = ?, 
                 email = ?, 
-                telephone = ?
+                telephone = ?,
+                date_naissance = ?
                 WHERE id = ?";
                 
         $stmt = $this->db->prepare($sql);
@@ -56,6 +58,7 @@ class UserModel extends Model {
             $data['prenom'],
             $data['email'],
             $data['telephone'],
+            $data['date_naissance'],
             $userId
         ]);
     }

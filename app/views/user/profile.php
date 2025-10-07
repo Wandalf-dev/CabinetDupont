@@ -35,7 +35,31 @@
                 
                 <div class="info-group">
                     <label>Téléphone :</label>
-                    <span><?php echo htmlspecialchars($user['telephone']); ?></span>
+                    <span><?php 
+                        if (!empty($user['telephone'])) {
+                            echo htmlspecialchars($user['telephone']);
+                            // Debug
+                            echo "<!-- Debug: phone in DB = " . htmlspecialchars($user['telephone']) . " -->";
+                        } else {
+                            echo "Non renseigné";
+                        }
+                    ?></span>
+                </div>
+
+                <div class="info-group">
+                    <label>Date de naissance :</label>
+                    <span><?php 
+                        if (!empty($user['date_naissance']) && $user['date_naissance'] !== '0000-00-00') {
+                            $date = DateTime::createFromFormat('Y-m-d', $user['date_naissance']);
+                            if ($date) {
+                                echo $date->format('d/m/Y');
+                            } else {
+                                echo "Non renseignée";
+                            }
+                        } else {
+                            echo "Non renseignée";
+                        }
+                    ?></span>
                 </div>
             </div>
 
