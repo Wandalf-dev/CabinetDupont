@@ -14,7 +14,7 @@
         unset($_SESSION['form_data']);
         ?>
 
-        <form class="register-form" method="post" action="index.php?page=register">
+        <form class="register-form" method="post" action="index.php?page=auth&action=register">
             <h2>Création de compte</h2>
             
             <div class="form-group">
@@ -58,17 +58,11 @@
             </div>
 
             <div class="form-group">
-                <label for="adresse">Adresse</label>
-                <textarea id="adresse" name="adresse" rows="3" 
-                    placeholder="Votre adresse"><?php echo htmlspecialchars($form_data['adresse'] ?? ''); ?></textarea>
-            </div>
-
-            <div class="form-group">
                 <button type="submit" class="btn-register">Créer mon compte</button>
             </div>
 
             <p class="login-link">
-                Déjà inscrit ? <a href="index.php?page=login">Connectez-vous ici</a>
+                Déjà inscrit ? <a href="index.php?page=auth&action=login">Connectez-vous ici</a>
             </p>
         </form>
     </section>

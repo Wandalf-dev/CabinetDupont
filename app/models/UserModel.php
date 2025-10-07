@@ -6,6 +6,35 @@ use App\Core\Model;
 
 class UserModel extends Model {
 
+    public function getUserByEmail($email) {
+        $sql = "SELECT * FROM utilisateur WHERE email = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$email]);
+        return $stmt->fetch();
+    }
+
+    public function emailExists($email) {
+        $sql = "SELECT COUNT(*) FROM utilisateur WHERE email = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$email]);
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    public function createUser($data) {
+        $sql = "INSERT INTO utilisateur (role, nom, prenom, email, password_hash, telephone) 
+                VALUES (?, ?, ?, ?, ?, ?)";
+                
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            $data['role'],
+            $data['nom'],
+            $data['prenom'],
+            $data['email'],
+            password_hash($data['password'], PASSWORD_DEFAULT),
+            $data['telephone'] ?? null
+        ]);
+    }
+
     public function getUserById($id) {
         $sql = "SELECT * FROM utilisateur WHERE id = ?";
         $stmt = $this->db->prepare($sql);

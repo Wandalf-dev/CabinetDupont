@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 06 oct. 2025 à 21:16
+-- Généré le : mar. 07 oct. 2025 à 08:35
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -148,9 +148,18 @@ CREATE TABLE `utilisateur` (
   `prenom` varchar(100) NOT NULL,
   `email` varchar(190) NOT NULL,
   `telephone` varchar(30) DEFAULT NULL,
+  `avatar` varchar(255) DEFAULT NULL,
   `password_hash` varchar(255) NOT NULL,
+  `date_inscription` datetime NOT NULL DEFAULT current_timestamp(),
   `date_naissance` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `utilisateur`
+--
+
+INSERT INTO `utilisateur` (`id`, `role`, `nom`, `prenom`, `email`, `telephone`, `avatar`, `password_hash`, `date_inscription`, `date_naissance`) VALUES
+(3, 'MEDECIN', 'Admin', 'Test', 'admin@demo.fr', '0600000000', NULL, '$2y$10$QgebtCj.A6H2EiY0mK/wNuxUVG/8gkNxxqCzxC4hwqsc/lEAjuUhS', '2025-10-06 22:03:33', '1990-01-01');
 
 --
 -- Index pour les tables déchargées
@@ -283,7 +292,7 @@ ALTER TABLE `service`
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Contraintes pour les tables déchargées

@@ -14,6 +14,10 @@ class App {
         $controllerName = ucfirst($page);
         $method = $action;
         $params = [];
+        // Ajout automatique de l'id ou d'autres paramètres GET comme arguments
+        if (isset($_GET['id'])) {
+            $params[] = $_GET['id'];
+        }
         
         // Construction du nom complet du contrôleur
         $controllerClass = "App\\Controllers\\{$controllerName}Controller";

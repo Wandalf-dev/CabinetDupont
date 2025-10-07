@@ -2,13 +2,13 @@
 
 namespace App\Controllers;
 
-use App\Models\AuthModel;
+use App\Models\UserModel;
 
 class AuthController {
-    private $authModel;
+    private $userModel;
 
     public function __construct() {
-        $this->authModel = new AuthModel();
+        $this->userModel = new UserModel();
     }
 
     public function login() {
@@ -18,26 +18,25 @@ class AuthController {
 
             if (!$email || !$password) {
                 $_SESSION['error'] = "Veuillez remplir tous les champs";
-                header('Location: index.php?page=login?error=missing');
+                header('Location: index.php?page=auth&action=login');
                 exit();
             }
 
-            $result = $this->authModel->login($email, $password);
+            $user = $this->userModel->getUserByEmail($email);
             
-            if ($result['success']) {
-                $user = $result['user'];
+            if ($user && password_verify($password, $user['password_hash'])) {
                 // Stocker les informations importantes en session
                 $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_role'] = $user['role'];
                 $_SESSION['user_email'] = $user['email'];
                 $_SESSION['user_nom'] = $user['nom'];
                 $_SESSION['user_prenom'] = $user['prenom'];
-                $_SESSION['user_avatar'] = $user['avatar'];
                 $_SESSION['success'] = "Connexion réussie !";
-                header('Location: index.php?page=profil');
+                header('Location: index.php?page=user&action=profile');
                 exit();
             } else {
                 $_SESSION['error'] = "Email ou mot de passe incorrect";
-                header('Location: index.php?page=login?error=invalid');
+                header('Location: index.php?page=auth&action=login');
                 exit();
             }
         }
@@ -61,35 +60,42 @@ class AuthController {
                 'password' => $_POST['password'] ?? '',
                 'password_confirm' => $_POST['password_confirm'] ?? '',
                 'telephone' => filter_input(INPUT_POST, 'telephone', FILTER_SANITIZE_STRING),
-                'adresse' => filter_input(INPUT_POST, 'adresse', FILTER_SANITIZE_STRING)
+                'role' => 'PATIENT' // Par défaut, les nouveaux inscrits sont des patients
             ];
 
             // Validation
-            if (!$data['email'] || !$data['password']) {
+            if (!$data['nom'] || !$data['prenom'] || !$data['email'] || !$data['password']) {
                 $_SESSION['error'] = "Tous les champs obligatoires doivent être remplis";
                 $_SESSION['form_data'] = $data;
-                header('Location: index.php?page=register');
+                header('Location: index.php?page=auth&action=register');
                 exit();
             }
 
             if ($data['password'] !== $data['password_confirm']) {
                 $_SESSION['error'] = "Les mots de passe ne correspondent pas";
                 $_SESSION['form_data'] = $data;
-                header('Location: index.php?page=register');
+                header('Location: index.php?page=auth&action=register');
+                exit();
+            }
+
+            // Vérifier si l'email existe déjà
+            if ($this->userModel->emailExists($data['email'])) {
+                $_SESSION['error'] = "Cette adresse email est déjà utilisée";
+                $_SESSION['form_data'] = $data;
+                header('Location: index.php?page=auth&action=register');
                 exit();
             }
 
             // Tentative d'inscription
-            $result = $this->authModel->register($data);
+            if ($this->userModel->createUser($data)) {
             
-            if ($result['success']) {
                 $_SESSION['success'] = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
-                header('Location: index.php?page=login');
+                header('Location: index.php?page=auth&action=login');
                 exit();
             } else {
-                $_SESSION['error'] = $result['message'];
+                $_SESSION['error'] = "Une erreur est survenue lors de l'inscription";
                 $_SESSION['form_data'] = $data;
-                header('Location: index.php?page=register');
+                header('Location: index.php?page=auth&action=register');
                 exit();
             }
         }

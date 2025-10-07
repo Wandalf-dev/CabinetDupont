@@ -4,7 +4,7 @@
     <section class="form-section">
         <div class="section-header">
             <h2>Modifier mon profil</h2>
-            <a href="index.php?page=profile" class="btn btn-secondary">Retour au profil</a>
+            <a href="index.php?page=user&action=profile" class="btn btn-secondary">Retour au profil</a>
         </div>
 
         <?php if (isset($_SESSION['error'])): ?>
@@ -46,11 +46,6 @@
                     <input type="tel" id="telephone" name="telephone" 
                            value="<?php echo htmlspecialchars($formData['telephone'] ?? ''); ?>">
                 </div>
-
-                <div class="form-group">
-                    <label for="adresse">Adresse</label>
-                    <textarea id="adresse" name="adresse" rows="3"><?php echo htmlspecialchars($formData['adresse'] ?? ''); ?></textarea>
-                </div>
             </div>
 
             <div class="form-section">
@@ -75,7 +70,7 @@
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
-                <a href="index.php?page=profile" class="btn btn-secondary">Annuler</a>
+                <a href="index.php?page=user&action=profile" class="btn btn-secondary">Annuler</a>
             </div>
         </form>
     </section>

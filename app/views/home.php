@@ -42,7 +42,7 @@
     </section>
 
   <!-- ================= SERVICES ================= -->
-  <section class="services" id="Nosservices">
+  <section class="services" id="services">
       <div class="container">
         <h2>Nos services</h2>
         <p class="services-intro">

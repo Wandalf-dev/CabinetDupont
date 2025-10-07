@@ -1,0 +1,17 @@
+.section-title {
+    margin: 0.5rem 0 3rem 0;
+    padding: 0.5rem;
+    text-align: center;
+    color: #3a6ea5;
+    font-size: 2rem;
+}
+
+/* Ajout d'une ligne décorative sous le titre */
+.section-title:after {
+    content: '';
+    display: block;
+    width: 100px;
+    height: 3px;
+    background-color: #3a6ea5;
+    margin: 1rem auto 0;
+}

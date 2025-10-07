@@ -8,7 +8,7 @@
         </div>
     <?php endif; ?>
     
-    <form class="login-form" method="post" action="index.php?page=login">
+    <form class="login-form" method="post" action="index.php?page=auth&action=login">
       <h2>Connexion à votre espace</h2>
       <div class="login-field">
         <label for="email">Adresse e-mail</label>
@@ -20,9 +20,9 @@
       </div>
       <button type="submit" class="btn-login">Se connecter</button>
       <div class="login-links">
-        <a href="index.php?page=forgot-password">Mot de passe oublié ?</a>
+        <a href="index.php?page=auth&action=forgot">Mot de passe oublié ?</a>
         <span>·</span>
-        <a href="index.php?page=register">Créer un compte</a>
+        <a href="index.php?page=auth&action=register">Créer un compte</a>
       </div>
     </form>
   </section>

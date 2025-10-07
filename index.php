@@ -1,5 +1,8 @@
 <?php
 
+// Chargement de la configuration
+require_once __DIR__ . '/config.php';
+
 // Autoloader
 spl_autoload_register(function ($class) {
     // Conversion du namespace en chemin de fichier

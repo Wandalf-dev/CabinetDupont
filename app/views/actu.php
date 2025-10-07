@@ -1,24 +1,29 @@
-<?php include __DIR__ . '/templates/header.php'; ?>
+<?php 
+include __DIR__ . '/templates/header.php';
+include __DIR__ . '/templates/flash-messages.php';
+?>
+
 <main>
   <section class="actu-section">
     <h2>Actualités du cabinet</h2>
     <div class="actu-list">
-      <article class="actu-card featured">
-        <h3>Ouverture d’un nouveau fauteuil</h3>
-        <p>Le cabinet s’agrandit ! Un nouveau fauteuil de soins est désormais disponible pour mieux vous accueillir et réduire le temps d’attente.</p>
-        <span class="actu-date">05/10/2025</span>
-      </article>
-      <article class="actu-card">
-        <h3>Congés annuels</h3>
-        <p>Le cabinet sera fermé du 24 décembre au 2 janvier inclus. Pensez à anticiper vos rendez-vous !</p>
-        <span class="actu-date">01/10/2025</span>
-      </article>
-      <article class="actu-card">
-        <h3>Nouveau service : blanchiment dentaire</h3>
-        <p>Nous proposons désormais un service de blanchiment dentaire professionnel, pour un sourire éclatant en toute sécurité.</p>
-        <span class="actu-date">15/09/2025</span>
-      </article>
+      <?php if (empty($actus)): ?>
+        <p class="no-actus">Aucune actualité n'est disponible pour le moment.</p>
+      <?php else: ?>
+        <?php foreach ($actus as $actu): ?>
+          <article class="actu-card">
+            <h3><?php echo htmlspecialchars($actu['titre']); ?></h3>
+            <p><?php echo htmlspecialchars(substr(strip_tags($actu['contenu']), 0, 200)) . '...'; ?></p>
+            <div class="actu-meta">
+              <span class="actu-date"><?php echo date('d/m/Y', strtotime($actu['date_publication'])); ?></span>
+              <span class="actu-author">Par <?php echo htmlspecialchars($actu['auteur_prenom'] . ' ' . $actu['auteur_nom']); ?></span>
+            </div>
+            <a href="index.php?page=actus&action=show&id=<?php echo $actu['id']; ?>" class="btn btn-primary">Lire la suite</a>
+          </article>
+        <?php endforeach; ?>
+      <?php endif; ?>
     </div>
   </section>
 </main>
-<?php include 'footer.php'; ?>
+
+<?php include __DIR__ . '/templates/footer.php'; ?>

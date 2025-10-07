@@ -10,13 +10,15 @@ if (session_status() === PHP_SESSION_NONE) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DupontCare – Cabinet dentaire</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/cabinetdupont/css/style.css" />
-    <link rel="stylesheet" href="/cabinetdupont/css/login.css" />
-    <link rel="stylesheet" href="/cabinetdupont/css/register.css" />
-    <link rel="stylesheet" href="/cabinetdupont/css/actu.css" />
-    <link rel="stylesheet" href="/cabinetdupont/css/admin.css" />
-    <link rel="stylesheet" href="/cabinetdupont/css/actu-create.css" />
-    <link rel="stylesheet" href="/cabinetdupont/css/profil.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/style.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/login.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/register.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/actu.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/admin.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/actu-create.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/actu-posts.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/profil.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/alerts.css" />
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
 </head>
 <body>
