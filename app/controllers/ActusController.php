@@ -69,6 +69,35 @@ class ActusController {
                 exit();
             }
 
+            // Gestion de l'upload d'image
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $uploadDir = __DIR__ . '/../../../uploads/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+                $fileName = uniqid() . '_' . basename($_FILES['image']['name']);
+                $uploadFile = $uploadDir . $fileName;
+                $fileType = mime_content_type($_FILES['image']['tmp_name']);
+                $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                if (in_array($fileType, $allowedTypes)) {
+                    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
+                        $data['image'] = $fileName; // À stocker dans la BDD
+                    } else {
+                        $_SESSION['error'] = "Erreur lors de l'upload de l'image.";
+                        $_SESSION['form_data'] = $data;
+                        header('Location: index.php?page=actus&action=create');
+                        exit();
+                    }
+                } else {
+                    $_SESSION['error'] = "Format d'image non autorisé (jpg, png, gif, webp uniquement).";
+                    $_SESSION['form_data'] = $data;
+                    header('Location: index.php?page=actus&action=create');
+                    exit();
+                }
+            } else {
+                $data['image'] = null;
+            }
+
             // Créer l'actualité
             if ($this->actuModel->createActu($data)) {
                 $_SESSION['success'] = "L'actualité a été créée avec succès";

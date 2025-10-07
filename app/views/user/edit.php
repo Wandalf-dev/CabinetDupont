@@ -69,15 +69,17 @@ console.log('Scripts chargés');
                 <h3>Informations personnelles</h3>
                 
                 <div class="form-group">
-                    <label for="nom">Nom *</label>
-                    <input type="text" id="nom" name="nom" required 
-                           value="<?php echo htmlspecialchars($formData['nom'] ?? ''); ?>">
+                    <label for="nom">NOM *</label>
+              <input type="text" id="nom" name="nom" required 
+                  value="<?php echo htmlspecialchars($formData['nom'] ?? ''); ?>"
+                  oninput="this.value = this.value.toUpperCase();">
                 </div>
 
                 <div class="form-group">
                     <label for="prenom">Prénom *</label>
-                    <input type="text" id="prenom" name="prenom" required 
-                           value="<?php echo htmlspecialchars($formData['prenom'] ?? ''); ?>">
+              <input type="text" id="prenom" name="prenom" required 
+                  value="<?php echo htmlspecialchars($formData['prenom'] ?? ''); ?>"
+                  oninput="if(this.value.length > 0){this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1);} ">
                 </div>
 
                 <div class="form-group">
@@ -199,6 +201,28 @@ console.log('Scripts chargés');
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
 <script src="js/password-toggle.js"></script>
 <script src="js/phone-formatter.js"></script>
+</script>
+
+
+<script>
+// Forcer la saisie du nom en majuscules (sécurité supplémentaire)
+// et la première lettre du prénom en majuscule
+document.addEventListener('DOMContentLoaded', function() {
+    var nomInput = document.getElementById('nom');
+    if (nomInput) {
+        nomInput.addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+    }
+    var prenomInput = document.getElementById('prenom');
+    if (prenomInput) {
+        prenomInput.addEventListener('input', function() {
+            if(this.value.length > 0){
+                this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1);
+            }
+        });
+    }
+});
 </script>
 
 <?php include __DIR__ . '/../templates/footer.php'; ?>
