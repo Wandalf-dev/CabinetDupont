@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 07 oct. 2025 à 11:33
+-- Généré le : mar. 07 oct. 2025 à 08:35
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -35,15 +35,6 @@ CREATE TABLE `actualite` (
   `date_publication` datetime DEFAULT NULL,
   `statut` enum('BROUILLON','PUBLIE','ARCHIVE') NOT NULL DEFAULT 'BROUILLON'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Déchargement des données de la table `actualite`
---
-
-INSERT INTO `actualite` (`id`, `auteur_id`, `titre`, `contenu`, `date_publication`, `statut`) VALUES
-(2, 3, 'Bienvenue sur notre nouveau site', 'Nous sommes heureux de vous accueillir sur notre nouveau site web. Vous y trouverez toutes les informations concernant notre cabinet dentaire.', '2025-10-07 08:41:34', 'PUBLIE'),
-(3, 3, 'TEST DE MON ACTUALITE', 'TEST DE MON ACTUALITE', '2025-10-07 09:02:05', 'PUBLIE'),
-(6, 3, 'JE SUIS UN TEST', 'TEST DE MODIFICATIONNNN', '2025-10-07 09:13:17', 'PUBLIE');
 
 -- --------------------------------------------------------
 
@@ -168,7 +159,7 @@ CREATE TABLE `utilisateur` (
 --
 
 INSERT INTO `utilisateur` (`id`, `role`, `nom`, `prenom`, `email`, `telephone`, `avatar`, `password_hash`, `date_inscription`, `date_naissance`) VALUES
-(3, 'MEDECIN', 'Dupont', 'Docteur', 'admin@demo.fr', '0600000000', NULL, '$2y$10$QgebtCj.A6H2EiY0mK/wNuxUVG/8gkNxxqCzxC4hwqsc/lEAjuUhS', '2025-10-06 22:03:33', '1990-01-01');
+(3, 'MEDECIN', 'Admin', 'Test', 'admin@demo.fr', '0600000000', NULL, '$2y$10$QgebtCj.A6H2EiY0mK/wNuxUVG/8gkNxxqCzxC4hwqsc/lEAjuUhS', '2025-10-06 22:03:33', '1990-01-01');
 
 --
 -- Index pour les tables déchargées
@@ -253,7 +244,7 @@ ALTER TABLE `utilisateur`
 -- AUTO_INCREMENT pour la table `actualite`
 --
 ALTER TABLE `actualite`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `agenda`

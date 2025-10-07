@@ -21,8 +21,6 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/tabs.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/profil.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/alerts.css" />
-    <link rel="stylesheet" href="/cabinetdupont/css/common.css?v=1" />
-    <link rel="stylesheet" href="/cabinetdupont/css/profile-edit.css?v=1" />
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
 </head>
 <body>

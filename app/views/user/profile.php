@@ -15,27 +15,27 @@
         <?php endif; ?>
 
         <section class="profile-section">
-            <h2>Profil de <?php echo htmlspecialchars($user->getPrenom() . ' ' . $user->getNom()); ?></h2>
+            <h2>Profil de <?php echo htmlspecialchars($user['prenom'] . ' ' . $user['nom']); ?></h2>
             
             <div class="profile-info">
                 <div class="info-group">
                     <label>Nom :</label>
-                    <span><?php echo htmlspecialchars($user->getNom()); ?></span>
+                    <span><?php echo htmlspecialchars($user['nom']); ?></span>
                 </div>
                 
                 <div class="info-group">
                     <label>Prénom :</label>
-                    <span><?php echo htmlspecialchars($user->getPrenom()); ?></span>
+                    <span><?php echo htmlspecialchars($user['prenom']); ?></span>
                 </div>
                 
                 <div class="info-group">
                     <label>Email :</label>
-                    <span><?php echo htmlspecialchars($user->getEmail()); ?></span>
+                    <span><?php echo htmlspecialchars($user['email']); ?></span>
                 </div>
                 
                 <div class="info-group">
                     <label>Téléphone :</label>
-                    <span><?php echo htmlspecialchars($user->getTelephone()); ?></span>
+                    <span><?php echo htmlspecialchars($user['telephone']); ?></span>
                 </div>
             </div>
 

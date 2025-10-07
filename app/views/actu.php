@@ -15,13 +15,13 @@ include __DIR__ . '/templates/flash-messages.php';
 
         <article class="actu-featured">
           <div class="actu-featured-content">
-            <h3><?php echo htmlspecialchars($latestActu->getTitre()); ?></h3>
-            <p><?php echo htmlspecialchars(substr(strip_tags($latestActu->getContenu()), 0, 400)) . '...'; ?></p>
+            <h3><?php echo htmlspecialchars($latestActu['titre']); ?></h3>
+            <p><?php echo htmlspecialchars(substr(strip_tags($latestActu['contenu']), 0, 400)) . '...'; ?></p>
             <div class="actu-footer">
-              <a href="index.php?page=actus&action=show&id=<?php echo $latestActu->getId(); ?>" class="btn btn-primary">Lire la suite</a>
+              <a href="index.php?page=actus&action=show&id=<?php echo $latestActu['id']; ?>" class="btn btn-primary">Lire la suite</a>
               <div class="actu-meta">
-                <span class="actu-date"><?php echo $latestActu->getDatePublication()->format('d/m/Y'); ?></span>
-                <span class="actu-author">Par <?php echo htmlspecialchars($latestActu->getAuteurPrenom() . ' ' . $latestActu->getAuteurNom()); ?></span>
+                <span class="actu-date"><?php echo date('d/m/Y', strtotime($latestActu['date_publication'])); ?></span>
+                <span class="actu-author">Par <?php echo htmlspecialchars($latestActu['auteur_prenom'] . ' ' . $latestActu['auteur_nom']); ?></span>
               </div>
             </div>
           </div>
@@ -31,13 +31,13 @@ include __DIR__ . '/templates/flash-messages.php';
         <div class="actu-list">
           <?php foreach ($actus as $actu): ?>
             <article class="actu-card">
-              <h3><?php echo htmlspecialchars($actu->getTitre()); ?></h3>
-              <p><?php echo htmlspecialchars(substr(strip_tags($actu->getContenu()), 0, 200)) . '...'; ?></p>
+              <h3><?php echo htmlspecialchars($actu['titre']); ?></h3>
+              <p><?php echo htmlspecialchars(substr(strip_tags($actu['contenu']), 0, 200)) . '...'; ?></p>
               <div class="actu-footer">
-                <a href="index.php?page=actus&action=show&id=<?php echo $actu->getId(); ?>" class="btn btn-primary">Lire la suite</a>
+                <a href="index.php?page=actus&action=show&id=<?php echo $actu['id']; ?>" class="btn btn-primary">Lire la suite</a>
                 <div class="actu-meta">
-                  <span class="actu-date"><?php echo $actu->getDatePublication()->format('d/m/Y'); ?></span>
-                  <span class="actu-author">Par <?php echo htmlspecialchars($actu->getAuteurPrenom() . ' ' . $actu->getAuteurNom()); ?></span>
+                  <span class="actu-date"><?php echo date('d/m/Y', strtotime($actu['date_publication'])); ?></span>
+                  <span class="actu-author">Par <?php echo htmlspecialchars($actu['auteur_prenom'] . ' ' . $actu['auteur_nom']); ?></span>
                 </div>
               </div>
             </article>

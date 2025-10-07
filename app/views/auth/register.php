@@ -18,10 +18,11 @@
             <h2>Création de compte</h2>
             
             <div class="form-group">
-                <label for="nom">Nom*</label>
+                <label for="nom">NOM*</label>
                 <input type="text" id="nom" name="nom" required 
                     value="<?php echo htmlspecialchars($form_data['nom'] ?? ''); ?>"
-                    placeholder="Votre nom">
+                    placeholder="Votre NOM"
+                    oninput="this.value = this.value.toUpperCase();">
             </div>
 
             <div class="form-group">
@@ -67,5 +68,17 @@
         </form>
     </section>
 </main>
+
+<script>
+// Forcer la saisie du nom en majuscules
+document.addEventListener('DOMContentLoaded', function() {
+    var nomInput = document.getElementById('nom');
+    if (nomInput) {
+        nomInput.addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+    }
+});
+</script>
 
 <?php include __DIR__ . '/../templates/footer.php'; ?>
