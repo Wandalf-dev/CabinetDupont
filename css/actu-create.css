@@ -36,7 +36,8 @@
 }
 
 .actu-create-field input,
-.actu-create-field textarea {
+.actu-create-field textarea,
+.actu-create-field select {
   padding: 10px 12px;
   border-radius: 8px;
   border: 1.5px solid #dbe7ff;

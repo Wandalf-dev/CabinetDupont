@@ -65,6 +65,16 @@ class ActuModel extends Model {
         return $stmt->fetch();
     }
 
+    public function getActuByIdAdmin($id) {
+        $sql = "SELECT a.*, u.nom as auteur_nom, u.prenom as auteur_prenom 
+                FROM actualite a
+                JOIN utilisateur u ON a.auteur_id = u.id 
+                WHERE a.id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch();
+    }
+
     public function searchActus($keyword) {
         $sql = "SELECT id, titre, contenu, date_publication, featured 
                 FROM actualite 

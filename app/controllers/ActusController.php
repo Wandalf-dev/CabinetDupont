@@ -21,12 +21,14 @@ class ActusController {
     }
 
     public function index() {
-        // Page principale des actualités
+        // Charger les actualités publiques pour tous les utilisateurs
+        $actus = $this->actuModel->getAllActus();
+        
+        // Si l'utilisateur est admin, charger aussi les actus admin
         if (isset($_SESSION['user_id']) && isset($_SESSION['user_role']) && 
             ($_SESSION['user_role'] === 'MEDECIN' || $_SESSION['user_role'] === 'SECRETAIRE')) {
-            // Gestion : toutes les actus
-            $actus = $this->actuModel->getAllActusAdmin();
-            require_once 'app/views/actu-posts.php';
+            $actusAdmin = $this->actuModel->getAllActusAdmin();
+            require_once 'app/views/actu-combined.php';
         } else {
             // Public : seulement les actus publiées
             $actus = $this->actuModel->getAllActus();
@@ -112,13 +114,11 @@ class ActusController {
     }
 
     public function edit($id) {
-        if (!isset($_SESSION['user_id'])) {
-            $_SESSION['error'] = "Vous devez être connecté pour modifier une actualité";
-            header('Location: index.php?page=login');
-            exit();
-        }
+        // Vérifier les droits d'accès admin
+        $this->checkAdminAccess();
 
-        $actu = $this->actuModel->getActuById($id);
+        // Utiliser getActuByIdAdmin pour récupérer l'actualité quel que soit son statut
+        $actu = $this->actuModel->getActuByIdAdmin($id);
         if (!$actu) {
             $_SESSION['error'] = "Cette actualité n'existe pas";
             header('Location: index.php?page=actus');
@@ -129,7 +129,7 @@ class ActusController {
             $data = [
                 'titre' => trim($_POST['titre']),
                 'contenu' => trim($_POST['contenu']),
-                'statut' => 'PUBLIE'
+                'statut' => $_POST['statut'] ?? 'BROUILLON' // Utiliser le statut soumis ou BROUILLON par défaut
             ];
 
             if (empty($data['titre']) || empty($data['contenu'])) {
@@ -141,7 +141,7 @@ class ActusController {
 
             if ($this->actuModel->updateActu($id, $data)) {
                 $_SESSION['success'] = "L'actualité a été modifiée avec succès";
-                header('Location: index.php?page=actus&action=show&id=' . $id);
+                header('Location: index.php?page=actus'); // Redirection vers la page de gestion
                 exit();
             } else {
                 $_SESSION['error'] = "Une erreur est survenue lors de la modification de l'actualité";
