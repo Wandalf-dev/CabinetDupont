@@ -110,6 +110,9 @@ class ActusController {
                 $data['image'] = null;
             }
 
+            // Debug des données avant création
+            error_log("Données avant création : " . print_r($data, true));
+            
             // Créer l'actualité
             if ($this->actuModel->createActu($data)) {
                 $_SESSION['success'] = "L'actualité a été créée avec succès";

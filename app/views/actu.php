@@ -10,15 +10,23 @@ include __DIR__ . '/templates/flash-messages.php';
       <?php if (empty($actus)): ?>
         <p class="no-actus">Aucune actualité n'est disponible pour le moment.</p>
       <?php else: ?>
-        <?php $latestActu = array_shift($actus); // Récupère la première actualité ?>
+        <?php 
+        $latestActu = array_shift($actus); // Récupère la première actualité 
+        error_log("Dernière actualité : " . print_r($latestActu, true));
+        ?>
         <!-- Dernière actualité mise en avant -->
 
         <article class="actu-featured">
           <div class="actu-featured-content">
             <?php if (!empty($latestActu['image'])): ?>
               <div class="actu-featured-image">
-                <img src="public/uploads/<?php echo htmlspecialchars($latestActu['image']); ?>" alt="Image de l'actualité" style="max-width:100%;height:auto;margin-bottom:1rem;">
+                <img src="/cabinetdupont/public/uploads/<?php echo htmlspecialchars($latestActu['image']); ?>" alt="Image de l'actualité">
               </div>
+              <?php 
+              error_log("Affichage de l'image : /cabinetdupont/public/uploads/" . $latestActu['image']);
+              ?>
+            <?php else: ?>
+              <?php error_log("Pas d'image trouvée dans latestActu : " . print_r($latestActu, true)); ?>
             <?php endif; ?>
             <h3><?php echo htmlspecialchars($latestActu['titre']); ?></h3>
             <p><?php echo htmlspecialchars(substr(strip_tags($latestActu['contenu']), 0, 400)) . '...'; ?></p>

@@ -24,6 +24,11 @@ include __DIR__ . '/templates/flash-messages.php';
                                         <!-- Dernière actualité mise en avant -->
                                         <article class="actu-featured">
                                             <div class="actu-featured-content">
+                                                <?php if (!empty($latestActu['image'])): ?>
+                                                    <div class="actu-featured-image">
+                                                        <img src="/cabinetdupont/public/uploads/<?php echo htmlspecialchars($latestActu['image']); ?>" alt="Image de l'actualité">
+                                                    </div>
+                                                <?php endif; ?>
                                                 <h3><?php echo htmlspecialchars($latestActu['titre']); ?></h3>
                                                 <p><?php echo htmlspecialchars(substr(strip_tags($latestActu['contenu']), 0, 400)) . '...'; ?></p>
                                                 <div class="actu-footer">
