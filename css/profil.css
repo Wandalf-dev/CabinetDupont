@@ -280,7 +280,9 @@
 .btn--primary:hover { opacity: 0.95; transform: translateY(-2px); }
 
 .btn--gradient {
-  background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+  background: linear-gradient(to right, #0072ff, #00c6ff);
+  background-size: 120% 100%;
+  background-position: center;
   color: #fff;
 }
 .btn--gradient:hover { opacity: 0.93; transform: translateY(-2px); }

@@ -2,13 +2,12 @@
 
 <main>
   <section class="login-section">
-    <?php if (isset($_SESSION['error'])): ?>
-        <div class="alert alert-danger">
+    <form class="login-form" method="post" action="index.php?page=auth&action=login">
+      <?php if (isset($_SESSION['error'])): ?>
+        <div class="alert alert-danger" style="margin-bottom: 18px; text-align: center;">
             <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
         </div>
-    <?php endif; ?>
-    
-    <form class="login-form" method="post" action="index.php?page=auth&action=login">
+      <?php endif; ?>
       <h2>Connexion à votre espace</h2>
       <div class="login-field">
         <label for="email">Adresse e-mail</label>

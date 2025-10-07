@@ -1,32 +1,51 @@
-/* Carte d'actualité mise en avant */
-.actu-card.featured {
-  grid-column: span 2;
-  background: linear-gradient(90deg, #eaf6ff 60%, #f7fbff 100%);
-  box-shadow: 0 8px 32px rgba(0,198,255,0.10), 0 2px 8px rgba(0,0,0,0.08);
-  border: 2px solid #00c6ff22;
-  padding: 38px 36px 32px 36px;
-  font-size: 1.13rem;
-  min-height: 210px;
-  position: relative;
+.actu-featured-content, .actu-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
-.actu-card.featured h3 {
-  font-size: 1.35rem;
-  color: #0072ff;
-  margin-bottom: 10px;
+
+.actu-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: auto;
+  gap: 16px;
 }
-.actu-card.featured .actu-date {
-  font-size: 1.05rem;
-  color: #00aaff;
-  font-weight: 700;
+
+.btn-primary {
+  display: inline-block;
+  padding: 12px 24px;
+  background: linear-gradient(to right, #0072ff, #00c6ff);
+  background-size: 120% 100%;
+  background-position: center;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  border: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
 }
-@media (max-width: 700px) {
-  .actu-card.featured {
-    grid-column: span 1;
-    padding: 24px 10px 18px 10px;
-  }
+
+.btn-primary:hover {
+  background: linear-gradient(to right, #0088ff, #00d4ff);
+  background-size: 120% 100%;
+  background-position: center;
+  box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.actu-meta {
+  color: #667788;
+  font-size: 0.97rem;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
 }
 .actu-section {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 48px 16px 64px 16px;
 }
@@ -39,11 +58,77 @@
   font-weight: 700;
 }
 
+.actu-container {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+/* Style pour l'actualité mise en avant */
+
+.actu-featured {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e6f3ff 100%);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 8px 32px rgba(58, 110, 165, 0.1);
+  border: 2px solid rgba(58, 110, 165, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: 340px;
+  height: 100%;
+}
+.actu-featured-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  height: 100%;
+}
+
+.actu-featured:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 48px rgba(58, 110, 165, 0.15);
+}
+
+.actu-featured h3 {
+  font-size: 2rem;
+  color: #3a6ea5;
+  margin-bottom: 18px;
+  line-height: 1.2;
+}
+
+.actu-featured p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #445566;
+  margin-bottom: 18px;
+}
+
+
+.actu-featured .actu-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: auto;
+  margin-bottom: 0;
+  color: #3a6ea5;
+  font-weight: 500;
+  align-self: flex-end;
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.actu-featured .btn-primary {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+/* Style pour la liste des autres actualités */
 .actu-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 32px;
 }
+
 
 .actu-card {
   background: #fff;
@@ -55,6 +140,7 @@
   flex-direction: column;
   gap: 12px;
   position: relative;
+  min-height: 280px;
   transition: box-shadow 0.2s, transform 0.2s;
 }
 
@@ -62,6 +148,7 @@
   box-shadow: 0 8px 32px rgba(0,198,255,0.13), 0 2px 8px rgba(0,0,0,0.10);
   transform: translateY(-4px) scale(1.015);
 }
+
 
 .actu-card h3 {
   color: #0072ff;
@@ -74,6 +161,23 @@
   color: #234;
   font-size: 1.05rem;
   margin: 0 0 8px 0;
+}
+
+.actu-card .btn-primary {
+  margin-top: 18px;
+  align-self: flex-start;
+}
+
+.actu-card .actu-meta {
+  display: flex;
+  gap: 16px;
+  margin-top: auto;
+  margin-bottom: 0;
+  color: #667788;
+  font-size: 0.9rem;
+  align-self: flex-end;
+  justify-content: flex-end;
+  text-align: right;
 }
 
 .actu-date {
