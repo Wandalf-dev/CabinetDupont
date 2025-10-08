@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 08 oct. 2025 à 14:37
+-- Généré le : jeu. 09 oct. 2025 à 00:23
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -144,19 +144,20 @@ CREATE TABLE `service` (
   `titre` varchar(200) NOT NULL,
   `description` mediumtext NOT NULL,
   `statut` enum('BROUILLON','PUBLIE','ARCHIVE') NOT NULL DEFAULT 'BROUILLON',
-  `image` varchar(255) DEFAULT NULL
+  `image` varchar(255) DEFAULT NULL,
+  `ordre` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `service`
 --
 
-INSERT INTO `service` (`id`, `titre`, `description`, `statut`, `image`) VALUES
-(1, 'Consultation générale', 'Examen complet de la santé bucco-dentaire, diagnostic et plan de traitement personnalisé.', 'PUBLIE', NULL),
-(2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', NULL),
-(3, 'Implantologie', 'Remplacement des dents manquantes par des implants dentaires.', 'PUBLIE', NULL),
-(4, 'Orthodontie', 'Correction de l\'alignement des dents et des problèmes d\'occlusion.', 'PUBLIE', NULL),
-(5, 'Blanchiment dentaire', 'Procédure esthétique pour éclaircir la couleur des dents.', 'PUBLIE', NULL);
+INSERT INTO `service` (`id`, `titre`, `description`, `statut`, `image`, `ordre`) VALUES
+(1, 'Consultation générale', 'Examen complet de la santé bucco-dentaire, diagnostic et plan de traitement personnalisé.', 'PUBLIE', '68e6b348707a8_femme-patiente-chez-dentiste.jpg', 4),
+(2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', NULL, 3),
+(3, 'Implantologie', 'Remplacement des dents manquantes par des implants dentaires.', 'PUBLIE', NULL, 2),
+(4, 'Orthodontie', 'Correction de l\'alignement des dents et des problèmes d\'occlusion.', 'PUBLIE', NULL, 1),
+(5, 'Blanchiment dentaire', 'Procédure esthétique pour éclaircir la couleur des dents.', 'PUBLIE', NULL, 5);
 
 -- --------------------------------------------------------
 
@@ -308,7 +309,7 @@ ALTER TABLE `rendezvous`
 -- AUTO_INCREMENT pour la table `service`
 --
 ALTER TABLE `service`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`

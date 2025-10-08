@@ -24,11 +24,13 @@
   padding: 24px 16px 64px 16px;
 }
 
-.admin-section h2 {
+.section-title {
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 28px !important;
+  font-weight: 600 !important;
+  color: #3a6ea5 !important;
   text-align: center;
-  color: #3a6ea5;
-  font-size: 2rem;
-  margin: 1rem 0 4rem 0;  /* Augmentation de la marge bottom de 1rem à 2rem */
+  margin: 2rem 0;
 }
 
 .admin-toolbar {
