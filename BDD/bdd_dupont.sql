@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 07 oct. 2025 à 22:41
+-- Généré le : mer. 08 oct. 2025 à 14:37
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -141,12 +141,22 @@ CREATE TABLE `rendezvous` (
 
 CREATE TABLE `service` (
   `id` int(10) UNSIGNED NOT NULL,
-  `cabinet_id` int(10) UNSIGNED NOT NULL,
-  `libelle` varchar(120) NOT NULL,
-  `duree_minutes` smallint(5) UNSIGNED NOT NULL,
-  `tarif` decimal(10,2) NOT NULL,
-  `description` text DEFAULT NULL
+  `titre` varchar(200) NOT NULL,
+  `description` mediumtext NOT NULL,
+  `statut` enum('BROUILLON','PUBLIE','ARCHIVE') NOT NULL DEFAULT 'BROUILLON',
+  `image` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `service`
+--
+
+INSERT INTO `service` (`id`, `titre`, `description`, `statut`, `image`) VALUES
+(1, 'Consultation générale', 'Examen complet de la santé bucco-dentaire, diagnostic et plan de traitement personnalisé.', 'PUBLIE', NULL),
+(2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', NULL),
+(3, 'Implantologie', 'Remplacement des dents manquantes par des implants dentaires.', 'PUBLIE', NULL),
+(4, 'Orthodontie', 'Correction de l\'alignement des dents et des problèmes d\'occlusion.', 'PUBLIE', NULL),
+(5, 'Blanchiment dentaire', 'Procédure esthétique pour éclaircir la couleur des dents.', 'PUBLIE', NULL);
 
 -- --------------------------------------------------------
 
@@ -238,8 +248,7 @@ ALTER TABLE `rendezvous`
 -- Index pour la table `service`
 --
 ALTER TABLE `service`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_service_cabinet` (`cabinet_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Index pour la table `utilisateur`
@@ -299,7 +308,7 @@ ALTER TABLE `rendezvous`
 -- AUTO_INCREMENT pour la table `service`
 --
 ALTER TABLE `service`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
@@ -351,12 +360,6 @@ ALTER TABLE `rendezvous`
   ADD CONSTRAINT `fk_rdv_medecin` FOREIGN KEY (`medecin_id`) REFERENCES `utilisateur` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_rdv_patient` FOREIGN KEY (`patient_id`) REFERENCES `utilisateur` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_rdv_secretaire` FOREIGN KEY (`secretaire_id`) REFERENCES `utilisateur` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `service`
---
-ALTER TABLE `service`
-  ADD CONSTRAINT `fk_service_cabinet` FOREIGN KEY (`cabinet_id`) REFERENCES `cabinet` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
