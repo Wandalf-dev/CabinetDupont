@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\UserModel;
+use App\Core\Csrf;
 
 class AuthController {
     private $userModel;
@@ -15,6 +16,13 @@ class AuthController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
             $password = $_POST['password'] ?? '';
+            $csrf_token = $_POST['csrf_token'] ?? '';
+
+            if (!Csrf::checkToken($csrf_token)) {
+                $_SESSION['error'] = "Session expirée ou tentative frauduleuse.";
+                header('Location: index.php?page=auth&action=login');
+                exit();
+            }
 
             if (!$email || !$password) {
                 $_SESSION['error'] = "Veuillez remplir tous les champs";
@@ -23,8 +31,9 @@ class AuthController {
             }
 
             $user = $this->userModel->getUserByEmail($email);
-            
+
             if ($user && password_verify($password, $user['password_hash'])) {
+                session_regenerate_id(true); // Sécurise la session après connexion
                 // Stocker les informations importantes en session
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_role'] = $user['role'];
@@ -41,8 +50,9 @@ class AuthController {
             }
         }
 
-        // Afficher le formulaire de connexion
-        require_once 'app/views/auth/login.php';
+        // Générer le token CSRF et le passer à la vue
+        $csrf_token = Csrf::generateToken();
+        require 'app/views/auth/login.php';
     }
 
     public function logout() {
@@ -53,6 +63,12 @@ class AuthController {
 
     public function register() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $csrf_token = $_POST['csrf_token'] ?? '';
+            if (!\App\Core\Csrf::checkToken($csrf_token)) {
+                $_SESSION['error'] = "Session expirée ou tentative frauduleuse.";
+                header('Location: index.php?page=auth&action=register');
+                exit();
+            }
             $data = [
                 'nom' => mb_strtoupper(filter_input(INPUT_POST, 'nom', FILTER_SANITIZE_STRING)),
                 'prenom' => filter_input(INPUT_POST, 'prenom', FILTER_SANITIZE_STRING),

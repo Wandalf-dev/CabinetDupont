@@ -22,6 +22,7 @@
         <label for="email">Adresse e-mail</label>
         <input type="email" id="email" name="email" required autocomplete="username" placeholder="Email" />
       </div>
+      <input type="hidden" name="csrf_token" value="<?php echo isset($csrf_token) ? $csrf_token : ''; ?>">
       <div class="login-field">
         <label for="password">Mot de passe</label>
         <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Mot de passe" />

@@ -52,6 +52,12 @@ class ActusController {
         $this->checkAdminAccess();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $csrf_token = $_POST['csrf_token'] ?? '';
+            if (!\App\Core\Csrf::checkToken($csrf_token)) {
+                $_SESSION['error'] = "Session expirée ou tentative frauduleuse.";
+                header('Location: index.php?page=actus&action=create');
+                exit();
+            }
             // Récupérer et valider les données
             $data = [
                 'titre' => trim($_POST['titre']),

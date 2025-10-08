@@ -65,6 +65,9 @@ console.log('Scripts chargés');
         <?php endif; ?>
 
         <form class="profile-form" method="post" action="index.php?page=user&action=edit">
+                <?php if (isset($_SESSION['csrf_token'])): ?>
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                <?php endif; ?>
             <div class="info-block">
                 <h3>Informations personnelles</h3>
                 

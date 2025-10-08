@@ -5,6 +5,7 @@ include __DIR__ . '/templates/flash-messages.php';
 <main>
   <section class="actu-create-section">
   <form class="actu-create-form" method="post" action="index.php?page=actus&action=create" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
       <h2>Nouvelle actualité</h2>
       <div class="actu-create-field">
   <label for="titre">Titre de l'actualité <span class="required-star">*</span></label>

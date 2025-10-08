@@ -52,6 +52,7 @@
         ?>
 
         <form class="register-form" method="post" action="index.php?page=auth&action=register">
+    <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
             <h2>Création de compte</h2>
             
             <div class="form-group">

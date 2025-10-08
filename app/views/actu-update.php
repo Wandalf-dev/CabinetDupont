@@ -2,6 +2,7 @@
 <main>
   <section class="actu-create-section">
   <form class="actu-create-form" method="post" enctype="multipart/form-data" action="index.php?page=actus&action=edit&id=<?php echo htmlspecialchars($actu['id']); ?>">
+  <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
       <h2>Modifier l'actualité</h2>
       <div class="actu-create-field">
   <label for="titre">Titre de l'actualité <span class="required-star">*</span></label>

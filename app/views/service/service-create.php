@@ -11,6 +11,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 
 <section class="actu-create-section">
     <form class="actu-create-form" method="post" enctype="multipart/form-data" action="index.php?page=services&action=create">
+    <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
         <h2>Ajouter un service</h2>
         <div class="form-group">
             <label for="titre">Nom du service <span class="required-star">*</span></label>
