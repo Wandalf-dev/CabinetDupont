@@ -1,3 +1,9 @@
+/* Astérisque rouge pour champs obligatoires */
+.required-star {
+  color: #e53935;
+  font-weight: bold;
+  margin-left: 2px;
+}
 body {
   font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   background: #f4f6fb;

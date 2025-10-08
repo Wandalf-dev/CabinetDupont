@@ -4,15 +4,15 @@
   <form class="actu-create-form" method="post" enctype="multipart/form-data" action="index.php?page=actus&action=edit&id=<?php echo htmlspecialchars($actu['id']); ?>">
       <h2>Modifier l'actualité</h2>
       <div class="actu-create-field">
-        <label for="titre">Titre de l'actualité</label>
+  <label for="titre">Titre de l'actualité <span class="required-star">*</span></label>
         <input type="text" id="titre" name="titre" required value="<?php echo htmlspecialchars($actu['titre'] ?? ''); ?>" />
       </div>
       <div class="actu-create-field">
-        <label for="contenu">Contenu</label>
+  <label for="contenu">Contenu <span class="required-star">*</span></label>
         <textarea id="contenu" name="contenu" rows="6" required><?php echo htmlspecialchars($actu['contenu'] ?? ''); ?></textarea>
       </div>
       <div class="actu-create-field">
-        <label for="statut">Statut</label>
+  <label for="statut">Statut <span class="required-star">*</span></label>
         <select id="statut" name="statut" required>
           <option value="BROUILLON" <?php echo ($actu['statut'] === 'BROUILLON') ? 'selected' : ''; ?>>Brouillon</option>
           <option value="PUBLIE" <?php echo ($actu['statut'] === 'PUBLIE') ? 'selected' : ''; ?>>Publié</option>

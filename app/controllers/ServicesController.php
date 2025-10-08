@@ -44,7 +44,7 @@ class ServicesController {
             $data = [
                 'titre' => trim($_POST['titre']),
                 'description' => trim($_POST['description']),
-                'statut' => $_POST['statut'] ?? 'BROUILLON'
+                'statut' => 'PUBLIE'
             ];
 
             // Vérifier que tous les champs sont remplis
@@ -131,9 +131,9 @@ class ServicesController {
 
             // Gestion de l'upload d'image
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $maxSize = 3 * 1024 * 1024; // 3 Mo
+                $maxSize = 5 * 1024 * 1024; // 5 Mo
                 if ($_FILES['image']['size'] > $maxSize) {
-                    $_SESSION['error'] = "L'image ne doit pas dépasser 3 Mo.";
+                    $_SESSION['error'] = "L'image ne doit pas dépasser 5 Mo.";
                     $_SESSION['form_data'] = $data;
                     header('Location: index.php?page=services&action=edit&id=' . $id);
                     exit();
@@ -191,6 +191,23 @@ class ServicesController {
         }
 
         header('Location: index.php?page=services');
+        exit();
+    }
+
+    public function updateOrder() {
+        $this->checkAdminAccess();
+        // Récupérer le JSON envoyé
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+        if (!isset($data['order']) || !is_array($data['order'])) {
+            echo json_encode(['success' => false, 'error' => 'Données invalides']);
+            exit();
+        }
+        // Mettre à jour l'ordre dans la BDD
+        foreach ($data['order'] as $index => $id) {
+            $this->serviceModel->updateOrdre($id, $index);
+        }
+        echo json_encode(['success' => true]);
         exit();
     }
 }

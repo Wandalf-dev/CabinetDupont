@@ -55,7 +55,7 @@
             <h2>Création de compte</h2>
             
             <div class="form-group">
-                <label for="nom">NOM*</label>
+                <label for="nom">NOM <span class="required-star">*</span></label>
                 <input type="text" id="nom" name="nom" required 
                     value="<?php echo htmlspecialchars($form_data['nom'] ?? ''); ?>"
                     placeholder="Votre NOM"
@@ -63,7 +63,7 @@
             </div>
 
             <div class="form-group">
-                <label for="prenom">Prénom*</label>
+                <label for="prenom">Prénom <span class="required-star">*</span></label>
                 <input type="text" id="prenom" name="prenom" required 
                     value="<?php echo htmlspecialchars($form_data['prenom'] ?? ''); ?>"
                     placeholder="Votre prénom"
@@ -71,14 +71,14 @@
             </div>
 
             <div class="form-group">
-                <label for="email">Adresse e-mail*</label>
+                <label for="email">Adresse e-mail <span class="required-star">*</span></label>
                 <input type="email" id="email" name="email" required 
                     value="<?php echo htmlspecialchars($form_data['email'] ?? ''); ?>"
                     placeholder="votre@email.com">
             </div>
 
             <div class="form-group password-group">
-                <label for="password">Mot de passe*</label>
+                <label for="password">Mot de passe <span class="required-star">*</span></label>
                 <div class="password-input-container">
                     <input type="password" id="password" name="password" required 
                         placeholder="Votre mot de passe">
@@ -89,7 +89,7 @@
             </div>
 
             <div class="form-group password-group">
-                <label for="password_confirm">Confirmer le mot de passe*</label>
+                <label for="password_confirm">Confirmer le mot de passe <span class="required-star">*</span></label>
                 <div class="password-input-container">
                     <input type="password" id="password_confirm" name="password_confirm" required 
                         placeholder="Confirmez votre mot de passe">
@@ -134,7 +134,7 @@
             </div>
 
             <div class="form-group date-group">
-                <label for="date_naissance">Date de naissance*</label>
+                <label for="date_naissance">Date de naissance <span class="required-star">*</span></label>
                 <div class="date-input-container">
                     <input type="text" id="date_naissance" name="date_naissance" required
                         value="<?php echo htmlspecialchars($form_data['date_naissance'] ?? ''); ?>"

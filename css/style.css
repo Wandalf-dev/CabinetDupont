@@ -423,9 +423,16 @@ nav a:hover {
 }
 
 .service-icon {
-  width: 64px;
-  height: 64px;
+  max-width: 220px;
+  max-height: 220px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
   margin-bottom: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(58,110,165,0.12);
+  background: #fff;
+  padding: 3px;
 }
 
 .service-card h3 {

@@ -69,21 +69,21 @@ console.log('Scripts chargés');
                 <h3>Informations personnelles</h3>
                 
                 <div class="form-group">
-                    <label for="nom">NOM *</label>
+                    <label for="nom">NOM <span class="required-star">*</span></label>
               <input type="text" id="nom" name="nom" required 
                   value="<?php echo htmlspecialchars($formData['nom'] ?? ''); ?>"
                   oninput="this.value = this.value.toUpperCase();">
                 </div>
 
                 <div class="form-group">
-                    <label for="prenom">Prénom *</label>
+                    <label for="prenom">Prénom <span class="required-star">*</span></label>
               <input type="text" id="prenom" name="prenom" required 
                   value="<?php echo htmlspecialchars($formData['prenom'] ?? ''); ?>"
                   oninput="if(this.value.length > 0){this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1);} ">
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Email *</label>
+                    <label for="email">Email <span class="required-star">*</span></label>
                     <input type="email" id="email" name="email" required 
                            value="<?php echo htmlspecialchars($formData['email'] ?? ''); ?>">
                 </div>
@@ -128,7 +128,7 @@ console.log('Scripts chargés');
                 </div>
 
                 <div class="form-group">
-                    <label for="date_naissance">Date de naissance *</label>
+                    <label for="date_naissance">Date de naissance <span class="required-star">*</span></label>
                     <input type="text" id="date_naissance" name="date_naissance" class="flatpickr" 
                            value="<?php 
                            $date_value = $formData['date_naissance'] ?? $user['date_naissance'] ?? '';

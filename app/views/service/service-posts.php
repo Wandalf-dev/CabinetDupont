@@ -2,6 +2,11 @@
 include __DIR__ . '/../templates/header.php';
 include __DIR__ . '/../templates/flash-messages.php';
 ?>
+<style>
+.grip-cell, .grip-cell .grip-icon {
+    cursor: move !important;
+}
+</style>
 <main>
   <section class="admin-section">
     <h2 class="section-title">Gestion des services</h2>
@@ -16,19 +21,21 @@ include __DIR__ . '/../templates/flash-messages.php';
     <table class="admin-table" id="admin-table">
       <thead>
         <tr>
-          <th class="sortable" data-sort="titre">Titre <span class="sort-icon">↕</span></th>
-          <th class="sortable" data-sort="statut">État <span class="sort-icon">↕</span></th>
+          <th style="width:40px;"></th>
+          <th>Titre</th>
+          <th>État</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <?php if (empty($services)): ?>
+        <?php if (empty($servicesAdmin)): ?>
           <tr>
-            <td colspan="3">Aucun service n'est disponible</td>
+            <td colspan="4">Aucun service n'est disponible</td>
           </tr>
         <?php else: ?>
-          <?php foreach ($services as $service): ?>
-            <tr>
+          <?php foreach ($servicesAdmin as $service): ?>
+            <tr draggable="true" data-id="<?php echo $service['id']; ?>">
+              <td class="grip-cell"><span class="grip-icon">&#8942;&#8942;</span></td>
               <td><?php echo htmlspecialchars($service['titre']); ?></td>
               <td><?php echo htmlspecialchars($service['statut']); ?></td>
               <td>
@@ -43,4 +50,5 @@ include __DIR__ . '/../templates/flash-messages.php';
   </section>
 </main>
 <script src="<?php echo BASE_URL; ?>/js/service-posts.js"></script>
+<script src="/cabinetdupont/js/service-order.js"></script>
 <?php include __DIR__ . '/../templates/footer.php'; ?>

@@ -183,9 +183,9 @@ class ActusController {
 
             // Gestion de l'upload d'image
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $maxSize = 3 * 1024 * 1024; // 3 Mo
+                $maxSize = 5 * 1024 * 1024; // 5 Mo
                 if ($_FILES['image']['size'] > $maxSize) {
-                    $_SESSION['error'] = "L'image ne doit pas dépasser 3 Mo.";
+                    $_SESSION['error'] = "L'image ne doit pas dépasser 5 Mo.";
                     $_SESSION['form_data'] = $data;
                     header('Location: index.php?page=actus&action=edit&id=' . $id);
                     exit();

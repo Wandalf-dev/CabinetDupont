@@ -7,11 +7,11 @@ include __DIR__ . '/templates/flash-messages.php';
   <form class="actu-create-form" method="post" action="index.php?page=actus&action=create" enctype="multipart/form-data">
       <h2>Nouvelle actualité</h2>
       <div class="actu-create-field">
-        <label for="titre">Titre de l'actualité</label>
+  <label for="titre">Titre de l'actualité <span class="required-star">*</span></label>
         <input type="text" id="titre" name="titre" required placeholder="Titre de l'article" />
       </div>
       <div class="actu-create-field">
-        <label for="contenu">Contenu</label>
+  <label for="contenu">Contenu <span class="required-star">*</span></label>
         <textarea id="contenu" name="contenu" rows="6" required placeholder="Rédigez votre actualité..."></textarea>
       </div>
       <div class="actu-create-field">

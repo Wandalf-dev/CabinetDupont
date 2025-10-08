@@ -21,14 +21,14 @@
 .admin-section {
   max-width: 900px;
   margin: 0 auto;
-  padding: 48px 16px 64px 16px;
+  padding: 24px 16px 64px 16px;
 }
 
 .admin-section h2 {
   text-align: center;
   color: #3a6ea5;
   font-size: 2rem;
-  margin: 2rem 0;
+  margin: 1rem 0 4rem 0;  /* Augmentation de la marge bottom de 1rem à 2rem */
 }
 
 .admin-toolbar {
@@ -117,6 +117,18 @@
   padding: 16px 12px;
   text-align: left;
   font-size: 1.05rem;
+}
+
+/* Ajustement des colonnes du tableau */
+.admin-table td:last-child {
+  text-align: right;
+  padding-right: 24px;
+  white-space: nowrap;
+}
+
+.admin-table th:last-child {
+  text-align: right;
+  padding-right: 24px;
 }
 
 .admin-table th {

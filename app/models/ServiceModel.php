@@ -9,14 +9,14 @@ class ServiceModel extends Model {
 
     // Pour la gestion admin : tous les services, tous statuts
     public function getAllServicesAdmin() {
-        $sql = "SELECT * FROM service ORDER BY titre ASC";
+        $sql = "SELECT * FROM service ORDER BY ordre ASC, titre ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
     }
 
     public function getAllServices() {
-        $sql = "SELECT * FROM service WHERE statut = 'PUBLIE' ORDER BY titre ASC";
+        $sql = "SELECT * FROM service WHERE statut = 'PUBLIE' ORDER BY ordre ASC, titre ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -87,5 +87,11 @@ class ServiceModel extends Model {
         $sql = "DELETE FROM service WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$id]);
+    }
+
+    public function updateOrdre($id, $ordre) {
+        $sql = "UPDATE service SET ordre = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$ordre, $id]);
     }
 }
