@@ -24,7 +24,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
 </head>
 <body>
-    <header style="position: relative;">
+    <header style="position: fixed; width: 100%; top: 0; z-index: 1000;">
         <div class="container">
             <a href="index.php" class="logo">
                 <img src="/cabinetdupont/assets/dupontcare-logo-horizontal-DUPONT-white.svg" alt="DupontCare" />
@@ -33,9 +33,20 @@ if (session_status() === PHP_SESSION_NONE) {
             <nav>
                 <ul>
                     <li><a href="index.php?page=home">Accueil</a></li>
-                    <li><a href="index.php?page=actus">Actualités</a></li>
-                    <li><a href="index.php?page=home#services">Services</a></li>
+                    <?php if (!isset($_SESSION['user_role']) || ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')): ?>
+                        <li><a href="index.php?page=actus">Actualités</a></li>
+                    <?php endif; ?>
+                    <li><a href="#services" class="smooth-scroll">Services</a></li>
                     <?php if (isset($_SESSION['user_id'])): ?>
+                        <?php if (isset($_SESSION['user_role']) && ($_SESSION['user_role'] === 'MEDECIN' || $_SESSION['user_role'] === 'SECRETAIRE')): ?>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle">Administration</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="index.php?page=actus">Gestion des actualités</a></li>
+                                    <li><a href="index.php?page=services">Gestion des services</a></li>
+                                </ul>
+                            </li>
+                        <?php endif; ?>
                         <li><a href="index.php?page=user&action=profile">Mon profil</a></li>
                         <li><a href="index.php?page=auth&action=logout">Déconnexion</a></li>
                     <?php else: ?>
@@ -76,6 +87,51 @@ if (session_status() === PHP_SESSION_NONE) {
     border-radius: 2em;
     padding: 0.3em 1.1em 0.3em 0.7em;
     z-index: 10;
+}
+
+/* Style pour le menu déroulant */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle::after {
+    content: '▼';
+    font-size: 0.8em;
+    margin-left: 5px;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    padding: 0.5em 0;
+    min-width: 200px;
+    z-index: 1000;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu li {
+    display: block;
+    margin: 0;
+}
+
+.dropdown-menu a {
+    color: #333;
+    padding: 0.5em 1em;
+    display: block;
+    text-decoration: none;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f5f5f5;
+    color: #3a6ea5;
 }
 .header-user-info .user-avatar {
     display: flex;

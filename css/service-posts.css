@@ -1,0 +1,94 @@
+.section-title {
+    margin: 0.5rem 0 3rem 0;
+    padding: 0.5rem;
+    text-align: center;
+    color: #3a6ea5;
+    font-size: 2rem;
+}
+
+/* Ajout d'une ligne décorative sous le titre */
+.section-title:after {
+    content: '';
+    display: block;
+    width: 100px;
+    height: 3px;
+    background-color: #3a6ea5;
+    margin: 1rem auto 0;
+}
+
+/* Style pour la section admin */
+.admin-section {
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 1200px;
+}
+
+/* Barre d'outils admin */
+.admin-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+/* Filtre */
+.admin-filter input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 250px;
+}
+
+/* Boutons d'action */
+.btn-admin {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    color: white;
+    margin: 0 0.25rem;
+}
+
+.btn-admin.add {
+    background-color: #28a745;
+}
+
+.btn-admin.edit {
+    background-color: #ffc107;
+}
+
+.btn-admin.delete {
+    background-color: #dc3545;
+}
+
+/* Table admin */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin-table th {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+.admin-table th.sortable:hover {
+    background-color: #e9ecef;
+}
+
+.sort-icon {
+    font-size: 0.8em;
+    margin-left: 0.5rem;
+}
+
+/* Style pour les lignes au survol */
+.admin-table tbody tr:hover {
+    background-color: #f5f5f5;
+}

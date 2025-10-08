@@ -1,14 +1,17 @@
 // Animation Lottie
-lottie.loadAnimation({
-    container: document.getElementById("lottie-animation"),
-    renderer: "svg",
-    loop: true,
-    autoplay: true,
-    path: "/cabinetdupont/assets/Dentist.json",
-});
+document.addEventListener('DOMContentLoaded', function() {
+    const lottieContainer = document.getElementById("lottie-animation");
+    if (lottieContainer) {
+        lottie.loadAnimation({
+            container: lottieContainer,
+            renderer: "svg",
+            loop: true,
+            autoplay: true,
+            path: "assets/Dentist.json",
+        });
+    }
 
-// Mise en surbrillance du jour courant
-(function () {
+    // Mise en surbrillance du jour courant
     const today = new Date().getDay(); // 0=Dimanche ... 6=Samedi
     const rows = document.querySelectorAll(".hours-table tr[data-day]");
     rows.forEach((tr) => {
@@ -16,4 +19,4 @@ lottie.loadAnimation({
             tr.classList.add("is-today");
         }
     });
-})();
+});
