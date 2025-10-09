@@ -1,102 +1,132 @@
+﻿/* =========================
+   Drag & Drop (table rows)
+   ========================= */
+
+/* Cellule poignée */
 .grip-cell {
-    width: 40px;
-    min-width: 40px;
-    text-align: center;
-    vertical-align: middle;
+  width: 40px;
+  min-width: 40px;
+  text-align: center;
+  vertical-align: middle;
+  touch-action: none;
 }
 
+/* Icône de la poignée */
 .grip-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: #999;
-    cursor: grab;
-    font-size: 22px;
-    letter-spacing: -2px;
-    transition: all 0.2s ease;
-    user-select: none;
-    opacity: 0.7;
-    width: 32px;
-    height: 32px;
-    margin: 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: 0 auto;
+  border-radius: 4px;
+  font-size: 22px;
+  letter-spacing: -2px;
+  color: #666;
+  opacity: 0.7;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  cursor: grab;
+  transition: all 0.15s ease;
+  touch-action: none;
 }
 
+/* Survol/interaction poignée */
 .grip-icon:hover {
-    color: #0072ff;
-    opacity: 1;
-    transform: scale(1.05);
+  color: #0072ff;
+  background: rgba(0,114,255,0.08);
+  opacity: 1;
+  transform: scale(0.95);
 }
-
 .grip-icon:active {
-    cursor: grabbing;
-    transform: scale(0.95);
+  cursor: grabbing;
+  background: rgba(0,114,255,0.12);
 }
 
+/* État curseur selon attribut draggable */
+tr:not([draggable="true"]) .grip-icon {
+  cursor: grab; /* reste "grab" si non-draggable */
+}
+tr[draggable="true"] .grip-icon {
+  cursor: grab; /* passe à grabbing pendant drag via :active */
+}
+
+/* Rappel visuel au survol de la ligne */
 tr:hover .grip-icon {
-    opacity: 1;
+  opacity: 1;
+  color: #0072ff;
 }
 
-/* Styles pour le drag & drop */
+/* Ligne en cours de déplacement */
 tr.dragging {
-    background-color: #f8f9fa !important;
-    box-shadow: 0 4px 16px rgba(0, 114, 255, 0.15);
-    opacity: 0.85;
-    border-radius: 4px;
+  position: relative;
+  z-index: 10;
+  pointer-events: none;
+  background-color: #f8f9fa !important;
+  opacity: 0.85;
+  box-shadow: 0 8px 24px rgba(0,114,255,0.16);
 }
 
-tr.dragging td {
-    background-color: #f8f9fa !important;
+/* Placeholder propre, sans flicker */
+.dnd-placeholder {
+  height: 0;
+  transition: height 0.15s ease-out;
+  pointer-events: none;
+}
+.dnd-placeholder td {
+  height: 6px;
+  padding: 0 !important;
+  background: rgba(0,114,255,0.12);
+  border: none !important;
 }
 
+/* Indicateur de drop avec lignes haut/bas */
 tr.drag-target {
-    position: relative;
-    transition: transform 0.2s ease;
+  position: relative;
+  transition: transform 0.15s ease;
+}
+tr.drag-target::before,
+tr.drag-target::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #0072ff;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+tr.drag-target::before { top: 0; }
+tr.drag-target::after  { bottom: 0; }
+
+tr.drag-target.drop-above::before,
+tr.drag-target:not(.drop-above)::after {
+  opacity: 1;
 }
 
-/* Indicateur de position pour le drop */
-tr.drag-target::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: #0072ff;
-    top: -2px;
-    transform: scaleX(0);
-    transition: transform 0.2s ease;
+/* Animation des autres lignes pendant le déplacement */
+tr.moving {
+  transition: transform 0.15s ease-out;
 }
-
-tr.drag-target.drop-above::before {
-    transform: scaleX(1);
-}
-
-/* Animation de déplacement pour les autres lignes */
 tr.moving-up {
-    transform: translateY(-100%);
-    transition: transform 0.2s ease;
+  transform: translateY(-100%);
 }
-
 tr.moving-down {
-    transform: translateY(100%);
-    transition: transform 0.2s ease;
+  transform: translateY(100%);
 }
 
-/* Zone de drop en haut du tableau */
-.drop-zone-top {
-    height: 0;
-    overflow: hidden;
-    transition: height 0.2s ease;
-}
-
-.drop-zone-top.active {
-    height: 4px;
-    background: rgba(0, 114, 255, 0.1);
-}
-
-.drop-zone-top.active::after {
-    content: '';
-    display: block;
-    height: 2px;
-    background: #0072ff;
-    margin: 1px 0;
+/* Support tactile (cibles plus grandes) */
+@media (pointer: coarse) {
+  .grip-cell {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .grip-icon {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 10px;
+  }
 }
