@@ -16,7 +16,7 @@ include __DIR__ . '/templates/flash-messages.php';
             <div class="admin-section p-4">
                 <div class="admin-toolbar mb-4">
                     <div class="admin-filter">
-                        <input type="text" placeholder="Rechercher un service..." class="service-search form-control">
+                        <input type="text" id="service-filter-input" placeholder="Rechercher un service..." class="service-search form-control">
                     </div>
                     <div class="admin-actions">
                         <a href="index.php?page=services&action=create" class="btn-admin add">
@@ -62,7 +62,7 @@ include __DIR__ . '/templates/flash-messages.php';
             <div class="admin-section p-4">
                 <div class="admin-toolbar mb-4">
                     <div class="admin-filter">
-                        <input type="text" placeholder="Rechercher une actualité..." class="actu-search form-control">
+                        <input type="text" id="actus-filter-input" placeholder="Rechercher une actualité..." class="actu-search form-control">
                     </div>
                     <div class="admin-actions">
                         <a href="index.php?page=actus&action=create" class="btn-admin add">
@@ -123,6 +123,84 @@ function deleteActu(id) {
         window.location.href = `index.php?page=actus&action=delete&id=${id}`;
     }
 }
+// Recherche services et actualités
+function filterServices() {
+    const serviceInput = document.getElementById('service-filter-input');
+    const serviceTable = document.getElementById('services-table');
+    if (serviceInput && serviceTable) {
+        const filter = serviceInput.value.toLowerCase();
+        const rows = serviceTable.tBodies[0] ? serviceTable.tBodies[0].rows : serviceTable.rows;
+        for (const row of rows) {
+            if (row.cells.length < 3) continue;
+            const titre = row.cells[1].textContent.toLowerCase();
+            const desc = row.cells[2].textContent.toLowerCase();
+            if (filter === '' || titre.includes(filter) || desc.includes(filter)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    }
+}
+function initActusFilter() {
+    const actusInput = document.getElementById('actus-filter-input');
+    const actusTable = document.getElementById('actus-table');
+    if (actusInput && actusTable) {
+        actusInput.addEventListener('input', function() {
+            const filter = actusInput.value.toLowerCase();
+            for (const row of actusTable.tBodies[0].rows) {
+                const text = row.cells[0].textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            }
+        });
+    }
+}
+document.addEventListener('DOMContentLoaded', function() {
+    // Filtre services à chaque input
+    const serviceInput = document.getElementById('service-filter-input');
+    if (serviceInput) {
+        serviceInput.addEventListener('input', filterServices);
+    }
+    // Filtre services à chaque affichage d'onglet
+    document.querySelector('[data-tab="tab-services"]').addEventListener('click', function() {
+        setTimeout(filterServices, 100);
+    });
+    // Filtre actualités à chaque input
+    const actusInput = document.getElementById('actus-filter-input');
+    const actusTable = document.getElementById('actus-table');
+    if (actusInput && actusTable) {
+        actusInput.addEventListener('input', function() {
+            const filter = actusInput.value.toLowerCase();
+            const rows = actusTable.tBodies[0] ? actusTable.tBodies[0].rows : actusTable.rows;
+            for (const row of rows) {
+                if (row.cells.length < 1) continue;
+                const text = row.cells[0].textContent.toLowerCase();
+                if (filter === '' || text.includes(filter)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    }
+    document.querySelector('[data-tab="tab-actus"]').addEventListener('click', function() {
+        setTimeout(function() {
+            if (actusInput && actusTable) {
+                const filter = actusInput.value.toLowerCase();
+                const rows = actusTable.tBodies[0] ? actusTable.tBodies[0].rows : actusTable.rows;
+                for (const row of rows) {
+                    if (row.cells.length < 1) continue;
+                    const text = row.cells[0].textContent.toLowerCase();
+                    if (filter === '' || text.includes(filter)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            }
+        }, 100);
+    });
+});
 </script>
 
 

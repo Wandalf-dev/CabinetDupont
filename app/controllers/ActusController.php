@@ -21,19 +21,9 @@ class ActusController {
     }
 
     public function index() {
-        // Charger les actualités publiques pour tous les utilisateurs
+        // Toujours charger la vue publique, même pour l'admin
         $actus = $this->actuModel->getAllActus();
-        
-        // Si l'utilisateur est admin, charger aussi les actus admin
-        if (isset($_SESSION['user_id']) && isset($_SESSION['user_role']) && 
-            ($_SESSION['user_role'] === 'MEDECIN' || $_SESSION['user_role'] === 'SECRETAIRE')) {
-            $actusAdmin = $this->actuModel->getAllActusAdmin();
-            require_once 'app/views/actu-combined.php';
-        } else {
-            // Public : seulement les actus publiées
-            $actus = $this->actuModel->getAllActus();
-            require_once 'app/views/actu.php';
-        }
+        require_once 'app/views/actu.php';
     }
 
     public function show($id) {

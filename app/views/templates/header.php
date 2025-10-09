@@ -43,7 +43,7 @@ if (session_status() === PHP_SESSION_NONE) {
                     <?php if (!isset($_SESSION['user_role']) || ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')): ?>
                         <li><a href="index.php?page=actus">Actualités</a></li>
                     <?php endif; ?>
-                    <li><a href="#services" class="smooth-scroll">Services</a></li>
+                    <li><a href="index.php?page=actus">Actualités</a></li>
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <?php if (isset($_SESSION['user_role']) && ($_SESSION['user_role'] === 'MEDECIN' || $_SESSION['user_role'] === 'SECRETAIRE')): ?>
                             <li>
