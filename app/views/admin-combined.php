@@ -38,7 +38,7 @@ include __DIR__ . '/templates/flash-messages.php';
                         <tbody>
                             <?php foreach ($servicesAdmin as $service): ?>
                             <tr data-id="<?= htmlspecialchars($service['id']) ?>" draggable="true">
-                                <td class="grip-cell"><span class="grip-icon" style="cursor: grab;">⋮⋮</span></td>
+                                <td class="grip-cell"><span class="grip-icon" title="Glisser pour réorganiser">⋮⋮</span></td>
                                 <td><?= htmlspecialchars($service['titre']) ?></td>
                                 <td><?= htmlspecialchars(substr($service['description'], 0, 100)) ?>...</td>
                                 <td class="status-cell" data-status="<?= htmlspecialchars($service['statut']) ?>"><?= htmlspecialchars($service['statut']) ?></td>

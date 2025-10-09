@@ -3,19 +3,21 @@ document.addEventListener('DOMContentLoaded', function() {
     let draggedRow = null;
     let dragAllowed = false;
 
-    // Ajout d'une zone de drop minimaliste en haut
+    // Ajout d'une zone de drop en haut
     const dropZoneTop = document.createElement('tr');
     dropZoneTop.className = 'drop-zone-top';
-    dropZoneTop.innerHTML = '<td colspan="4" style="height:0;padding:0;border-top:2px solid transparent;"></td>';
+    dropZoneTop.innerHTML = '<td colspan="5" style="padding:0; height:0;"></td>';
     tableBody.insertBefore(dropZoneTop, tableBody.firstChild);
 
     dropZoneTop.addEventListener('dragover', function(e) {
         e.preventDefault();
         dropZoneTop.firstChild.style.borderTop = '2px solid #0072ff';
     });
+
     dropZoneTop.addEventListener('dragleave', function(e) {
         dropZoneTop.firstChild.style.borderTop = '2px solid transparent';
     });
+
     dropZoneTop.addEventListener('drop', function(e) {
         e.preventDefault();
         if (draggedRow) {
@@ -37,11 +39,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (dragAllowed && e.target.tagName === 'TR') {
             draggedRow = e.target;
             e.dataTransfer.effectAllowed = 'move';
+            draggedRow.style.opacity = '0.7';
         } else {
             e.preventDefault();
         }
     });
+
     tableBody.addEventListener('dragend', function(e) {
+        if (draggedRow) {
+            draggedRow.style.opacity = '1';
+        }
         dragAllowed = false;
     });
 
@@ -86,8 +93,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Mise à jour de l'ordre des services
     function updateServiceOrder() {
-        const ids = Array.from(tableBody.querySelectorAll('tr')).map(tr => tr.getAttribute('data-id'));
+        const ids = Array.from(tableBody.querySelectorAll('tr:not(.drop-zone-top)'))
+            .map(tr => tr.getAttribute('data-id'))
+            .filter(id => id); // Filtrer les ids null/undefined
+
         fetch('index.php?page=services&action=updateOrder', {
             method: 'POST',
             headers: {

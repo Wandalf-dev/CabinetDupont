@@ -1,23 +1,102 @@
 .grip-cell {
-    cursor: grab;
     width: 40px;
+    min-width: 40px;
     text-align: center;
+    vertical-align: middle;
 }
 
 .grip-icon {
-    font-weight: bold;
-    font-family: monospace;
-    font-size: 20px;
-    color: #888;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
     cursor: grab;
+    font-size: 22px;
+    letter-spacing: -2px;
+    transition: all 0.2s ease;
+    user-select: none;
+    opacity: 0.7;
+    width: 32px;
+    height: 32px;
+    margin: 0 auto;
 }
 
-.sortable-ghost {
-    opacity: 0.4;
-    background: #f0f0f0;
+.grip-icon:hover {
+    color: #0072ff;
+    opacity: 1;
+    transform: scale(1.05);
 }
 
-.ui-sortable-helper {
-    background: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+.grip-icon:active {
+    cursor: grabbing;
+    transform: scale(0.95);
+}
+
+tr:hover .grip-icon {
+    opacity: 1;
+}
+
+/* Styles pour le drag & drop */
+tr.dragging {
+    background-color: #f8f9fa !important;
+    box-shadow: 0 4px 16px rgba(0, 114, 255, 0.15);
+    opacity: 0.85;
+    border-radius: 4px;
+}
+
+tr.dragging td {
+    background-color: #f8f9fa !important;
+}
+
+tr.drag-target {
+    position: relative;
+    transition: transform 0.2s ease;
+}
+
+/* Indicateur de position pour le drop */
+tr.drag-target::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #0072ff;
+    top: -2px;
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+}
+
+tr.drag-target.drop-above::before {
+    transform: scaleX(1);
+}
+
+/* Animation de déplacement pour les autres lignes */
+tr.moving-up {
+    transform: translateY(-100%);
+    transition: transform 0.2s ease;
+}
+
+tr.moving-down {
+    transform: translateY(100%);
+    transition: transform 0.2s ease;
+}
+
+/* Zone de drop en haut du tableau */
+.drop-zone-top {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.2s ease;
+}
+
+.drop-zone-top.active {
+    height: 4px;
+    background: rgba(0, 114, 255, 0.1);
+}
+
+.drop-zone-top.active::after {
+    content: '';
+    display: block;
+    height: 2px;
+    background: #0072ff;
+    margin: 1px 0;
 }
