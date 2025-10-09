@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 09 oct. 2025 à 17:33
+-- Généré le : jeu. 09 oct. 2025 à 23:51
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -73,6 +73,14 @@ CREATE TABLE `cabinet` (
   `adresse` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Déchargement des données de la table `cabinet`
+--
+
+INSERT INTO `cabinet` (`id`, `nom`, `adresse`) VALUES
+(1, 'Cabinet Dupont', '123 rue du sourire'),
+(2, 'Cabinet Dupont', '123 rue Example');
+
 -- --------------------------------------------------------
 
 --
@@ -97,10 +105,25 @@ CREATE TABLE `creneau` (
 CREATE TABLE `horaire_cabinet` (
   `id` int(10) UNSIGNED NOT NULL,
   `cabinet_id` int(10) UNSIGNED NOT NULL,
-  `jour` varchar(20) NOT NULL,
-  `ouverture` time NOT NULL,
-  `fermeture` time NOT NULL
+  `jour` enum('lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche') NOT NULL,
+  `ouverture_matin` time DEFAULT NULL,
+  `fermeture_matin` time DEFAULT NULL,
+  `ouverture_apresmidi` time DEFAULT NULL,
+  `fermeture_apresmidi` time DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `horaire_cabinet`
+--
+
+INSERT INTO `horaire_cabinet` (`id`, `cabinet_id`, `jour`, `ouverture_matin`, `fermeture_matin`, `ouverture_apresmidi`, `fermeture_apresmidi`) VALUES
+(15, 1, 'lundi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
+(16, 1, 'mardi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
+(17, 1, 'mercredi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
+(18, 1, 'jeudi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
+(19, 1, 'vendredi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
+(20, 1, 'samedi', '08:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(21, 1, 'dimanche', '00:00:00', '00:00:00', '00:00:00', '00:00:00');
 
 -- --------------------------------------------------------
 
@@ -153,10 +176,10 @@ CREATE TABLE `service` (
 --
 
 INSERT INTO `service` (`id`, `titre`, `description`, `statut`, `image`, `ordre`) VALUES
-(1, 'Consultation générale', 'Examen complet de la santé bucco-dentaire, diagnostic et plan de traitement personnalisé.', 'PUBLIE', '68e6b348707a8_femme-patiente-chez-dentiste.jpg', 2),
-(2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', '68e7d49939d82_19475 (1).jpg', 3),
-(3, 'Implantologie', 'Remplacement des dents manquantes par des implants dentaires.', 'PUBLIE', '68e7d3d2412bf_5510224.jpg', 5),
-(4, 'Orthodontie', 'Correction de l\'alignement des dents et des problèmes d\'occlusion.', 'PUBLIE', '68e7d541958fd_17722.jpg', 1),
+(1, 'Consultation générale', 'Examen complet de la santé bucco-dentaire, diagnostic et plan de traitement personnalisé.', 'PUBLIE', '68e6b348707a8_femme-patiente-chez-dentiste.jpg', 0),
+(2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', '68e7d49939d82_19475 (1).jpg', 2),
+(3, 'Implantologie', 'Remplacement des dents manquantes par des implants dentaires.', 'PUBLIE', '68e7d3d2412bf_5510224.jpg', 1),
+(4, 'Orthodontie', 'Correction de l\'alignement des dents et des problèmes d\'occlusion.', 'PUBLIE', '68e7d541958fd_17722.jpg', 3),
 (5, 'Blanchiment dentaire', 'Procédure esthétique pour éclaircir la couleur des dents.', 'PUBLIE', '68e7d4c8844fc_2598.jpg', 4);
 
 -- --------------------------------------------------------
@@ -224,7 +247,7 @@ ALTER TABLE `creneau`
 --
 ALTER TABLE `horaire_cabinet`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_horcab_cabinet` (`cabinet_id`);
+  ADD UNIQUE KEY `unique_jour` (`cabinet_id`,`jour`);
 
 --
 -- Index pour la table `notification`
@@ -279,7 +302,7 @@ ALTER TABLE `agenda`
 -- AUTO_INCREMENT pour la table `cabinet`
 --
 ALTER TABLE `cabinet`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `creneau`
@@ -291,7 +314,7 @@ ALTER TABLE `creneau`
 -- AUTO_INCREMENT pour la table `horaire_cabinet`
 --
 ALTER TABLE `horaire_cabinet`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT pour la table `notification`
@@ -344,7 +367,7 @@ ALTER TABLE `creneau`
 -- Contraintes pour la table `horaire_cabinet`
 --
 ALTER TABLE `horaire_cabinet`
-  ADD CONSTRAINT `fk_horcab_cabinet` FOREIGN KEY (`cabinet_id`) REFERENCES `cabinet` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `horaire_cabinet_ibfk_1` FOREIGN KEY (`cabinet_id`) REFERENCES `cabinet` (`id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `notification`
