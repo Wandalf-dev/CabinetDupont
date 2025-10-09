@@ -16,6 +16,8 @@ if (session_status() === PHP_SESSION_NONE) {
     <title>DupontCare – Cabinet dentaire</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/style.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/header.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/footer.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/login.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/register.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/actu.css" />
@@ -29,7 +31,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
 </head>
 <body>
-    <header style="position: fixed; width: 100%; top: 0; z-index: 1000;">
+    <header>
         <div class="container">
             <a href="index.php" class="logo">
                 <img src="/cabinetdupont/assets/dupontcare-logo-horizontal-DUPONT-white.svg" alt="DupontCare" />
@@ -76,89 +78,5 @@ if (session_status() === PHP_SESSION_NONE) {
                 </span>
             </div>
         <?php endif; ?>
-<style>
-.header-user-info {
-    position: absolute;
-    top: 50%;
-    right: 2vw;
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
-    color: #fff;
-    font-weight: 600;
-    font-size: 1rem;
-    gap: 0.5em;
-    background: linear-gradient(90deg, #3a6ea5 80%, #1a355b 100%);
-    border-radius: 2em;
-    padding: 0.3em 1.1em 0.3em 0.7em;
-    z-index: 10;
-}
 
-/* Style pour le menu déroulant */
-.dropdown {
-    position: relative;
-}
-
-.dropdown-toggle::after {
-    content: '▼';
-    font-size: 0.8em;
-    margin-left: 5px;
-}
-
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    border-radius: 4px;
-    padding: 0.5em 0;
-    min-width: 200px;
-    z-index: 1000;
-}
-
-.dropdown:hover .dropdown-menu {
-    display: block;
-}
-
-.dropdown-menu li {
-    display: block;
-    margin: 0;
-}
-
-.dropdown-menu a {
-    color: #333;
-    padding: 0.5em 1em;
-    display: block;
-    text-decoration: none;
-}
-
-.dropdown-menu a:hover {
-    background-color: #f5f5f5;
-    color: #3a6ea5;
-}
-.header-user-info .user-avatar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.7em;
-    height: 1.7em;
-    background: none;
-    border-radius: 0;
-    margin-right: 0.2em;
-    box-shadow: none;
-}
-.header-user-info .user-avatar svg {
-    width: 1.3em;
-    height: 1.3em;
-    display: block;
-}
-.header-user-info .user-name {
-    white-space: nowrap;
-    font-size: 1em;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-}
-</style>
     </header>
