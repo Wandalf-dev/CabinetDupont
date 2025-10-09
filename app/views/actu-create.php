@@ -20,8 +20,8 @@ include __DIR__ . '/templates/flash-messages.php';
         <input type="file" id="image" name="image" accept="image/*">
       </div>
       <div class="actu-btn-row">
-        <button type="submit" class="btn-actu-create">Publier l'actualité</button>
-        <a href="index.php?page=actus" class="btn-actu-cancel">Annuler</a>
+  <button type="submit" class="btn-actu-create">Publier l'actualité</button>
+  <a href="index.php?page=admin" class="btn-actu-cancel">Annuler</a>
       </div>
     </form>
   </section>

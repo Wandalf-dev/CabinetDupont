@@ -41,7 +41,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 
         <div class="form-actions">
             <button type="submit" class="btn-admin add">Ajouter le service</button>
-            <a href="index.php?page=services" class="btn-admin">Annuler</a>
+            <a href="index.php?page=admin" class="btn-admin">Annuler</a>
         </div>
     </form>
 </section>

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const tableBody = document.querySelector('#admin-table tbody');
+    const tableBody = document.querySelector('#services-table tbody');
     let draggedRow = null;
     let dragAllowed = false;
 

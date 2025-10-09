@@ -32,8 +32,8 @@
         <?php endif; ?>
       </div>
       <div class="actu-btn-row">
-        <button type="submit" class="btn-actu-create">Enregistrer les modifications</button>
-        <a href="index.php?page=actus" class="btn-actu-cancel">Annuler</a>
+  <button type="submit" class="btn-actu-create">Enregistrer les modifications</button>
+  <a href="index.php?page=admin" class="btn-actu-cancel">Annuler</a>
       </div>
     </form>
   </section>
