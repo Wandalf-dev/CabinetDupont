@@ -5,13 +5,16 @@ namespace App\Controllers;
 use App\Models\HoraireModel;
 use App\Core\Csrf;
 
+// Contrôleur pour la gestion des horaires du cabinet
 class HorairesController {
     private $horaireModel;
 
+    // Constructeur : instancie le modèle des horaires
     public function __construct() {
         $this->horaireModel = new HoraireModel();
     }
 
+    // Vérifie si l'utilisateur a les droits d'accès admin (médecin ou secrétaire)
     private function checkAdminAccess() {
         if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) || 
             ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')) {
@@ -21,21 +24,20 @@ class HorairesController {
         }
     }
 
+    // Affiche les horaires du cabinet (vue publique)
     public function index() {
         $horaires = $this->horaireModel->getHoraires();
         require_once 'app/views/horaires/horaires.php';
     }
 
+    // Permet à l'admin de modifier les horaires du cabinet
     public function edit() {
+        // Vérifie les droits d'accès admin
         $this->checkAdminAccess();
         
+        // Si le formulaire est soumis
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Debug détaillé
-            error_log('======= DÉBUT DEBUG HORAIRES =======');
-            error_log('POST data brute: ' . print_r($_POST, true));
-            error_log('Type de $_POST[\'horaires\']: ' . gettype($_POST['horaires']));
-            error_log('Contenu de $_POST[\'horaires\']: ' . print_r($_POST['horaires'], true));
-            
+            // Vérification du token CSRF pour la sécurité
             $csrf_token = $_POST['csrf_token'] ?? '';
             if (!Csrf::checkToken($csrf_token)) {
                 $_SESSION['error'] = "Session expirée ou tentative frauduleuse.";
@@ -43,9 +45,10 @@ class HorairesController {
                 exit();
             }
 
+            // Récupère les horaires envoyés par le formulaire
             $horaires = $_POST['horaires'] ?? [];
 
-            // Vérifier si au moins un horaire est rempli
+            // Vérifie qu'au moins un horaire est saisi
             $horairesSaisis = false;
             foreach ($horaires as $jour => $creneaux) {
                 foreach (['matin', 'apresmidi'] as $periode) {
@@ -56,38 +59,20 @@ class HorairesController {
                     }
                 }
             }
-
             if (!$horairesSaisis) {
                 $_SESSION['error'] = "Veuillez saisir au moins un horaire d'ouverture";
                 header('Location: index.php?page=admin&tab=horaires');
                 exit();
             }
 
-            // Valider les horaires qui ont été saisis
+            // Validation des horaires pour chaque jour et chaque période
             foreach ($horaires as $jour => $creneaux) {
                 foreach (['matin', 'apresmidi'] as $periode) {
                     if (isset($creneaux[$periode])) {
                         $ouverture = $creneaux[$periode]['ouverture'] ?? '';
                         $fermeture = $creneaux[$periode]['fermeture'] ?? '';
 
-                        error_log("=== Traitement de $jour - $periode ===");
-                        error_log("Ouverture: '" . var_export($ouverture, true) . "'");
-                        error_log("Fermeture: '" . var_export($fermeture, true) . "'");
-                        error_log("empty(ouverture): " . var_export(empty($ouverture), true));
-                        error_log("empty(fermeture): " . var_export(empty($fermeture), true));
-
-                        // Pour le débogage, regardons la valeur exacte
-                        if ($jour === 'samedi' && $periode === 'apresmidi') {
-                            error_log("=== DÉTAIL SAMEDI APRÈS-MIDI ===");
-                            error_log("Type ouverture: " . gettype($ouverture));
-                            error_log("Type fermeture: " . gettype($fermeture));
-                            error_log("Longueur ouverture: " . strlen($ouverture));
-                            error_log("Longueur fermeture: " . strlen($fermeture));
-                            error_log("Ouverture (hex): " . bin2hex($ouverture));
-                            error_log("Fermeture (hex): " . bin2hex($fermeture));
-                        }
-
-                        // Normaliser les formats d'heure
+                        // Normalise le format des heures (ajoute les secondes si besoin)
                         if (!empty($ouverture) && strlen($ouverture) === 5) {
                             $ouverture .= ':00';
                         }
@@ -95,32 +80,27 @@ class HorairesController {
                             $fermeture .= ':00';
                         }
 
-                        // Détecter si c'est une période fermée
+                        // Détecte si la période est fermée (00:00 ou vide)
                         $isFerme = (empty($ouverture) && empty($fermeture)) || 
-                                 ($ouverture === '00:00:00' && $fermeture === '00:00:00') ||
-                                 ($ouverture === '00:00' && $fermeture === '00:00');
-                        
+                                   ($ouverture === '00:00:00' && $fermeture === '00:00:00') ||
+                                   ($ouverture === '00:00' && $fermeture === '00:00');
                         if ($isFerme) {
-                            error_log("$jour $periode - Période considérée comme fermée");
                             continue;
                         }
 
-                        // Si un seul horaire est rempli
+                        // Vérifie que les deux horaires sont remplis ou vides
                         if (empty($ouverture) xor empty($fermeture)) {
                             $periodeLabel = $periode === 'matin' ? 'du matin' : "de l'après-midi";
                             $_SESSION['error'] = "Les horaires " . $periodeLabel . " pour " . ucfirst($jour) . 
                                                " doivent être complets (ouverture ET fermeture)";
-                            error_log("Erreur: horaires incomplets pour $jour $periode");
                             header('Location: index.php?page=admin&tab=horaires');
                             exit();
                         }
 
-                        // Si les horaires sont remplis et que ce n'est pas une période fermée
+                        // Vérifie que la fermeture est après l'ouverture
                         if (!empty($ouverture) && !empty($fermeture) && !$isFerme) {
-                            // Vérifier que l'heure de fermeture est après l'heure d'ouverture
                             if (strtotime($fermeture) <= strtotime($ouverture)) {
                                 $periodeLabel = $periode === 'matin' ? 'du matin' : "de l'après-midi";
-                                error_log("Erreur validation horaire: $jour $periode - fermeture ($fermeture) <= ouverture ($ouverture)");
                                 $_SESSION['error'] = "L'heure de fermeture " . $periodeLabel . " doit être après " .
                                                    "l'heure d'ouverture pour " . ucfirst($jour);
                                 header('Location: index.php?page=admin&tab=horaires');
@@ -131,6 +111,7 @@ class HorairesController {
                 }
             }
 
+            // Met à jour les horaires en base de données
             if ($this->horaireModel->updateHoraire($horaires)) {
                 $_SESSION['success'] = "Les horaires ont été mis à jour avec succès";
                 header('Location: index.php?page=admin&tab=horaires');
@@ -141,6 +122,7 @@ class HorairesController {
             exit();
         }
 
+        // Affiche le formulaire d'édition des horaires
         $horaires = $this->horaireModel->getHoraires();
         require_once 'app/views/horaires/edit.php';
     }

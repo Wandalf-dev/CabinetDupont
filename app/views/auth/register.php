@@ -1,23 +1,23 @@
-<?php include __DIR__ . '/../templates/header.php'; ?>
+<?php
+include __DIR__ . '/../templates/header.php'; ?>
+
 <!-- Font Awesome pour les icônes -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
+/* Styles pour le groupe de champs mot de passe avec icône d'affichage */
 .password-group {
     position: relative;
 }
-
 .password-input-container {
     position: relative;
     display: flex;
     align-items: center;
 }
-
 .password-input-container input {
     width: 100%;
     padding-right: 40px; /* Espace pour l'icône */
 }
-
 .password-toggle {
     position: absolute;
     right: 10px;
@@ -27,11 +27,9 @@
     color: #666;
     padding: 5px;
 }
-
 .password-toggle:hover {
     color: #333;
 }
-
 .password-toggle i {
     font-size: 1.1em;
 }
@@ -39,6 +37,7 @@
 
 <main>
     <section class="register-section">
+        <!-- Affiche un message d'erreur si présent en session -->
         <?php if (isset($_SESSION['error'])): ?>
             <div class="alert alert-danger">
                 <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
@@ -52,7 +51,8 @@
         ?>
 
         <form class="register-form" method="post" action="index.php?page=auth&action=register">
-    <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
+            <!-- Champ caché pour le token CSRF (sécurité) -->
+            <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
             <h2>Création de compte</h2>
             
             <div class="form-group">
@@ -78,6 +78,7 @@
                     placeholder="votre@email.com">
             </div>
 
+            <!-- Groupe mot de passe avec icône d'affichage -->
             <div class="form-group password-group">
                 <label for="password">Mot de passe <span class="required-star">*</span></label>
                 <div class="password-input-container">
@@ -100,6 +101,7 @@
                 </div>
             </div>
 
+            <!-- Champ téléphone avec formatage français -->
             <div class="form-group">
                 <label for="telephone">Téléphone</label>
                 <div style="display: flex; align-items: center; gap: 6px;">
@@ -134,6 +136,7 @@
                 </div>
             </div>
 
+            <!-- Champ date de naissance avec Flatpickr -->
             <div class="form-group date-group">
                 <label for="date_naissance">Date de naissance <span class="required-star">*</span></label>
                 <div class="date-input-container">
@@ -148,30 +151,30 @@
                 <button type="submit" class="btn-register">Créer mon compte</button>
             </div>
 
-<!-- Inclusion de Flatpickr -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+            <!-- Inclusion de Flatpickr pour le calendrier de date de naissance -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css">
+            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+            <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    flatpickr("#date_naissance", {
-        locale: 'fr',
-        dateFormat: "Y-m-d",
-        maxDate: "today",
-        disableMobile: "true",
-        animate: true,
-        theme: "airbnb",
-        position: "auto",
-        monthSelectorType: "static",
-        yearSelectorType: "static",
-        showMonths: 1,
-        placeholder: "Sélectionnez votre date de naissance",
-        ariaDateFormat: "d F Y",
-    });
-});
-</script>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                flatpickr("#date_naissance", {
+                    locale: 'fr',
+                    dateFormat: "Y-m-d",
+                    maxDate: "today",
+                    disableMobile: "true",
+                    animate: true,
+                    theme: "airbnb",
+                    position: "auto",
+                    monthSelectorType: "static",
+                    yearSelectorType: "static",
+                    showMonths: 1,
+                    placeholder: "Sélectionnez votre date de naissance",
+                    ariaDateFormat: "d F Y",
+                });
+            });
+            </script>
 
             <p class="login-link">
                 Déjà inscrit ? <a href="index.php?page=auth&action=login">Connectez-vous ici</a>
@@ -180,8 +183,8 @@ document.addEventListener('DOMContentLoaded', function() {
     </section>
 </main>
 
+<!-- Script pour forcer la saisie du nom en majuscules -->
 <script>
-// Forcer la saisie du nom en majuscules
 document.addEventListener('DOMContentLoaded', function() {
     var nomInput = document.getElementById('nom');
     if (nomInput) {
@@ -192,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<!-- Inclusion de Cleave.js et des scripts personnalisés -->
+<!-- Inclusion de Cleave.js et des scripts personnalisés pour le formatage -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
 <script src="js/password-toggle.js"></script>
 <script src="js/phone-formatter.js"></script>

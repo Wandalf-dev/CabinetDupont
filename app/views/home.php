@@ -1,24 +1,27 @@
-<?php include __DIR__ . '/templates/header.php'; ?>
+<?php
+include __DIR__ . '/templates/header.php'; ?>
 
 <main>
 
   <!-- ================= HERO ================= -->
   <section class="hero">
     <div class="container">
-      <!-- Bloc 1 -->
+      <!-- Bloc 1 : Animation Lottie et texte d'accueil -->
       <div class="hero-row">
         <div class="hero-media">
+          <!-- Animation Lottie pour illustrer l'accueil -->
           <div id="lottie-animation"></div>
         </div>
 
         <div class="hero-text">
           <h1>Bienvenue chez DupontCare</h1>
           <p>Un cabinet dentaire moderne, humain et à votre écoute.</p>
+          <!-- Bouton pour prendre rendez-vous -->
           <a href="#" class="btn">Prendre rendez-vous</a>
         </div>
       </div>
 
-      <!-- Bloc 2 -->
+      <!-- Bloc 2 : Présentation du docteur -->
       <div class="hero-row reverse">
         <div class="hero-text doctor-card">
           <p class="doctor-presentation">
@@ -29,6 +32,7 @@
         </div>
 
         <div class="hero-media doctor-photo-halo">
+          <!-- Photo du docteur -->
           <img
             src="/cabinetdupont/assets/pharmacien-au-travail.jpg"
             alt="Dr Dupont au cabinet"
@@ -50,11 +54,13 @@
 
       <div class="services-grid">
         <?php if (empty($services)): ?>
+          <!-- Message si aucun service n'est disponible -->
           <p class="services-empty">Aucun service n'est disponible pour le moment.</p>
         <?php else: ?>
           <?php foreach ($services as $service): ?>
             <article class="service-card">
               <?php if (!empty($service['image'])): ?>
+                <!-- Affiche l'image du service si elle existe -->
                 <img
                   src="<?php echo BASE_URL; ?>/public/uploads/<?php echo htmlspecialchars($service['image']); ?>"
                   alt="<?php echo htmlspecialchars($service['titre'] ?? 'Service'); ?>"
@@ -87,6 +93,7 @@
           <table class="hours-table" aria-describedby="hours-note">
             <tbody>
               <?php
+              // Tableau des jours en français pour affichage
               $joursFr = [
                 'lundi' => ['label' => 'Lundi', 'data-day' => '1'],
                 'mardi' => ['label' => 'Mardi', 'data-day' => '2'],
@@ -104,8 +111,10 @@
                   <th><?php echo $jourInfo['label']; ?></th>
                   <?php if ($horaire['ouverture_matin'] === '00:00:00' && $horaire['fermeture_matin'] === '00:00:00' &&
                            $horaire['ouverture_apresmidi'] === '00:00:00' && $horaire['fermeture_apresmidi'] === '00:00:00'): ?>
+                    <!-- Affiche "Fermé" si le cabinet est fermé toute la journée -->
                     <td colspan="2">Fermé</td>
                   <?php else: ?>
+                    <!-- Affiche les horaires du matin et de l'après-midi -->
                     <td><?php echo ($horaire['ouverture_matin'] === '00:00:00' ? 'Fermé' : substr($horaire['ouverture_matin'], 0, 5) . ' – ' . substr($horaire['fermeture_matin'], 0, 5)); ?></td>
                     <td><?php echo ($horaire['ouverture_apresmidi'] === '00:00:00' ? 'Fermé' : substr($horaire['ouverture_apresmidi'], 0, 5) . ' – ' . substr($horaire['fermeture_apresmidi'], 0, 5)); ?></td>
                   <?php endif; ?>
@@ -124,7 +133,9 @@
           <h3>Contact & accès</h3>
 
           <div class="hours-cta">
+            <!-- Bouton pour prendre rendez-vous -->
             <a href="#" class="btn btn-small">Prendre rendez-vous</a>
+            <!-- Lien vers Google Maps pour l'itinéraire -->
             <a
               href="https://maps.google.com"
               target="_blank"

@@ -1,16 +1,21 @@
-<?php include __DIR__ . '/../templates/header.php'; ?>
+<?php
+include __DIR__ . '/../templates/header.php'; ?>
 
 <main>
     <section class="horaires-edit-section">
         <div class="container">
             <h2>Modifier les horaires</h2>
 
+            <!-- Inclusion des messages flash (succès/erreur) -->
             <?php include __DIR__ . '/../templates/flash-messages.php'; ?>
 
+            <!-- Formulaire de modification des horaires -->
             <form class="horaires-form" method="post" action="index.php?page=horaires&action=edit">
+                <!-- Champ caché pour le token CSRF (sécurité) -->
                 <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
                 
                 <?php 
+                // Tableau des jours en français
                 $joursFr = [
                     'lundi' => 'Lundi',
                     'mardi' => 'Mardi',
@@ -21,6 +26,7 @@
                     'dimanche' => 'Dimanche'
                 ];
 
+                // Boucle sur chaque jour pour afficher les champs horaires
                 foreach ($joursFr as $jourEn => $jourFr):
                     $horaireDuJour = null;
                     foreach ($horaires as $horaire) {

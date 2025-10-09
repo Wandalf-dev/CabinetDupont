@@ -1,17 +1,21 @@
-<?php 
+<?php
+// Inclusion du header et des messages flash (succès/erreur)
 require_once __DIR__ . '/../templates/header.php';
 require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
 <link rel="stylesheet" href="/cabinetdupont/css/service-create.css">
 <style>
+/* Style pour limiter la largeur du formulaire */
 .actu-create-section {
   max-width: 1100px !important;
 }
 </style>
 
 <section class="actu-create-section">
+    <!-- Formulaire pour ajouter un nouveau service -->
     <form class="actu-create-form" method="post" enctype="multipart/form-data" action="index.php?page=services&action=create">
-    <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
+        <!-- Champ caché pour le token CSRF (sécurité) -->
+        <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
         <h2>Ajouter un service</h2>
         <div class="form-group">
             <label for="titre">Nom du service <span class="required-star">*</span></label>
@@ -36,6 +40,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
         <div class="form-group">
             <label for="image">Image <span class="required-star">*</span></label>
             <input type="file" id="image" name="image" accept="image/*" onchange="previewServiceImage(event)" required>
+            <!-- Zone d'aperçu de l'image sélectionnée -->
             <div id="service-image-preview" style="margin-top:1em;"></div>
         </div>
 
@@ -47,6 +52,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 </section>
 
 <script>
+// Fonction pour afficher un aperçu de l'image sélectionnée
 function previewServiceImage(event) {
     const preview = document.getElementById('service-image-preview');
     preview.innerHTML = '';

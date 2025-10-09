@@ -4,13 +4,16 @@ namespace App\Controllers;
 
 use App\Models\ServiceModel;
 
+// Contrôleur pour la gestion des services du cabinet
 class ServicesController {
     private $serviceModel;
 
+    // Constructeur : instancie le modèle des services
     public function __construct() {
         $this->serviceModel = new ServiceModel();
     }
 
+    // Vérifie si l'utilisateur a les droits d'accès admin (médecin ou secrétaire)
     private function checkAdminAccess() {
         if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) || 
             ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')) {
@@ -20,40 +23,43 @@ class ServicesController {
         }
     }
 
+    // Affiche la liste des services
     public function index() {
-        // Charger les services publics pour tous les utilisateurs
+        // Récupère tous les services publics
         $services = $this->serviceModel->getAllServices();
         
-        // Si l'utilisateur est admin, charger la vue de gestion
+        // Si l'utilisateur est admin, affiche la vue de gestion
         if (isset($_SESSION['user_id']) && isset($_SESSION['user_role']) && 
             ($_SESSION['user_role'] === 'MEDECIN' || $_SESSION['user_role'] === 'SECRETAIRE')) {
             $servicesAdmin = $this->serviceModel->getAllServicesAdmin();
             require_once 'app/views/service/service-posts.php';
         } else {
-            // Public : seulement les services publiés
+            // Pour les visiteurs, affiche seulement les services publiés
             require_once 'app/views/service/service.php';
         }
     }
 
+    // Crée un nouveau service (formulaire + traitement)
     public function create() {
-        // Vérifier les droits d'accès
+        // Vérifie les droits d'accès
         $this->checkAdminAccess();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Vérification CSRF
             $csrf_token = $_POST['csrf_token'] ?? '';
             if (!\App\Core\Csrf::checkToken($csrf_token)) {
                 $_SESSION['error'] = "Session expirée ou tentative frauduleuse.";
                 header('Location: index.php?page=services&action=create');
                 exit();
             }
-            // Récupérer et valider les données
+            // Récupère et valide les données du formulaire
             $data = [
                 'titre' => trim($_POST['titre']),
                 'description' => trim($_POST['description']),
                 'statut' => 'PUBLIE'
             ];
 
-            // Vérifier que tous les champs sont remplis
+            // Vérifie que le titre et la description sont remplis
             if (!$data['titre'] || !$data['description']) {
                 $_SESSION['error'] = "Le titre et la description sont obligatoires";
                 $_SESSION['form_data'] = $data;
@@ -91,7 +97,7 @@ class ServicesController {
                 $data['image'] = null;
             }
             
-            // Créer le service
+            // Crée le service en base de données
             if ($this->serviceModel->createService($data)) {
                 $_SESSION['success'] = "Le service a été créé avec succès";
                 header('Location: index.php?page=services');
@@ -104,14 +110,15 @@ class ServicesController {
             }
         }
 
-        // Afficher le formulaire de création avec les données précédentes en cas d'erreur
+        // Affiche le formulaire de création (avec les données précédentes en cas d'erreur)
         $formData = $_SESSION['form_data'] ?? [];
         unset($_SESSION['form_data']);
         require_once 'app/views/service/service-create.php';
     }
 
+    // Modifie un service existant
     public function edit($id) {
-        // Vérifier les droits d'accès admin
+        // Vérifie les droits d'accès admin
         $this->checkAdminAccess();
 
         $service = $this->serviceModel->getServiceByIdAdmin($id);
@@ -169,6 +176,7 @@ class ServicesController {
                 }
             }
 
+            // Met à jour le service en base de données
             if ($this->serviceModel->updateService($id, $data)) {
                 $_SESSION['success'] = "Le service a été modifié avec succès";
                 header('Location: index.php?page=services');
@@ -181,12 +189,13 @@ class ServicesController {
             }
         }
 
-        // Afficher le formulaire d'édition
+        // Affiche le formulaire d'édition (avec les données précédentes en cas d'erreur)
         $formData = $_SESSION['form_data'] ?? $service;
         unset($_SESSION['form_data']);
         require_once 'app/views/service/service-update.php';
     }
 
+    // Supprime un service
     public function delete($id) {
         $this->checkAdminAccess();
 
@@ -200,16 +209,17 @@ class ServicesController {
         exit();
     }
 
+    // Met à jour l'ordre des services (drag & drop côté admin)
     public function updateOrder() {
         $this->checkAdminAccess();
-        // Récupérer le JSON envoyé
+        // Récupère le JSON envoyé
         $input = file_get_contents('php://input');
         $data = json_decode($input, true);
         if (!isset($data['order']) || !is_array($data['order'])) {
             echo json_encode(['success' => false, 'error' => 'Données invalides']);
             exit();
         }
-        // Mettre à jour l'ordre dans la BDD
+        // Met à jour l'ordre dans la base de données
         foreach ($data['order'] as $index => $id) {
             $this->serviceModel->updateOrdre($id, $index);
         }

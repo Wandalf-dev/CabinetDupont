@@ -2,55 +2,64 @@
 
 namespace App\Core;
 
+// Classe principale qui gère le routage de l'application
 class App {
+    // Méthode principale qui lance l'application
     public function run() {
-        session_start();
-        
-        // Récupère la page demandée, par défaut 'home'
+        session_start(); // Démarre la session PHP pour gérer les utilisateurs et les messages
+
+        // Récupère la page demandée dans l'URL, par défaut 'home'
         $page = $_GET['page'] ?? 'home';
+        // Récupère l'action demandée, par défaut 'index'
         $action = $_GET['action'] ?? 'index';
-        
-        // Construction du nom du contrôleur et de la méthode
-        $controllerName = ucfirst($page);
+
+        // Prépare le nom du contrôleur et de la méthode à appeler
+        $controllerName = ucfirst($page); // Exemple : 'home' devient 'Home'
         $method = $action;
         $params = [];
-        // Ajout automatique de l'id ou d'autres paramètres GET comme arguments
+
+        // Ajoute automatiquement l'id ou d'autres paramètres GET comme arguments à la méthode
         if (isset($_GET['id'])) {
             $params[] = $_GET['id'];
         }
-        
-        // Construction du nom complet du contrôleur
+
+        // Construit le nom complet de la classe du contrôleur
         $controllerClass = "App\\Controllers\\{$controllerName}Controller";
-        
+
         try {
+            // Log technique pour le débogage : tentative de chargement du contrôleur
             error_log("Tentative de chargement du contrôleur: " . $controllerClass);
-            
+
+            // Vérifie si la classe du contrôleur existe
             if (!class_exists($controllerClass)) {
                 error_log("Erreur: Le contrôleur n'existe pas");
                 throw new \Exception("Le contrôleur '$controllerClass' n'existe pas.");
             }
 
+            // Log technique : création d'une instance du contrôleur
             error_log("Création d'une instance du contrôleur");
             $controller = new $controllerClass();
-            
+
+            // Vérifie si la méthode demandée existe dans le contrôleur
             error_log("Vérification de la méthode: " . $method);
             if (!method_exists($controller, $method)) {
                 error_log("Erreur: La méthode n'existe pas");
                 throw new \Exception("La méthode '$method' n'existe pas dans le contrôleur.");
             }
 
+            // Log technique : méthode trouvée, tentative d'exécution
             error_log("Méthode trouvée, tentative d'exécution");
 
-            // Appel de la méthode avec les paramètres si présents
+            // Appelle la méthode du contrôleur avec les paramètres (ex : id)
             call_user_func_array([$controller, $method], $params);
 
         } catch (\Exception $e) {
-            // Log l'erreur détaillée
+            // En cas d'erreur, log l'exception détaillée pour le débogage
             error_log("Exception détaillée: " . $e->getMessage());
             error_log("Fichier: " . $e->getFile() . " ligne " . $e->getLine());
             error_log("Stack trace: " . $e->getTraceAsString());
-            
-            // Afficher une page d'erreur
+
+            // Affiche une page d'erreur 404 à l'utilisateur
             http_response_code(404);
             include __DIR__ . '/../views/error/404.php';
         }

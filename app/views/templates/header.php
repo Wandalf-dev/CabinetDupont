@@ -1,9 +1,10 @@
 <?php
+// Démarre la session avec des paramètres sécurisés si elle n'est pas déjà active
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
-        'httponly' => true,
-        'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
-        'samesite' => 'Strict'
+        'httponly' => true, // Empêche l'accès au cookie via JavaScript
+        'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on', // Cookie envoyé uniquement en HTTPS
+        'samesite' => 'Strict' // Empêche l'envoi du cookie sur des requêtes cross-site
     ]);
     session_start();
 }
@@ -14,6 +15,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DupontCare – Cabinet dentaire</title>
+    <!-- Importation des polices et des feuilles de style du projet -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/style.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/header.css" />
@@ -31,15 +33,18 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/alerts.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/horaires.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/horaires-admin.css" />
+    <!-- Animation Lottie pour des illustrations animées -->
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
 </head>
 <body>
     <header>
         <div class="container">
+            <!-- Logo du cabinet en haut à gauche -->
             <a href="index.php" class="logo">
                 <img src="/cabinetdupont/assets/dupontcare-logo-horizontal-DUPONT-white.svg" alt="DupontCare" />
             </a>
 
+            <!-- Menu de navigation principal -->
             <nav>
                 <ul>
                     <li><a href="index.php?page=home">Accueil</a></li>
@@ -62,6 +67,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
         <?php if (isset($_SESSION['user_id']) && isset($_SESSION['user_prenom']) && isset($_SESSION['user_nom'])): ?>
             <div class="header-user-info">
+                <!-- Avatar SVG et nom de l'utilisateur connecté -->
                 <span class="user-avatar">
                     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="11" cy="11" r="11" fill="#fff"/>

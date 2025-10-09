@@ -1,73 +1,75 @@
-<?php 
+<?php
+// Inclusion du header et des messages flash (succès/erreur)
 include __DIR__ . '/templates/header.php';
 include __DIR__ . '/templates/flash-messages.php';
 ?>
 
 <main class="container">
     <div class="tabs-container">
-        <!-- Navigation des onglets -->
+        <!-- Navigation des onglets pour basculer entre actualités publiques et gestion admin -->
         <div class="tabs-nav">
             <button class="tab-button" data-tab="tab-public">Actualités</button>
             <button class="tab-button" data-tab="tab-admin">Gestion des actualités</button>
         </div>
 
-        <!-- Contenu de l'onglet "Actualités" -->
-
-                <div id="tab-public" class="tab-content">
-                        <section class="actu-section">
-                                <h2>Actualités du cabinet</h2>
-                                <div class="actu-container">
-                                    <?php if (empty($actus)): ?>
-                                        <p class="no-actus">Aucune actualité n'est disponible pour le moment.</p>
-                                    <?php else: ?>
-                                        <?php $latestActu = array_shift($actus); ?>
-                                        <!-- Dernière actualité mise en avant -->
-                                        <article class="actu-featured">
-                                            <div class="actu-featured-content">
-                                                <?php if (!empty($latestActu['image'])): ?>
-                                                    <div class="actu-featured-image">
-                                                        <img src="/cabinetdupont/public/uploads/<?php echo htmlspecialchars($latestActu['image']); ?>" alt="Image de l'actualité">
-                                                    </div>
-                                                <?php endif; ?>
-                                                <h3><?php echo htmlspecialchars($latestActu['titre']); ?></h3>
-                                                <p><?php echo htmlspecialchars(substr(strip_tags($latestActu['contenu']), 0, 400)) . '...'; ?></p>
-                                                <div class="actu-footer">
-                                                    <a href="index.php?page=actus&action=show&id=<?php echo $latestActu['id']; ?>" class="btn btn-primary">Lire la suite</a>
-                                                    <div class="actu-meta">
-                                                        <span class="actu-date"><?php echo date('d/m/Y', strtotime($latestActu['date_publication'])); ?></span>
-                                                        <span class="actu-author">Par <?php echo htmlspecialchars($latestActu['auteur_prenom'] . ' ' . $latestActu['auteur_nom']); ?></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </article>
-                                        <!-- Autres actualités -->
-                                        <div class="actu-list">
-                                            <?php foreach ($actus as $actu): ?>
-                                                <article class="actu-card">
-                                                    <h3><?php echo htmlspecialchars($actu['titre']); ?></h3>
-                                                    <p><?php echo htmlspecialchars(substr(strip_tags($actu['contenu']), 0, 200)) . '...'; ?></p>
-                                                    <div class="actu-footer">
-                                                        <a href="index.php?page=actus&action=show&id=<?php echo $actu['id']; ?>" class="btn btn-primary">Lire la suite</a>
-                                                        <div class="actu-meta">
-                                                            <span class="actu-date"><?php echo date('d/m/Y', strtotime($actu['date_publication'])); ?></span>
-                                                            <span class="actu-author">Par <?php echo htmlspecialchars($actu['auteur_prenom'] . ' ' . $actu['auteur_nom']); ?></span>
-                                                        </div>
-                                                    </div>
-                                                </article>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    <?php endif; ?>
+        <!-- Onglet "Actualités" : affichage des articles publiés -->
+        <div id="tab-public" class="tab-content">
+            <section class="actu-section">
+                <h2>Actualités du cabinet</h2>
+                <div class="actu-container">
+                    <?php if (empty($actus)): ?>
+                        <p class="no-actus">Aucune actualité n'est disponible pour le moment.</p>
+                    <?php else: ?>
+                        <?php $latestActu = array_shift($actus); ?>
+                        <!-- Dernière actualité mise en avant -->
+                        <article class="actu-featured">
+                            <div class="actu-featured-content">
+                                <?php if (!empty($latestActu['image'])): ?>
+                                    <div class="actu-featured-image">
+                                        <img src="/cabinetdupont/public/uploads/<?php echo htmlspecialchars($latestActu['image']); ?>" alt="Image de l'actualité">
+                                    </div>
+                                <?php endif; ?>
+                                <h3><?php echo htmlspecialchars($latestActu['titre']); ?></h3>
+                                <p><?php echo htmlspecialchars(substr(strip_tags($latestActu['contenu']), 0, 400)) . '...'; ?></p>
+                                <div class="actu-footer">
+                                    <a href="index.php?page=actus&action=show&id=<?php echo $latestActu['id']; ?>" class="btn btn-primary">Lire la suite</a>
+                                    <div class="actu-meta">
+                                        <span class="actu-date"><?php echo date('d/m/Y', strtotime($latestActu['date_publication'])); ?></span>
+                                        <span class="actu-author">Par <?php echo htmlspecialchars($latestActu['auteur_prenom'] . ' ' . $latestActu['auteur_nom']); ?></span>
+                                    </div>
                                 </div>
-                        </section>
+                            </div>
+                        </article>
+                        <!-- Autres actualités -->
+                        <div class="actu-list">
+                            <?php foreach ($actus as $actu): ?>
+                                <article class="actu-card">
+                                    <h3><?php echo htmlspecialchars($actu['titre']); ?></h3>
+                                    <p><?php echo htmlspecialchars(substr(strip_tags($actu['contenu']), 0, 200)) . '...'; ?></p>
+                                    <div class="actu-footer">
+                                        <a href="index.php?page=actus&action=show&id=<?php echo $actu['id']; ?>" class="btn btn-primary">Lire la suite</a>
+                                        <div class="actu-meta">
+                                            <span class="actu-date"><?php echo date('d/m/Y', strtotime($actu['date_publication'])); ?></span>
+                                            <span class="actu-author">Par <?php echo htmlspecialchars($actu['auteur_prenom'] . ' ' . $actu['auteur_nom']); ?></span>
+                                        </div>
+                                    </div>
+                                </article>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
+            </section>
+        </div>
 
-        <!-- Contenu de l'onglet "Gestion des actualités" -->
+        <!-- Onglet "Gestion des actualités" : interface d'administration -->
         <div id="tab-admin" class="tab-content">
             <div class="admin-toolbar">
                 <div class="admin-filter">
+                    <!-- Champ de filtre pour rechercher une actu par titre ou date -->
                     <input type="text" id="filter-input" placeholder="Filtrer par titre ou date..." />
                 </div>
                 <div class="admin-actions">
+                    <!-- Bouton pour ajouter une nouvelle actualité -->
                     <a href="index.php?page=actus&action=create" class="btn-admin add">+ Ajouter un article</a>
                 </div>
             </div>
@@ -93,7 +95,9 @@ include __DIR__ . '/templates/flash-messages.php';
                                 <td><?php echo date('d/m/Y', strtotime($actu['date_publication'])); ?></td>
                                 <td><?php echo htmlspecialchars($actu['statut']); ?></td>
                                 <td>
+                                    <!-- Bouton pour modifier l'actu -->
                                     <a href="index.php?page=actus&action=edit&id=<?php echo $actu['id']; ?>" class="btn-admin edit">Modifier</a>
+                                    <!-- Bouton pour supprimer l'actu avec confirmation -->
                                     <a href="index.php?page=actus&action=delete&id=<?php echo $actu['id']; ?>" 
                                        class="btn-admin delete" 
                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?');">
@@ -109,6 +113,7 @@ include __DIR__ . '/templates/flash-messages.php';
     </div>
 </main>
 
+<!-- Scripts pour la gestion des onglets et du tri/filtre des actualités -->
 <script src="<?php echo BASE_URL; ?>/js/tabs.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/actu-posts.js"></script>
 

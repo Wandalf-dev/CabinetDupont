@@ -1,4 +1,5 @@
-<?php 
+<?php
+// Inclusion du header et des messages flash (succès/erreur)
 include __DIR__ . '/templates/header.php';
 include __DIR__ . '/templates/flash-messages.php';
 ?>
@@ -7,11 +8,13 @@ include __DIR__ . '/templates/flash-messages.php';
   <section class="actu-section">
     <div class="actu-detail-container">
       <?php if (empty($actu)): ?>
+        <!-- Message si aucune actualité n'est disponible -->
         <p class="no-actus">Aucune actualité n'est disponible pour le moment.</p>
       <?php else: ?>
         <article class="actu-detail">
           <div class="actu-detail-flex<?php echo empty($actu['image']) ? ' no-image' : ''; ?>">
             <?php if (!empty($actu['image'])): ?>
+              <!-- Affiche l'image de l'actualité si elle existe -->
               <div class="actu-detail-image">
                 <img src="/cabinetdupont/public/uploads/<?php echo htmlspecialchars($actu['image']); ?>" alt="Image de l'actualité">
               </div>
@@ -19,6 +22,7 @@ include __DIR__ . '/templates/flash-messages.php';
             <div class="actu-detail-content-block">
               <h3><?php echo htmlspecialchars($actu['titre']); ?></h3>
               <div class="actu-detail-content">
+                <!-- Affiche le contenu de l'actualité avec retour à la ligne -->
                 <p><?php echo nl2br(htmlspecialchars($actu['contenu'])); ?></p>
               </div>
               <div class="actu-detail-meta">

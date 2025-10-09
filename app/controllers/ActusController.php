@@ -4,13 +4,16 @@ namespace App\Controllers;
 
 use App\Models\ActuModel;
 
+// Contrôleur pour la gestion des actualités du cabinet
 class ActusController {
     private $actuModel;
 
+    // Constructeur : instancie le modèle des actualités
     public function __construct() {
         $this->actuModel = new ActuModel();
     }
 
+    // Vérifie si l'utilisateur a les droits d'accès admin (médecin ou secrétaire)
     private function checkAdminAccess() {
         if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) || 
             ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')) {
@@ -20,14 +23,14 @@ class ActusController {
         }
     }
 
+    // Affiche la liste des actualités (vue publique)
     public function index() {
-        // Toujours charger la vue publique, même pour l'admin
         $actus = $this->actuModel->getAllActus();
         require_once 'app/views/actu.php';
     }
 
+    // Affiche le détail d'une actualité spécifique
     public function show($id) {
-        // Afficher une actualité spécifique
         $actu = $this->actuModel->getActuById($id);
         if (!$actu) {
             $_SESSION['error'] = "Cette actualité n'existe pas";
@@ -37,25 +40,28 @@ class ActusController {
         require_once 'app/views/detail-actu.php';
     }
 
+    // Crée une nouvelle actualité (formulaire + traitement)
     public function create() {
-        // Vérifier les droits d'accès
+        // Vérifie les droits d'accès
         $this->checkAdminAccess();
 
+        // Si le formulaire est soumis
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Vérification CSRF
             $csrf_token = $_POST['csrf_token'] ?? '';
             if (!\App\Core\Csrf::checkToken($csrf_token)) {
                 $_SESSION['error'] = "Session expirée ou tentative frauduleuse.";
                 header('Location: index.php?page=actus&action=create');
                 exit();
             }
-            // Récupérer et valider les données
+            // Récupère et valide les données du formulaire
             $data = [
                 'titre' => trim($_POST['titre']),
                 'contenu' => trim($_POST['contenu']),
                 'auteur_id' => $_SESSION['user_id']
             ];
 
-            // Vérifier que tous les champs sont remplis
+            // Vérifie que le titre et le contenu sont remplis
             if (!$data['titre'] || !$data['contenu']) {
                 $_SESSION['error'] = "Le titre et le contenu sont obligatoires";
                 $_SESSION['form_data'] = $data;
@@ -64,31 +70,19 @@ class ActusController {
             }
 
             // Gestion de l'upload d'image
-            error_log("Début du processus d'upload d'image");
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                error_log("Image reçue : " . print_r($_FILES['image'], true));
                 $uploadDir = 'C:/xampp/htdocs/CabinetDupont/public/uploads/';
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
                 }
-                error_log("Dossier d'upload : " . $uploadDir);
-                if (!is_dir($uploadDir)) {
-                    error_log("Création du dossier d'upload");
-                    mkdir($uploadDir, 0755, true);
-                }
                 $fileName = uniqid() . '_' . basename($_FILES['image']['name']);
                 $uploadFile = $uploadDir . $fileName;
-                error_log("Chemin complet du fichier : " . $uploadFile);
                 $fileType = mime_content_type($_FILES['image']['tmp_name']);
-                error_log("Type MIME détecté : " . $fileType);
                 $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
                 if (in_array($fileType, $allowedTypes)) {
-                    error_log("Type de fichier autorisé");
                     if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
-                        error_log("Fichier déplacé avec succès");
-                        $data['image'] = $fileName; // À stocker dans la BDD
+                        $data['image'] = $fileName; // Nom du fichier à stocker en BDD
                     } else {
-                        error_log("Erreur lors du déplacement du fichier : " . error_get_last()['message']);
                         $_SESSION['error'] = "Erreur lors de l'upload de l'image.";
                         $_SESSION['form_data'] = $data;
                         header('Location: index.php?page=actus&action=create');
@@ -104,10 +98,7 @@ class ActusController {
                 $data['image'] = null;
             }
 
-            // Debug des données avant création
-            error_log("Données avant création : " . print_r($data, true));
-            
-            // Créer l'actualité
+            // Création de l'actualité en base de données
             if ($this->actuModel->createActu($data)) {
                 $_SESSION['success'] = "L'actualité a été créée avec succès";
                 header('Location: index.php?page=actus');
@@ -120,14 +111,15 @@ class ActusController {
             }
         }
 
-        // Afficher le formulaire de création avec les données précédentes en cas d'erreur
+        // Affiche le formulaire de création (avec les données précédentes en cas d'erreur)
         $formData = $_SESSION['form_data'] ?? [];
         unset($_SESSION['form_data']);
         require_once 'app/views/actu-create.php';
     }
 
+    // Recherche d'actualités par mot-clé
     public function search() {
-        // Vérifier si l'utilisateur est autorisé à accéder à la gestion
+        // Vérifie les droits d'accès
         if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) || 
             ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')) {
             $_SESSION['error'] = "Accès non autorisé";
@@ -135,6 +127,7 @@ class ActusController {
             exit();
         }
 
+        // Récupère le mot-clé et effectue la recherche
         $keyword = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_STRING);
         if ($keyword) {
             $actus = $this->actuModel->searchActus($keyword);
@@ -145,17 +138,18 @@ class ActusController {
         require_once 'app/views/actu-posts.php';
     }
 
+    // Affiche les actualités mises en avant
     public function featured() {
-        // Page d'accueil ou section mise en avant
         $featuredActus = $this->actuModel->getFeaturedActus();
         require_once 'app/views/actu.php';
     }
 
+    // Modifie une actualité existante
     public function edit($id) {
-        // Vérifier les droits d'accès admin
+        // Vérifie les droits d'accès admin
         $this->checkAdminAccess();
 
-        // Utiliser getActuByIdAdmin pour récupérer l'actualité quel que soit son statut
+        // Récupère l'actualité à modifier
         $actu = $this->actuModel->getActuByIdAdmin($id);
         if (!$actu) {
             $_SESSION['error'] = "Cette actualité n'existe pas";
@@ -163,7 +157,9 @@ class ActusController {
             exit();
         }
 
+        // Si le formulaire est soumis
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Vérification CSRF
             $csrf_token = $_POST['csrf_token'] ?? '';
             if (!\App\Core\Csrf::checkToken($csrf_token)) {
                 $_SESSION['error'] = "Session expirée ou tentative frauduleuse.";
@@ -171,6 +167,7 @@ class ActusController {
                 exit();
             }
 
+            // Récupère et valide les données du formulaire
             $data = [
                 'titre' => trim($_POST['titre']),
                 'contenu' => trim($_POST['contenu']),
@@ -184,7 +181,7 @@ class ActusController {
                 exit();
             }
 
-            // Gestion de l'upload d'image
+            // Gestion de l'upload d'image (optionnel)
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 $maxSize = 5 * 1024 * 1024; // 5 Mo
                 if ($_FILES['image']['size'] > $maxSize) {
@@ -218,6 +215,7 @@ class ActusController {
                 }
             }
 
+            // Mise à jour de l'actualité en base de données
             if ($this->actuModel->updateActu($id, $data)) {
                 $_SESSION['success'] = "L'actualité a été modifiée avec succès";
                 header('Location: index.php?page=actus');
@@ -230,13 +228,15 @@ class ActusController {
             }
         }
 
-        // Afficher le formulaire d'édition
+        // Affiche le formulaire d'édition (avec les données précédentes en cas d'erreur)
         $formData = $_SESSION['form_data'] ?? $actu;
         unset($_SESSION['form_data']);
         require_once 'app/views/actu-update.php';
     }
 
+    // Supprime une actualité
     public function delete($id) {
+        // Vérifie que l'utilisateur est connecté
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['error'] = "Vous devez être connecté pour supprimer une actualité";
             header('Location: index.php?page=login');
@@ -251,6 +251,7 @@ class ActusController {
             exit();
         }
 
+        // Suppression en base de données
         if ($this->actuModel->deleteActu($id)) {
             $_SESSION['success'] = "L'actualité a été supprimée avec succès";
         } else {

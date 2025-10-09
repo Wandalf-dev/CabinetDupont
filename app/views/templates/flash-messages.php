@@ -1,19 +1,21 @@
 <?php
+// Affiche les messages flash de succès ou d'erreur stockés en session
 if (isset($_SESSION['success']) || isset($_SESSION['error'])) {
     echo '<div id="flash-messages" class="flash-message">';
     if (isset($_SESSION['success'])) {
         echo '<div class="alert alert-success">' . $_SESSION['success'] . '</div>';
-        unset($_SESSION['success']);
+        unset($_SESSION['success']); // Supprime le message après affichage
     }
     if (isset($_SESSION['error'])) {
         echo '<div class="alert alert-error">' . $_SESSION['error'] . '</div>';
-        unset($_SESSION['error']);
+        unset($_SESSION['error']); // Supprime le message après affichage
     }
     echo '</div>';
 }
 ?>
 
 <script>
+// Script pour faire disparaître automatiquement le message flash après 5 secondes
 document.addEventListener('DOMContentLoaded', function() {
     const flashMessages = document.getElementById('flash-messages');
     if (flashMessages) {
@@ -29,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
+/* Animation pour faire glisser le message vers la droite avant de le retirer */
 @keyframes slideOut {
     from {
         transform: translateX(0);

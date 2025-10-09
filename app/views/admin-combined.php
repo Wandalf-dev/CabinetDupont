@@ -1,25 +1,28 @@
-<?php 
+<?php
+// Inclusion du header et des messages flash (succès/erreur)
 include __DIR__ . '/templates/header.php';
 include __DIR__ . '/templates/flash-messages.php';
 ?>
 
 <main class="container">
     <div class="tabs-container">
-        <!-- Navigation des onglets -->
+        <!-- Navigation des onglets pour basculer entre les différentes gestions admin -->
         <div class="tabs-nav">
             <button class="tab-button" data-tab="tab-services">Gestion des services</button>
             <button class="tab-button" data-tab="tab-actus">Gestion des actualités</button>
             <button class="tab-button" data-tab="tab-horaires">Gestion des horaires</button>
         </div>
 
-        <!-- Contenu des onglets -->
+        <!-- Onglet "Services" : gestion des services du cabinet -->
         <div class="tab-content" id="tab-services">
             <div class="admin-section p-4">
                 <div class="admin-toolbar mb-4">
                     <div class="admin-filter">
+                        <!-- Champ de recherche pour filtrer les services -->
                         <input type="text" id="service-filter-input" placeholder="Rechercher un service..." class="service-search form-control">
                     </div>
                     <div class="admin-actions">
+                        <!-- Bouton pour ajouter un nouveau service -->
                         <a href="index.php?page=services&action=create" class="btn-admin add">
                             <i class="fas fa-plus"></i>&nbsp;Ajouter un service
                         </a>
@@ -44,9 +47,11 @@ include __DIR__ . '/templates/flash-messages.php';
                                 <td><?= htmlspecialchars(substr($service['description'], 0, 100)) ?>...</td>
                                 <td class="status-cell" data-status="<?= htmlspecialchars($service['statut']) ?>"><?= htmlspecialchars($service['statut']) ?></td>
                                 <td class="actions-cell">
+                                    <!-- Bouton pour modifier le service -->
                                     <a href="index.php?page=services&action=edit&id=<?= $service['id'] ?>" class="btn-admin edit">
                                         <i class="fas fa-edit"></i>&nbsp;Modifier
                                     </a>
+                                    <!-- Bouton pour supprimer le service -->
                                     <button onclick="deleteService(<?= $service['id'] ?>)" class="btn-admin delete">
                                         <i class="fas fa-trash"></i>&nbsp;Supprimer
                                     </button>
@@ -59,13 +64,16 @@ include __DIR__ . '/templates/flash-messages.php';
             </div>
         </div>
 
+        <!-- Onglet "Actualités" : gestion des actualités du cabinet -->
         <div class="tab-content" id="tab-actus">
             <div class="admin-section p-4">
                 <div class="admin-toolbar mb-4">
                     <div class="admin-filter">
+                        <!-- Champ de recherche pour filtrer les actualités -->
                         <input type="text" id="actus-filter-input" placeholder="Rechercher une actualité..." class="actu-search form-control">
                     </div>
                     <div class="admin-actions">
+                        <!-- Bouton pour ajouter une nouvelle actualité -->
                         <a href="index.php?page=actus&action=create" class="btn-admin add">
                             <i class="fas fa-plus"></i>&nbsp;Ajouter une actualité
                         </a>
@@ -88,9 +96,11 @@ include __DIR__ . '/templates/flash-messages.php';
                                 <td><?= htmlspecialchars(date('d/m/Y', strtotime($actu['date_publication']))) ?></td>
                                 <td class="status-cell" data-status="<?= htmlspecialchars($actu['statut']) ?>"><?= htmlspecialchars($actu['statut']) ?></td>
                                 <td class="actions-cell">
+                                    <!-- Bouton pour modifier l'actualité -->
                                     <a href="index.php?page=actus&action=edit&id=<?= $actu['id'] ?>" class="btn-admin edit">
                                         <i class="fas fa-edit"></i>&nbsp;Modifier
                                     </a>
+                                    <!-- Bouton pour supprimer l'actualité -->
                                     <button onclick="deleteActu(<?= $actu['id'] ?>)" class="btn-admin delete">
                                         <i class="fas fa-trash"></i>&nbsp;Supprimer
                                     </button>
@@ -101,17 +111,20 @@ include __DIR__ . '/templates/flash-messages.php';
                     </table>
                 </div>
             </div>
-            
         </div>
         
-            <div class="tab-content" id="tab-horaires">
-                <div class="admin-section">
-                    <div class="section-header">
-                        <h2>Horaires d'ouverture du cabinet</h2>
-                        <p class="text-muted">Définissez les horaires d'ouverture pour chaque jour de la semaine</p>
-                    </div>
-                    <form class="horaires-form" method="post" action="index.php?page=horaires&action=edit">
-                        <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">                    <?php 
+        <!-- Onglet "Horaires" : gestion des horaires d'ouverture du cabinet -->
+        <div class="tab-content" id="tab-horaires">
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2>Horaires d'ouverture du cabinet</h2>
+                    <p class="text-muted">Définissez les horaires d'ouverture pour chaque jour de la semaine</p>
+                </div>
+                <!-- Formulaire de modification des horaires -->
+                <form class="horaires-form" method="post" action="index.php?page=horaires&action=edit">
+                    <!-- Champ caché pour le token CSRF (sécurité) -->
+                    <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
+                    <?php 
                     $joursFr = [
                         'lundi' => 'Lundi',
                         'mardi' => 'Mardi',
@@ -122,6 +135,7 @@ include __DIR__ . '/templates/flash-messages.php';
                         'dimanche' => 'Dimanche'
                     ];
 
+                    // Boucle sur chaque jour pour afficher les champs horaires
                     foreach ($joursFr as $jourEn => $jourFr): ?>
                         <div class="horaire-edit-card">
                             <h3><?php echo htmlspecialchars($jourFr); ?></h3>
@@ -207,27 +221,29 @@ include __DIR__ . '/templates/flash-messages.php';
                             <i class="fas fa-save"></i>&nbsp;Enregistrer les modifications
                         </button>
                     </div>
-                    </form>
+                </form>
             </div>
         </div>
     </div>
 </main>
 
-<!-- Styles -->
+<!-- Styles pour l'interface admin -->
 <link rel="stylesheet" href="css/admin.css">
 <link rel="stylesheet" href="css/drag-drop.css">
 <link rel="stylesheet" href="css/tabs.css">
 
-<!-- Scripts -->
+<!-- Scripts pour la gestion des onglets, du drag & drop et des filtres -->
 <script src="js/tabs.js"></script>
 <script src="js/service-order.js"></script>
 <script>
 function deleteService(id) {
+    // Confirmation avant suppression d'un service
     if (confirm('Êtes-vous sûr de vouloir supprimer ce service ?')) {
         window.location.href = `index.php?page=services&action=delete&id=${id}`;
     }
 }
 function deleteActu(id) {
+    // Confirmation avant suppression d'une actualité
     if (confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?')) {
         window.location.href = `index.php?page=actus&action=delete&id=${id}`;
     }
@@ -311,5 +327,3 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
-

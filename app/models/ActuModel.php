@@ -2,59 +2,62 @@
 namespace App\Models;
 use App\Core\Model;
 
-
+// Modèle pour la gestion des actualités
 class ActuModel extends Model {
     public function __construct() {
         parent::__construct();
-    }        // Pour la gestion admin : toutes les actus, tous statuts
-        public function getAllActusAdmin($limit = null) {
-            $sql = "SELECT a.*, u.nom as auteur_nom, u.prenom as auteur_prenom 
-                    FROM actualite a
-                    JOIN utilisateur u ON a.auteur_id = u.id 
-                    ORDER BY a.date_publication DESC";
-            if ($limit) {
-                $sql .= " LIMIT ?";
-                $stmt = $this->db->prepare($sql);
-                $stmt->execute([$limit]);
-            } else {
-                $stmt = $this->db->prepare($sql);
-                $stmt->execute();
-            }
-            return $stmt->fetchAll();
-        }
+    }
 
-    public function getAllActus($limit = null) {
+    // Récupère toutes les actualités pour l'administration (tous statuts)
+    public function getAllActusAdmin($limit = null) {
         $sql = "SELECT a.*, u.nom as auteur_nom, u.prenom as auteur_prenom 
                 FROM actualite a
                 JOIN utilisateur u ON a.auteur_id = u.id 
-                WHERE a.statut = 'PUBLIE'
                 ORDER BY a.date_publication DESC";
-        
         if ($limit) {
-            $sql .= " LIMIT ?";
+            $sql .= " LIMIT ?"; // Ajoute la limite si précisée
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$limit]);
         } else {
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
         }
-        
         return $stmt->fetchAll();
     }
 
+    // Récupère toutes les actualités publiées (pour le public)
+    public function getAllActus($limit = null) {
+        $sql = "SELECT a.*, u.nom as auteur_nom, u.prenom as auteur_prenom 
+                FROM actualite a
+                JOIN utilisateur u ON a.auteur_id = u.id 
+                WHERE a.statut = 'PUBLIE'
+                ORDER BY a.date_publication DESC";
+        if ($limit) {
+            $sql .= " LIMIT ?"; // Ajoute la limite si précisée
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$limit]);
+        } else {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+        }
+        return $stmt->fetchAll();
+    }
+
+    // Récupère les actualités mises en avant (par défaut 3)
     public function getFeaturedActus($limit = 3) {
-        $limit = (int)$limit; // Conversion en entier pour sécurité
+        $limit = (int)$limit; // Sécurise la valeur pour éviter l'injection SQL
         $sql = "SELECT a.*, u.nom as auteur_nom, u.prenom as auteur_prenom 
                 FROM actualite a
                 JOIN utilisateur u ON a.auteur_id = u.id 
                 WHERE a.statut = 'PUBLIE'
                 ORDER BY a.date_publication DESC 
-                LIMIT $limit";
+                LIMIT $limit"; // Injection directe car $limit est casté en int
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
     }
 
+    // Récupère une actualité publiée par son id
     public function getActuById($id) {
         $sql = "SELECT a.*, u.nom as auteur_nom, u.prenom as auteur_prenom 
                 FROM actualite a
@@ -65,6 +68,7 @@ class ActuModel extends Model {
         return $stmt->fetch();
     }
 
+    // Récupère une actualité (tous statuts) par son id pour l'admin
     public function getActuByIdAdmin($id) {
         $sql = "SELECT a.*, u.nom as auteur_nom, u.prenom as auteur_prenom 
                 FROM actualite a
@@ -75,6 +79,7 @@ class ActuModel extends Model {
         return $stmt->fetch();
     }
 
+    // Recherche des actualités par mot-clé (titre ou contenu)
     public function searchActus($keyword) {
         $sql = "SELECT id, titre, contenu, date_publication, featured 
                 FROM actualite 
@@ -86,8 +91,9 @@ class ActuModel extends Model {
         return $stmt->fetchAll();
     }
 
+    // Crée une nouvelle actualité
     public function createActu($data) {
-        // Nettoyage des données avant insertion
+        // Nettoie le titre et le contenu avant insertion
         $titre = html_entity_decode(strip_tags($data['titre']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $contenu = html_entity_decode(strip_tags($data['contenu']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $image = isset($data['image']) ? $data['image'] : null;
@@ -99,15 +105,15 @@ class ActuModel extends Model {
             $titre,
             $contenu,
             $image,
-            date('Y-m-d H:i:s')
+            date('Y-m-d H:i:s') // Date de publication actuelle
         ]);
-
         if ($result) {
-            return $this->db->lastInsertId();
+            return $this->db->lastInsertId(); // Retourne l'id de la nouvelle actu
         }
         return false;
     }
 
+    // Met à jour une actualité existante
     public function updateActu($id, $data) {
         $params = [
             $data['titre'],
@@ -116,7 +122,7 @@ class ActuModel extends Model {
         ];
         $setImage = '';
         if (isset($data['image']) && $data['image']) {
-            $setImage = ', image = ?';
+            $setImage = ', image = ?'; // Ajoute l'image si elle existe
             $params[] = $data['image'];
         }
         $params[] = $id;
@@ -131,6 +137,7 @@ class ActuModel extends Model {
         return $stmt->execute($params);
     }
 
+    // Supprime une actualité par son id
     public function deleteActu($id) {
         $sql = "DELETE FROM actualite WHERE id = ?";
         $stmt = $this->db->prepare($sql);

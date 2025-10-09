@@ -6,6 +6,7 @@ use App\Core\Model;
 
 class AuthModel extends Model {
 
+    // Méthode pour connecter un utilisateur
     public function login($email, $password) {
         $sql = "SELECT id, nom, prenom, email, password_hash, avatar, date_inscription 
                 FROM utilisateur WHERE email = ?";
@@ -13,6 +14,7 @@ class AuthModel extends Model {
         $stmt->execute([$email]);
         $user = $stmt->fetch();
 
+        // Vérifie le mot de passe avec password_verify
         if ($user && password_verify($password, $user['password_hash'])) {
             return [
                 'success' => true,
@@ -25,13 +27,15 @@ class AuthModel extends Model {
         ];
     }
 
+    // Récupère un utilisateur par son id
     public function getUserById($id) {
-        $sql = "SELECT * FROM users WHERE id = ?";
+        $sql = "SELECT * FROM users WHERE id = ?"; // Attention : la table devrait être 'utilisateur' pour la cohérence
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
 
+    // Méthode pour inscrire un nouvel utilisateur
     public function register($data) {
         // Vérifier si l'email existe déjà
         $sql = "SELECT id FROM utilisateur WHERE email = ?";
@@ -50,7 +54,7 @@ class AuthModel extends Model {
             $data['nom'],
             $data['prenom'],
             $data['email'],
-            password_hash($data['password'], PASSWORD_DEFAULT),
+            password_hash($data['password'], PASSWORD_DEFAULT), // Hash sécurisé du mot de passe
             $data['telephone'],
             $data['adresse']
         ]);

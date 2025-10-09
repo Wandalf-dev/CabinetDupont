@@ -12,28 +12,28 @@ class ServiceModel extends Model {
         $sql = "SELECT * FROM service ORDER BY ordre ASC, titre ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(); // Retourne tous les services pour l'admin
     }
 
     public function getAllServices() {
         $sql = "SELECT * FROM service WHERE statut = 'PUBLIE' ORDER BY ordre ASC, titre ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(); // Retourne uniquement les services publiés
     }
 
     public function getServiceById($id) {
         $sql = "SELECT * FROM service WHERE id = ? AND statut = 'PUBLIE'";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
-        return $stmt->fetch();
+        return $stmt->fetch(); // Retourne un service publié par son id
     }
 
     public function getServiceByIdAdmin($id) {
         $sql = "SELECT * FROM service WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
-        return $stmt->fetch();
+        return $stmt->fetch(); // Retourne un service (tous statuts) par son id
     }
 
     public function createService($data) {
@@ -52,7 +52,7 @@ class ServiceModel extends Model {
         ]);
 
         if ($result) {
-            return $this->db->lastInsertId();
+            return $this->db->lastInsertId(); // Retourne l'id du nouveau service
         }
         return false;
     }
@@ -66,7 +66,7 @@ class ServiceModel extends Model {
 
         $setImage = '';
         if (isset($data['image']) && $data['image']) {
-            $setImage = ', image = ?';
+            $setImage = ', image = ?'; // Ajoute l'image si elle existe
             $params[] = $data['image'];
         }
         
@@ -80,18 +80,18 @@ class ServiceModel extends Model {
                 WHERE id = ?";
         
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute($params);
+        return $stmt->execute($params); // Met à jour le service
     }
 
     public function deleteService($id) {
         $sql = "DELETE FROM service WHERE id = ?";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([$id]);
+        return $stmt->execute([$id]); // Supprime le service par son id
     }
 
     public function updateOrdre($id, $ordre) {
         $sql = "UPDATE service SET ordre = ? WHERE id = ?";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([$ordre, $id]);
+        return $stmt->execute([$ordre, $id]); // Met à jour l'ordre d'affichage du service
     }
 }
