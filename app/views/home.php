@@ -86,40 +86,31 @@
 
           <table class="hours-table" aria-describedby="hours-note">
             <tbody>
-              <tr data-day="1">
-                <th>Lundi</th>
-                <td>08:30 – 12:30</td>
-                <td>14:00 – 18:30</td>
-              </tr>
-              <tr data-day="2">
-                <th>Mardi</th>
-                <td>08:30 – 12:30</td>
-                <td>14:00 – 18:30</td>
-              </tr>
-              <tr data-day="3">
-                <th>Mercredi</th>
-                <td>08:30 – 12:30</td>
-                <td>14:00 – 18:30</td>
-              </tr>
-              <tr data-day="4">
-                <th>Jeudi</th>
-                <td>08:30 – 12:30</td>
-                <td>14:00 – 18:30</td>
-              </tr>
-              <tr data-day="5">
-                <th>Vendredi</th>
-                <td>08:30 – 12:30</td>
-                <td>14:00 – 17:00</td>
-              </tr>
-              <tr data-day="6">
-                <th>Samedi</th>
-                <td>09:00 – 12:00</td>
-                <td>Fermé</td>
-              </tr>
-              <tr data-day="0">
-                <th>Dimanche</th>
-                <td colspan="2">Fermé</td>
-              </tr>
+              <?php
+              $joursFr = [
+                'lundi' => ['label' => 'Lundi', 'data-day' => '1'],
+                'mardi' => ['label' => 'Mardi', 'data-day' => '2'],
+                'mercredi' => ['label' => 'Mercredi', 'data-day' => '3'],
+                'jeudi' => ['label' => 'Jeudi', 'data-day' => '4'],
+                'vendredi' => ['label' => 'Vendredi', 'data-day' => '5'],
+                'samedi' => ['label' => 'Samedi', 'data-day' => '6'],
+                'dimanche' => ['label' => 'Dimanche', 'data-day' => '0']
+              ];
+
+              foreach ($horaires as $horaire):
+                $jourInfo = $joursFr[$horaire['jour']];
+              ?>
+                <tr data-day="<?php echo $jourInfo['data-day']; ?>">
+                  <th><?php echo $jourInfo['label']; ?></th>
+                  <?php if ($horaire['ouverture_matin'] === '00:00:00' && $horaire['fermeture_matin'] === '00:00:00' &&
+                           $horaire['ouverture_apresmidi'] === '00:00:00' && $horaire['fermeture_apresmidi'] === '00:00:00'): ?>
+                    <td colspan="2">Fermé</td>
+                  <?php else: ?>
+                    <td><?php echo ($horaire['ouverture_matin'] === '00:00:00' ? 'Fermé' : substr($horaire['ouverture_matin'], 0, 5) . ' – ' . substr($horaire['fermeture_matin'], 0, 5)); ?></td>
+                    <td><?php echo ($horaire['ouverture_apresmidi'] === '00:00:00' ? 'Fermé' : substr($horaire['ouverture_apresmidi'], 0, 5) . ' – ' . substr($horaire['fermeture_apresmidi'], 0, 5)); ?></td>
+                  <?php endif; ?>
+                </tr>
+              <?php endforeach; ?>
             </tbody>
           </table>
 

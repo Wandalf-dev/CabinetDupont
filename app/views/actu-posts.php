@@ -35,7 +35,10 @@ include __DIR__ . '/templates/flash-messages.php';
               <td><?php echo htmlspecialchars($actu['statut']); ?></td>
               <td>
                 <a href="index.php?page=actus&action=edit&id=<?php echo $actu['id']; ?>" class="btn-admin edit">Modifier</a>
-                <a href="index.php?page=actus&action=delete&id=<?php echo $actu['id']; ?>" class="btn-admin delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?');">Supprimer</a>
+                <form method="post" action="index.php?page=actus&action=delete&id=<?php echo $actu['id']; ?>" style="display: inline;">
+                  <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
+                  <button type="submit" class="btn-admin delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?');">Supprimer</button>
+                </form>
               </td>
             </tr>
           <?php endforeach; ?>

@@ -164,6 +164,13 @@ class ActusController {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $csrf_token = $_POST['csrf_token'] ?? '';
+            if (!\App\Core\Csrf::checkToken($csrf_token)) {
+                $_SESSION['error'] = "Session expirée ou tentative frauduleuse.";
+                header('Location: index.php?page=actus&action=edit&id=' . $id);
+                exit();
+            }
+
             $data = [
                 'titre' => trim($_POST['titre']),
                 'contenu' => trim($_POST['contenu']),
@@ -233,6 +240,14 @@ class ActusController {
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['error'] = "Vous devez être connecté pour supprimer une actualité";
             header('Location: index.php?page=login');
+            exit();
+        }
+
+        // Vérification CSRF
+        $csrf_token = $_POST['csrf_token'] ?? '';
+        if (!\App\Core\Csrf::checkToken($csrf_token)) {
+            $_SESSION['error'] = "Session expirée ou tentative frauduleuse.";
+            header('Location: index.php?page=actus');
             exit();
         }
 

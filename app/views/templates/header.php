@@ -18,6 +18,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/style.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/header.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/footer.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/horaires.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/login.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/register.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/actu.css" />
@@ -28,6 +29,8 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/tabs.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/profil.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/alerts.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/horaires.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/horaires-admin.css" />
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
 </head>
 <body>
@@ -40,9 +43,6 @@ if (session_status() === PHP_SESSION_NONE) {
             <nav>
                 <ul>
                     <li><a href="index.php?page=home">Accueil</a></li>
-                    <?php if (!isset($_SESSION['user_role']) || ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')): ?>
-                        <li><a href="index.php?page=actus">Actualités</a></li>
-                    <?php endif; ?>
                     <li><a href="index.php?page=actus">Actualités</a></li>
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <?php if (isset($_SESSION['user_role']) && ($_SESSION['user_role'] === 'MEDECIN' || $_SESSION['user_role'] === 'SECRETAIRE')): ?>

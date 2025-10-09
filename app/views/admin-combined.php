@@ -9,6 +9,7 @@ include __DIR__ . '/templates/flash-messages.php';
         <div class="tabs-nav">
             <button class="tab-button" data-tab="tab-services">Gestion des services</button>
             <button class="tab-button" data-tab="tab-actus">Gestion des actualités</button>
+            <button class="tab-button" data-tab="tab-horaires">Gestion des horaires</button>
         </div>
 
         <!-- Contenu des onglets -->
@@ -99,6 +100,114 @@ include __DIR__ . '/templates/flash-messages.php';
                         </tbody>
                     </table>
                 </div>
+            </div>
+            
+        </div>
+        
+            <div class="tab-content" id="tab-horaires">
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2>Horaires d'ouverture du cabinet</h2>
+                        <p class="text-muted">Définissez les horaires d'ouverture pour chaque jour de la semaine</p>
+                    </div>
+                    <form class="horaires-form" method="post" action="index.php?page=horaires&action=edit">
+                        <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">                    <?php 
+                    $joursFr = [
+                        'lundi' => 'Lundi',
+                        'mardi' => 'Mardi',
+                        'mercredi' => 'Mercredi',
+                        'jeudi' => 'Jeudi',
+                        'vendredi' => 'Vendredi',
+                        'samedi' => 'Samedi',
+                        'dimanche' => 'Dimanche'
+                    ];
+
+                    foreach ($joursFr as $jourEn => $jourFr): ?>
+                        <div class="horaire-edit-card">
+                            <h3><?php echo htmlspecialchars($jourFr); ?></h3>
+                            <div class="horaire-section">
+                                <h4>Matin</h4>
+                                <div class="horaire-inputs">
+                                    <div class="time-input">
+                                        <label for="ouverture_matin_<?php echo htmlspecialchars($jourEn); ?>">Ouverture</label>
+                                        <input type="time" 
+                                               id="ouverture_matin_<?php echo htmlspecialchars($jourEn); ?>" 
+                                               name="horaires[<?php echo htmlspecialchars($jourEn); ?>][matin][ouverture]" 
+                                               value="<?php 
+                                                    if (isset($horaires)) {
+                                                        foreach ($horaires as $horaire) {
+                                                            if ($horaire['jour'] === $jourEn) {
+                                                                echo htmlspecialchars($horaire['ouverture_matin'] ?? '');
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                               ?>">
+                                    </div>
+                                    <div class="time-input">
+                                        <label for="fermeture_matin_<?php echo htmlspecialchars($jourEn); ?>">Fermeture</label>
+                                        <input type="time" 
+                                               id="fermeture_matin_<?php echo htmlspecialchars($jourEn); ?>" 
+                                               name="horaires[<?php echo htmlspecialchars($jourEn); ?>][matin][fermeture]" 
+                                               value="<?php 
+                                                    if (isset($horaires)) {
+                                                        foreach ($horaires as $horaire) {
+                                                            if ($horaire['jour'] === $jourEn) {
+                                                                echo htmlspecialchars($horaire['fermeture_matin'] ?? '');
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                               ?>">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horaire-section">
+                                <h4>Après-midi</h4>
+                                <div class="horaire-inputs">
+                                    <div class="time-input">
+                                        <label for="ouverture_apresmidi_<?php echo htmlspecialchars($jourEn); ?>">Ouverture</label>
+                                        <input type="time" 
+                                               id="ouverture_apresmidi_<?php echo htmlspecialchars($jourEn); ?>" 
+                                               name="horaires[<?php echo htmlspecialchars($jourEn); ?>][apresmidi][ouverture]" 
+                                               value="<?php 
+                                                    if (isset($horaires)) {
+                                                        foreach ($horaires as $horaire) {
+                                                            if ($horaire['jour'] === $jourEn) {
+                                                                echo htmlspecialchars($horaire['ouverture_apresmidi'] ?? '');
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                               ?>">
+                                    </div>
+                                    <div class="time-input">
+                                        <label for="fermeture_apresmidi_<?php echo htmlspecialchars($jourEn); ?>">Fermeture</label>
+                                        <input type="time" 
+                                               id="fermeture_apresmidi_<?php echo htmlspecialchars($jourEn); ?>" 
+                                               name="horaires[<?php echo htmlspecialchars($jourEn); ?>][apresmidi][fermeture]" 
+                                               value="<?php 
+                                                    if (isset($horaires)) {
+                                                        foreach ($horaires as $horaire) {
+                                                            if ($horaire['jour'] === $jourEn) {
+                                                                echo htmlspecialchars($horaire['fermeture_apresmidi'] ?? '');
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                               ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+
+                    <div class="form-actions mt-4">
+                        <button type="submit" class="btn-admin save">
+                            <i class="fas fa-save"></i>&nbsp;Enregistrer les modifications
+                        </button>
+                    </div>
+                    </form>
             </div>
         </div>
     </div>

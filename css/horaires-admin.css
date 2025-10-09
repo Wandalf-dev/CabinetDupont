@@ -1,0 +1,106 @@
+.admin-section .section-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 20px;
+}
+
+.admin-section .section-header h2 {
+    color: #3a6ea5;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.admin-section .section-header .text-muted {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.admin-section .horaires-form {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.admin-section .horaire-edit-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.admin-section .horaire-edit-card h3 {
+    color: #3a6ea5;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.admin-section .horaire-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+}
+
+.admin-section .time-input {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-section .time-input label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.admin-section .time-input input[type="time"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.admin-section .time-input input[type="time"]:focus {
+    border-color: #3a6ea5;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(58,110,165,0.1);
+}
+
+.admin-section .form-actions {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.admin-section .btn-admin.save {
+    background: #3a6ea5;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.admin-section .btn-admin.save:hover {
+    background: #2c5682;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-section .horaire-inputs {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .admin-section .horaire-edit-card {
+        padding: 15px;
+    }
+}
