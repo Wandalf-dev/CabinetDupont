@@ -19,9 +19,9 @@
 }
 
 .admin-section {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 24px 16px 64px 16px;
+  padding: 24px 24px 64px 24px;
 }
 
 .section-title {
@@ -116,7 +116,7 @@
 
 .admin-table th,
 .admin-table td {
-  padding: 16px 12px;
+  padding: 16px 20px;
   text-align: left;
   font-size: 1.05rem;
 }

@@ -46,12 +46,8 @@ if (session_status() === PHP_SESSION_NONE) {
                     <li><a href="#services" class="smooth-scroll">Services</a></li>
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <?php if (isset($_SESSION['user_role']) && ($_SESSION['user_role'] === 'MEDECIN' || $_SESSION['user_role'] === 'SECRETAIRE')): ?>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle">Administration</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="index.php?page=actus">Gestion des actualités</a></li>
-                                    <li><a href="index.php?page=services">Gestion des services</a></li>
-                                </ul>
+                            <li>
+                                <a href="index.php?page=admin">Administration</a>
                             </li>
                         <?php endif; ?>
                         <li><a href="index.php?page=user&action=profile">Mon profil</a></li>
