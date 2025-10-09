@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 09 oct. 2025 à 17:33
+-- Généré le : jeu. 09 oct. 2025 à 00:23
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -153,11 +153,11 @@ CREATE TABLE `service` (
 --
 
 INSERT INTO `service` (`id`, `titre`, `description`, `statut`, `image`, `ordre`) VALUES
-(1, 'Consultation générale', 'Examen complet de la santé bucco-dentaire, diagnostic et plan de traitement personnalisé.', 'PUBLIE', '68e6b348707a8_femme-patiente-chez-dentiste.jpg', 2),
-(2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', '68e7d49939d82_19475 (1).jpg', 3),
-(3, 'Implantologie', 'Remplacement des dents manquantes par des implants dentaires.', 'PUBLIE', '68e7d3d2412bf_5510224.jpg', 5),
-(4, 'Orthodontie', 'Correction de l\'alignement des dents et des problèmes d\'occlusion.', 'PUBLIE', '68e7d541958fd_17722.jpg', 1),
-(5, 'Blanchiment dentaire', 'Procédure esthétique pour éclaircir la couleur des dents.', 'PUBLIE', '68e7d4c8844fc_2598.jpg', 4);
+(1, 'Consultation générale', 'Examen complet de la santé bucco-dentaire, diagnostic et plan de traitement personnalisé.', 'PUBLIE', '68e6b348707a8_femme-patiente-chez-dentiste.jpg', 4),
+(2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', NULL, 3),
+(3, 'Implantologie', 'Remplacement des dents manquantes par des implants dentaires.', 'PUBLIE', NULL, 2),
+(4, 'Orthodontie', 'Correction de l\'alignement des dents et des problèmes d\'occlusion.', 'PUBLIE', NULL, 1),
+(5, 'Blanchiment dentaire', 'Procédure esthétique pour éclaircir la couleur des dents.', 'PUBLIE', NULL, 5);
 
 -- --------------------------------------------------------
 
