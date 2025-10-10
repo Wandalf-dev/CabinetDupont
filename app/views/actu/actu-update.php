@@ -1,6 +1,6 @@
 <?php
 // Inclusion du header du site
-include __DIR__ . '/templates/header.php'; 
+include __DIR__ . '/../templates/header.php'; 
 ?>
 <main>
   <section class="actu-create-section">
@@ -47,5 +47,5 @@ include __DIR__ . '/templates/header.php';
 </main>
 <?php 
 // Inclusion du footer du site
-include __DIR__ . '/templates/footer.php'; 
+include __DIR__ . '/../templates/footer.php'; 
 ?>

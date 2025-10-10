@@ -1,10 +1,14 @@
 <?php
 // Inclusion du header et des messages flash (succès/erreur)
-include __DIR__ . '/templates/header.php';
-include __DIR__ . '/templates/flash-messages.php';
+include __DIR__ . '/../templates/header.php';
+include __DIR__ . '/../templates/flash-messages.php';
 ?>
 
 <main class="container">
+    <!-- DEBUG : Token CSRF en session -->
+    <div style="background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 8px; margin-bottom: 16px; font-size: 14px;">
+        <strong>DEBUG CSRF :</strong> Token en session : <span style="font-family:monospace;"><?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : 'absent'; ?></span>
+    </div>
     <div class="tabs-container">
         <!-- Navigation des onglets pour basculer entre actualités publiques et gestion admin -->
         <div class="tabs-nav">
@@ -84,6 +88,8 @@ include __DIR__ . '/templates/flash-messages.php';
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- DEBUG : Affichage du token CSRF en session -->
+                    <tr><td colspan="4" style="color:red;font-size:small;">CSRF session : <?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : 'absent'; ?></td></tr>
                     <?php if (empty($actusAdmin)): ?>
                         <tr>
                             <td colspan="4">Aucune actualité n'est disponible</td>
@@ -97,12 +103,13 @@ include __DIR__ . '/templates/flash-messages.php';
                                 <td>
                                     <!-- Bouton pour modifier l'actu -->
                                     <a href="index.php?page=actus&action=edit&id=<?php echo $actu['id']; ?>" class="btn-admin edit">Modifier</a>
-                                    <!-- Bouton pour supprimer l'actu avec confirmation -->
-                                    <a href="index.php?page=actus&action=delete&id=<?php echo $actu['id']; ?>" 
-                                       class="btn-admin delete" 
-                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?');">
-                                        Supprimer
-                                    </a>
+                                    <!-- Formulaire pour supprimer l'actu avec confirmation et protection CSRF -->
+                                    <form method="post" action="index.php?page=actus&action=delete&id=<?php echo $actu['id']; ?>" style="display:inline;">
+                                        <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
+                                        <!-- DEBUG : Affichage du token CSRF transmis -->
+                                        <span style="color:orange;font-size:x-small;">CSRF form : <?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : 'absent'; ?></span>
+                                        <button type="submit" class="btn-admin delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?');">Supprimer</button>
+                                    </form>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -117,4 +124,4 @@ include __DIR__ . '/templates/flash-messages.php';
 <script src="<?php echo BASE_URL; ?>/js/tabs.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/actu-posts.js"></script>
 
-<?php include __DIR__ . '/templates/footer.php'; ?>
+<?php include __DIR__ . '/../templates/footer.php'; ?>

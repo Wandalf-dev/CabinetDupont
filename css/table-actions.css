@@ -1,0 +1,58 @@
+/* Styles pour l'alignement des colonnes d'actions */
+.actions-header {
+    text-align: left !important;
+    padding: 16px 24px !important;
+    min-width: 260px !important;
+}
+
+.actions-cell {
+    text-align: right !important;
+    padding: 16px 24px !important;
+    white-space: nowrap !important;
+    min-width: 260px !important;
+}
+
+/* Style spécifique pour les lignes des tableaux */
+#patients-table td,
+#actus-table td {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+    line-height: 1.5 !important;
+}
+
+#patients-table th,
+#actus-table th {
+    padding-top: 18px !important;
+    padding-bottom: 18px !important;
+}
+
+/* S'assurer que les boutons sont bien alignés */
+.actions-cell .btn-admin,
+.actions-cell button,
+.actions-cell form {
+    margin-left: 8px !important;
+}
+
+.actions-cell .btn-admin:first-child,
+.actions-cell button:first-child,
+.actions-cell form:first-child {
+    margin-left: 0 !important;
+}
+
+/* Forcer la même largeur pour toutes les colonnes d'actions */
+.admin-table th:last-child,
+.admin-table td:last-child {
+    width: 260px !important;
+}
+
+/* Assure que les boutons restent groupés à droite */
+.actions-cell .btn-admin,
+.actions-cell form {
+    margin-left: 8px !important;
+    margin-right: 0 !important;
+}
+
+.actions-cell .btn-admin:first-child,
+.actions-cell form:first-child {
+    margin-left: 0 !important;
+}

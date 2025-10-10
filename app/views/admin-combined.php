@@ -1,3 +1,61 @@
+<style>
+/* Tri visuel pour la table des patients */
+/* Tri visuel pour la table des patients */
+#patients-table th.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding: 12px 25px 12px 12px;
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease;
+}
+
+#patients-table th.sortable:hover {
+    background-color: #e9ecef;
+}
+
+#patients-table th .sort-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    line-height: 12px;
+    text-align: center;
+    font-size: 12px;
+    color: #6c757d;
+    transition: all 0.2s ease;
+    opacity: 0.5;
+}
+
+#patients-table th.sortable:hover .sort-icon {
+    opacity: 1;
+}
+
+#patients-table th.sorted-asc, #patients-table th.sorted-desc {
+    background-color: #e3f2fd;
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+#patients-table th.sorted-asc .sort-icon i::before {
+    content: "\f0de"; /* fa-sort-up */
+    color: #0d6efd;
+    opacity: 1;
+}
+
+#patients-table th.sorted-desc .sort-icon i::before {
+    content: "\f0dd"; /* fa-sort-down */
+    color: #0d6efd;
+    opacity: 1;
+}
+
+#patients-table th.sortable:not(.sorted-asc):not(.sorted-desc) .sort-icon i::before {
+    content: "\f0dc"; /* fa-sort */
+    opacity: 0.5;
+}
+</style>
 <?php
 // Inclusion du header et des messages flash (succès/erreur)
 include __DIR__ . '/templates/header.php';
@@ -5,6 +63,7 @@ include __DIR__ . '/templates/flash-messages.php';
 ?>
 
 <main class="container">
+
     <div class="tabs-container">
         <!-- Navigation des onglets pour basculer entre les différentes gestions admin -->
         <div class="tabs-nav">
@@ -37,7 +96,7 @@ include __DIR__ . '/templates/flash-messages.php';
                                 <th>Titre</th>
                                 <th>Description</th>
                                 <th>Statut</th>
-                                <th>Actions</th>
+                                <th class="actions-header">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -87,7 +146,7 @@ include __DIR__ . '/templates/flash-messages.php';
                                 <th>Titre</th>
                                 <th>Date</th>
                                 <th>Statut</th>
-                                <th>Actions</th>
+                                <th class="actions-header">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -101,10 +160,13 @@ include __DIR__ . '/templates/flash-messages.php';
                                     <a href="index.php?page=actus&action=edit&id=<?= $actu['id'] ?>" class="btn-admin edit">
                                         <i class="fas fa-edit"></i>&nbsp;Modifier
                                     </a>
-                                    <!-- Bouton pour supprimer l'actualité -->
-                                    <button onclick="deleteActu(<?= $actu['id'] ?>)" class="btn-admin delete">
-                                        <i class="fas fa-trash"></i>&nbsp;Supprimer
-                                    </button>
+                                    <!-- Formulaire pour supprimer l'actualité avec protection CSRF -->
+                                    <form method="post" action="index.php?page=actus&action=delete&id=<?= $actu['id'] ?>" style="display:inline;">
+                                        <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
+                                        <button type="submit" class="btn-admin delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?');">
+                                            <i class="fas fa-trash"></i>&nbsp;Supprimer
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -240,17 +302,17 @@ include __DIR__ . '/templates/flash-messages.php';
                     <table id="patients-table" class="admin-table table table-hover">
                         <thead>
                             <tr>
-                                <th>Nom</th>
-                                <th>Prénom</th>
-                                <th>Email</th>
-                                <th>Téléphone</th>
-                                <th>Date de naissance</th>
-                                <th>Actions</th>
+                                <th class="sortable" data-sort="nom"><span>Nom</span><i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-sort="prenom"><span>Prénom</span><i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-sort="email"><span>Email</span><i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-sort="telephone"><span>Téléphone</span><i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-sort="date_naissance"><span>Date de naissance</span><i class="fas fa-sort"></i></th>
+                                <th class="actions-header">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($patientsAdmin as $patient): ?>
-                            <tr data-id="<?= htmlspecialchars($patient['id']) ?>">
+                            <tr data-id="<?= htmlspecialchars($patient['id']) ?>" data-creation="<?= htmlspecialchars($patient['date_creation']) ?>">
                                 <td><?= htmlspecialchars($patient['nom']) ?></td>
                                 <td><?= htmlspecialchars($patient['prenom']) ?></td>
                                 <td><?= htmlspecialchars($patient['email']) ?></td>
@@ -304,11 +366,73 @@ include __DIR__ . '/templates/flash-messages.php';
 <link rel="stylesheet" href="css/admin.css">
 <link rel="stylesheet" href="css/drag-drop.css">
 <link rel="stylesheet" href="css/tabs.css">
+<link rel="stylesheet" href="css/table-actions.css">
 
 <!-- Scripts pour la gestion des onglets, du drag & drop et des filtres -->
 <script src="js/tabs.js"></script>
 <script src="js/service-order.js"></script>
 <script>
+// Tri des colonnes de la table patients
+document.addEventListener('DOMContentLoaded', function() {
+    const table = document.getElementById('patients-table');
+    if (!table) return;
+
+    function getCellValue(row, index) {
+        const cell = row.children[index];
+        return cell ? cell.textContent.trim() : '';
+    }
+
+    function compareCells(a, b, isDate) {
+        if (isDate) {
+            const [aDay, aMonth, aYear] = a.split('/').map(Number);
+            const [bDay, bMonth, bYear] = b.split('/').map(Number);
+            return new Date(aYear, aMonth - 1, aDay) - new Date(bYear, bMonth - 1, bDay);
+        }
+        return isNaN(a) || isNaN(b) ? 
+               a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}) : 
+               Number(a) - Number(b);
+    }
+
+    table.querySelectorAll('th.sortable').forEach((th, idx) => {
+        let firstClick = true;
+
+        th.addEventListener('click', () => {
+            const tbody = table.tBodies[0];
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const isDate = th.dataset.sort === 'date_naissance';
+
+            // Réinitialiser les autres en-têtes
+            table.querySelectorAll('th.sortable').forEach(header => {
+                if (header !== th) {
+                    header.classList.remove('sorted-asc', 'sorted-desc');
+                }
+            });
+
+            let isAsc;
+            if (firstClick) {
+                isAsc = true;
+                firstClick = false;
+            } else {
+                isAsc = !th.classList.contains('sorted-asc');
+            }
+
+            // Trier les lignes
+            rows.sort((a, b) => {
+                const aValue = getCellValue(a, idx);
+                const bValue = getCellValue(b, idx);
+                const comparison = compareCells(aValue, bValue, isDate);
+                return isAsc ? comparison : -comparison;
+            });
+
+            // Appliquer le tri
+            tbody.append(...rows);
+
+            // Mettre à jour l'état visuel
+            th.classList.remove('sorted-asc', 'sorted-desc');
+            th.classList.add(isAsc ? 'sorted-asc' : 'sorted-desc');
+        });
+    });
+});
 function deleteService(id) {
     // Confirmation avant suppression d'un service
     if (confirm('Êtes-vous sûr de vouloir supprimer ce service ?')) {

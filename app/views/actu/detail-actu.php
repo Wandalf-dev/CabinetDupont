@@ -1,7 +1,7 @@
 <?php
 // Inclusion du header et des messages flash (succès/erreur)
-include __DIR__ . '/templates/header.php';
-include __DIR__ . '/templates/flash-messages.php';
+include __DIR__ . '/../templates/header.php';
+include __DIR__ . '/../templates/flash-messages.php';
 ?>
 <link rel="stylesheet" href="css/detail-actu.css?v=<?php echo time(); ?>">
 <main>
@@ -36,4 +36,4 @@ include __DIR__ . '/templates/flash-messages.php';
     </div>
   </section>
 </main>
-<?php include __DIR__ . '/templates/footer.php'; ?>
+<?php include __DIR__ . '/../templates/footer.php'; ?>

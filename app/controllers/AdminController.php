@@ -43,6 +43,11 @@ class AdminController extends \App\Core\Controller {
         // Récupère tous les patients pour l'administration
         $patientsAdmin = $this->patientModel->getAllPatientsAdmin();
 
+        // Génère le token CSRF une seule fois par session
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = \App\Core\Csrf::generateToken();
+        }
+
         // Charge la vue combinée de l'administration (onglets actu, services, horaires)
         require_once 'app/views/admin-combined.php';
     }

@@ -13,7 +13,7 @@ class PatientModel extends \App\Core\Model {
                 DATE_FORMAT(date_inscription, '%d/%m/%Y') as date_creation 
                 FROM utilisateur 
                 WHERE role = 'PATIENT' 
-                ORDER BY nom, prenom";
+                ORDER BY date_inscription DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();

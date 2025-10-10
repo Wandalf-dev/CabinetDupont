@@ -1,7 +1,7 @@
 <?php
 // Inclusion du header et des messages flash (succès/erreur)
-include __DIR__ . '/templates/header.php';
-include __DIR__ . '/templates/flash-messages.php';
+include __DIR__ . '/../templates/header.php';
+include __DIR__ . '/../templates/flash-messages.php';
 ?>
 <main>
   <section class="admin-section">
@@ -54,4 +54,4 @@ include __DIR__ . '/templates/flash-messages.php';
 </main>
 <!-- Script JS pour le tri et le filtre des actualités -->
 <script src="<?php echo BASE_URL; ?>/js/actu-posts.js"></script>
-<?php include __DIR__ . '/templates/footer.php'; ?>
+<?php include __DIR__ . '/../templates/footer.php'; ?>

@@ -25,8 +25,8 @@ class ActusController {
 
     // Affiche la liste des actualités (vue publique)
     public function index() {
-        $actus = $this->actuModel->getAllActus();
-        require_once 'app/views/actu.php';
+    $actus = $this->actuModel->getAllActus();
+    require_once 'app/views/actu/actu.php';
     }
 
     // Affiche le détail d'une actualité spécifique
@@ -37,7 +37,7 @@ class ActusController {
             header('Location: index.php?page=actus');
             exit();
         }
-        require_once 'app/views/detail-actu.php';
+    require_once 'app/views/actu/detail-actu.php';
     }
 
     // Crée une nouvelle actualité (formulaire + traitement)
@@ -101,7 +101,7 @@ class ActusController {
             // Création de l'actualité en base de données
             if ($this->actuModel->createActu($data)) {
                 $_SESSION['success'] = "L'actualité a été créée avec succès";
-                header('Location: index.php?page=actus');
+                header('Location: index.php?page=admin');
                 exit();
             } else {
                 $_SESSION['error'] = "Une erreur est survenue lors de la création de l'actualité";
@@ -114,7 +114,7 @@ class ActusController {
         // Affiche le formulaire de création (avec les données précédentes en cas d'erreur)
         $formData = $_SESSION['form_data'] ?? [];
         unset($_SESSION['form_data']);
-        require_once 'app/views/actu-create.php';
+    require_once 'app/views/actu/actu-create.php';
     }
 
     // Recherche d'actualités par mot-clé
@@ -127,6 +127,8 @@ class ActusController {
             exit();
         }
 
+        // Utilise le token CSRF existant en session (généré dans AdminController)
+
         // Récupère le mot-clé et effectue la recherche
         $keyword = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_STRING);
         if ($keyword) {
@@ -135,13 +137,13 @@ class ActusController {
             $actus = $this->actuModel->getAllActus();
         }
         
-        require_once 'app/views/actu-posts.php';
+        require_once 'app/views/actu/actu-posts.php';
     }
 
     // Affiche les actualités mises en avant
     public function featured() {
         $featuredActus = $this->actuModel->getFeaturedActus();
-        require_once 'app/views/actu.php';
+    require_once 'app/views/actu/actu.php';
     }
 
     // Modifie une actualité existante
@@ -231,7 +233,7 @@ class ActusController {
         // Affiche le formulaire d'édition (avec les données précédentes en cas d'erreur)
         $formData = $_SESSION['form_data'] ?? $actu;
         unset($_SESSION['form_data']);
-        require_once 'app/views/actu-update.php';
+    require_once 'app/views/actu/actu-update.php';
     }
 
     // Supprime une actualité
@@ -243,11 +245,11 @@ class ActusController {
             exit();
         }
 
-        // Vérification CSRF
-        $csrf_token = $_POST['csrf_token'] ?? '';
+    // Vérification CSRF
+    $csrf_token = $_POST['csrf_token'] ?? '';
         if (!\App\Core\Csrf::checkToken($csrf_token)) {
             $_SESSION['error'] = "Session expirée ou tentative frauduleuse.";
-            header('Location: index.php?page=actus');
+            header('Location: index.php?page=admin');
             exit();
         }
 
@@ -258,7 +260,7 @@ class ActusController {
             $_SESSION['error'] = "Une erreur est survenue lors de la suppression de l'actualité";
         }
 
-        header('Location: index.php?page=actus');
-        exit();
+    header('Location: index.php?page=admin');
+    exit();
     }
 }

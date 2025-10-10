@@ -18,6 +18,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <title>DupontCare – Cabinet dentaire</title>
     <!-- Importation des polices et des feuilles de style du projet -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/style.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/header.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/footer.css" />
