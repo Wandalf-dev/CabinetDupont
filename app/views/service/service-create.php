@@ -18,27 +18,17 @@ require_once __DIR__ . '/../templates/flash-messages.php';
         <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
         <h2>Ajouter un service</h2>
         <div class="form-group">
-            <label for="titre">Nom du service <span class="required-star">*</span></label>
+            <label for="titre">Nom du service</label>
             <input type="text" id="titre" name="titre" required value="<?php echo htmlspecialchars($formData['titre'] ?? ''); ?>" />
         </div>
 
         <div class="form-group">
-            <label for="description">Description <span class="required-star">*</span></label>
+            <label for="description">Description</label>
             <textarea id="description" name="description" rows="4" required><?php echo htmlspecialchars($formData['description'] ?? ''); ?></textarea>
         </div>
 
         <div class="form-group">
-            <label for="prix">Prix (€) <span class="required-star">*</span></label>
-            <input type="number" id="prix" name="prix" step="0.01" required value="<?php echo htmlspecialchars($formData['prix'] ?? ''); ?>" />
-        </div>
-
-        <div class="form-group">
-            <label for="duree">Durée (minutes) <span class="required-star">*</span></label>
-            <input type="number" id="duree" name="duree" required value="<?php echo htmlspecialchars($formData['duree'] ?? ''); ?>" />
-        </div>
-
-        <div class="form-group">
-            <label for="image">Image <span class="required-star">*</span></label>
+            <label for="image">Image</label>
             <input type="file" id="image" name="image" accept="image/*" onchange="previewServiceImage(event)" required>
             <!-- Zone d'aperçu de l'image sélectionnée -->
             <div id="service-image-preview" style="margin-top:1em;"></div>

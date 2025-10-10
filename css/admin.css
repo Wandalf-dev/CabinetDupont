@@ -24,6 +24,111 @@
   padding: 24px 24px 64px 24px;
 }
 
+.admin-form-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 32px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(58,110,165,0.12);
+}
+
+.admin-form-container h1 {
+  color: #3a6ea5;
+  font-size: 1.8rem;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #1e2936;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #b3d8f7;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f7fbff;
+  color: #1e2936;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #3a6ea5;
+  box-shadow: 0 0 0 2px rgba(0,198,255,0.13);
+  outline: none;
+}
+
+.form-group .form-text {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #eaf6ff;
+}
+
+.password-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-group input {
+  padding-right: 40px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.password-toggle:hover {
+  color: #3a6ea5;
+}
+
+/* Styles spécifiques pour le tableau des patients */
+#patients-table .actions-cell {
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* Style pour les indicateurs obligatoires */
+.form-group:has(input[required]) label::after,
+.form-group:has(textarea[required]) label::after {
+  content: " *";
+  color: #d32f2f;
+}
+
 .section-title {
   font-family: 'Poppins', sans-serif !important;
   font-size: 28px !important;

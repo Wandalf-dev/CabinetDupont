@@ -11,6 +11,7 @@ include __DIR__ . '/templates/flash-messages.php';
             <button class="tab-button" data-tab="tab-services">Gestion des services</button>
             <button class="tab-button" data-tab="tab-actus">Gestion des actualités</button>
             <button class="tab-button" data-tab="tab-horaires">Gestion des horaires</button>
+            <button class="tab-button" data-tab="tab-patients">Gestion des patients</button>
         </div>
 
         <!-- Onglet "Services" : gestion des services du cabinet -->
@@ -224,6 +225,59 @@ include __DIR__ . '/templates/flash-messages.php';
                 </form>
             </div>
         </div>
+
+        <!-- Onglet "Patients" : gestion des patients -->
+        <div class="tab-content" id="tab-patients">
+            <div class="admin-section p-4">
+                <div class="admin-toolbar mb-4">
+                    <div class="admin-filter">
+                        <!-- Champ de recherche pour filtrer les patients -->
+                        <input type="text" id="patient-filter-input" placeholder="Rechercher un patient..." class="patient-search form-control">
+                    </div>
+                    <div class="admin-actions">
+                        <!-- Bouton pour ajouter un nouveau patient -->
+                        <a href="index.php?page=admin&action=addPatient" class="btn-admin add">
+                            <i class="fas fa-user-plus"></i>&nbsp;Ajouter un patient
+                        </a>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table id="patients-table" class="admin-table table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Email</th>
+                                <th>Téléphone</th>
+                                <th>Date de naissance</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($patientsAdmin as $patient): ?>
+                            <tr data-id="<?= htmlspecialchars($patient['id']) ?>">
+                                <td><?= htmlspecialchars($patient['nom']) ?></td>
+                                <td><?= htmlspecialchars($patient['prenom']) ?></td>
+                                <td><?= htmlspecialchars($patient['email']) ?></td>
+                                <td><?= htmlspecialchars($patient['telephone']) ?></td>
+                                <td><?= htmlspecialchars($patient['date_naissance']) ?></td>
+                                <td class="actions-cell">
+                                    <!-- Bouton pour modifier le patient -->
+                                    <a href="index.php?page=admin&action=editPatient&id=<?= $patient['id'] ?>" class="btn-admin edit">
+                                        <i class="fas fa-edit"></i>&nbsp;Modifier
+                                    </a>
+                                    <!-- Bouton pour supprimer le patient -->
+                                    <button onclick="deletePatient(<?= $patient['id'] ?>)" class="btn-admin delete">
+                                        <i class="fas fa-trash"></i>&nbsp;Supprimer
+                                    </button>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 
@@ -246,6 +300,12 @@ function deleteActu(id) {
     // Confirmation avant suppression d'une actualité
     if (confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?')) {
         window.location.href = `index.php?page=actus&action=delete&id=${id}`;
+    }
+}
+function deletePatient(id) {
+    // Confirmation avant suppression d'un patient
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce patient ?')) {
+        window.location.href = `index.php?page=admin&action=deletePatient&id=${id}`;
     }
 }
 // Recherche services et actualités
@@ -281,6 +341,31 @@ function initActusFilter() {
     }
 }
 document.addEventListener('DOMContentLoaded', function() {
+    // Filtre patients à chaque input
+    const patientInput = document.getElementById('patient-filter-input');
+    const patientsTable = document.getElementById('patients-table');
+    if (patientInput && patientsTable) {
+        patientInput.addEventListener('input', function() {
+            const filter = patientInput.value.toLowerCase();
+            const rows = patientsTable.tBodies[0].rows;
+            for (const row of rows) {
+                const nom = row.cells[0].textContent.toLowerCase();
+                const prenom = row.cells[1].textContent.toLowerCase();
+                const email = row.cells[2].textContent.toLowerCase();
+                const tel = row.cells[3].textContent.toLowerCase();
+                if (filter === '' || 
+                    nom.includes(filter) || 
+                    prenom.includes(filter) || 
+                    email.includes(filter) || 
+                    tel.includes(filter)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    }
+
     // Filtre services à chaque input
     const serviceInput = document.getElementById('service-filter-input');
     if (serviceInput) {

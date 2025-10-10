@@ -12,34 +12,27 @@ require_once __DIR__ . '/../templates/flash-messages.php';
         <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
         <h2>Modifier le service</h2>
         <div class="form-group">
-            <label for="titre">Nom du service <span class="required-star">*</span></label>
+            <label for="titre">Nom du service</label>
             <input type="text" id="titre" name="titre" required value="<?php echo htmlspecialchars($service['titre'] ?? ''); ?>" />
         </div>
 
         <div class="form-group">
-            <label for="description">Description <span class="required-star">*</span></label>
+            <label for="description">Description</label>
             <textarea id="description" name="description" rows="4" required><?php echo htmlspecialchars($service['description'] ?? ''); ?></textarea>
         </div>
 
         <div class="form-group">
-            <label for="prix">Prix (€) <span class="required-star">*</span></label>
-            <input type="number" id="prix" name="prix" step="0.01" required value="<?php echo htmlspecialchars($service['prix'] ?? ''); ?>" />
-        </div>
-
-        <div class="form-group">
-            <label for="duree">Durée (minutes) <span class="required-star">*</span></label>
-            <input type="number" id="duree" name="duree" required value="<?php echo htmlspecialchars($service['duree'] ?? ''); ?>" />
-        </div>
-
-        <div class="form-group">
-            <label for="image">Image <span class="required-star">*</span></label>
-            <input type="file" id="image" name="image" accept="image/*" onchange="previewServiceImage(event)" required>
+            <label for="image">Image</label>
+            <input type="file" id="image" name="image" accept="image/*" onchange="previewServiceImage(event)">
+            <small class="form-text text-muted">Laissez vide pour conserver l'image actuelle</small>
             <?php if (!empty($service['image'])): ?>
                 <!-- Affichage de l'image actuelle du service -->
                 <div style="margin-top:1em;">
                     <img src="/cabinetdupont/public/uploads/<?php echo htmlspecialchars($service['image']); ?>" alt="Image actuelle" style="max-width:320px;max-height:240px;border-radius:8px;box-shadow:0 2px 8px #0001;">
                     <br><small>Image actuelle</small>
                 </div>
+                <!-- Champ caché pour conserver l'image actuelle -->
+                <input type="hidden" name="current_image" value="<?php echo htmlspecialchars($service['image']); ?>">
             <?php endif; ?>
             <!-- Zone d'aperçu de la nouvelle image sélectionnée -->
             <div id="service-image-preview" style="margin-top:1em;"></div>

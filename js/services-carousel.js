@@ -3,7 +3,7 @@
 const grid = document.querySelector('.services-track');
 if (grid) {
   let position = 0;
-  const speed = 0.7; // px par frame
+  const speed = 0.5; // px par frame
   let paused = false;
   const cards = Array.from(grid.children);
   // On duplique les cartes 2 fois (total 3 sets)

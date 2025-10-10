@@ -73,7 +73,7 @@ console.log('Scripts chargés');
                 <h3>Informations personnelles</h3>
 
                 <div class="form-group">
-                    <label for="nom">NOM <span class="required-star">*</span></label>
+                    <label for="nom">NOM</label>
                     <input
                         type="text"
                         id="nom"
@@ -83,7 +83,7 @@ console.log('Scripts chargés');
                 </div>
 
                 <div class="form-group">
-                    <label for="prenom">Prénom <span class="required-star">*</span></label>
+                    <label for="prenom">Prénom</label>
                     <input
                         type="text"
                         id="prenom"
@@ -93,7 +93,7 @@ console.log('Scripts chargés');
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Email <span class="required-star">*</span></label>
+                    <label for="email">Email</label>
                     <input
                         type="email"
                         id="email"
@@ -145,7 +145,7 @@ console.log('Scripts chargés');
                 </div>
 
                 <div class="form-group">
-                    <label for="date_naissance">Date de naissance <span class="required-star">*</span></label>
+                    <label for="date_naissance">Date de naissance</label>
                     <input
                         type="text"
                         id="date_naissance"

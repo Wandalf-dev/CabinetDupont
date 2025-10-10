@@ -100,12 +100,12 @@ class ServicesController {
             // Crée le service en base de données
             if ($this->serviceModel->createService($data)) {
                 $_SESSION['success'] = "Le service a été créé avec succès";
-                header('Location: index.php?page=services');
+                header('Location: index.php?page=admin');
                 exit();
             } else {
                 $_SESSION['error'] = "Une erreur est survenue lors de la création du service";
                 $_SESSION['form_data'] = $data;
-                header('Location: index.php?page=services&action=create');
+                header('Location: index.php?page=admin&action=addService');
                 exit();
             }
         }
@@ -174,17 +174,20 @@ class ServicesController {
                     header('Location: index.php?page=services&action=edit&id=' . $id);
                     exit();
                 }
+            } else {
+                // Si aucune nouvelle image n'est téléchargée, on garde l'image existante
+                $data['image'] = isset($_POST['current_image']) ? $_POST['current_image'] : $service['image'];
             }
 
             // Met à jour le service en base de données
             if ($this->serviceModel->updateService($id, $data)) {
                 $_SESSION['success'] = "Le service a été modifié avec succès";
-                header('Location: index.php?page=services');
+                header('Location: index.php?page=admin');
                 exit();
             } else {
                 $_SESSION['error'] = "Une erreur est survenue lors de la modification du service";
                 $_SESSION['form_data'] = $data;
-                header('Location: index.php?page=services&action=edit&id=' . $id);
+                header('Location: index.php?page=admin&action=editService&id=' . $id);
                 exit();
             }
         }
@@ -205,7 +208,7 @@ class ServicesController {
             $_SESSION['error'] = "Une erreur est survenue lors de la suppression du service";
         }
 
-        header('Location: index.php?page=services');
+        header('Location: index.php?page=admin');
         exit();
     }
 

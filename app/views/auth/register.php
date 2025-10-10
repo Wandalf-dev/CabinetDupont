@@ -137,14 +137,23 @@ include __DIR__ . '/../templates/header.php'; ?>
             </div>
 
             <!-- Champ date de naissance avec Flatpickr -->
-            <div class="form-group date-group">
-                <label for="date_naissance">Date de naissance <span class="required-star">*</span></label>
-                <div class="date-input-container">
-                    <input type="text" id="date_naissance" name="date_naissance" required
-                        value="<?php echo htmlspecialchars($form_data['date_naissance'] ?? ''); ?>"
-                        placeholder="Sélectionnez votre date de naissance"
-                        class="date-input">
-                </div>
+            <div class="form-group">
+                <label for="date_naissance">Date de naissance</label>
+                <input type="text" 
+                       id="date_naissance" 
+                       name="date_naissance" 
+                       class="flatpickr" 
+                       required 
+                       placeholder="Sélectionnez une date"
+                       value="<?php 
+                           $date_value = $form_data['date_naissance'] ?? '';
+                           if (!empty($date_value) && $date_value !== '0000-00-00') {
+                               $date = DateTime::createFromFormat('Y-m-d', $date_value);
+                               if ($date) {
+                                   echo $date->format('d/m/Y');
+                               }
+                           }
+                       ?>">
             </div>
 
             <div class="form-group">
@@ -153,25 +162,15 @@ include __DIR__ . '/../templates/header.php'; ?>
 
             <!-- Inclusion de Flatpickr pour le calendrier de date de naissance -->
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css">
             <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-            <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
 
             <script>
             document.addEventListener('DOMContentLoaded', function() {
-                flatpickr("#date_naissance", {
-                    locale: 'fr',
-                    dateFormat: "Y-m-d",
-                    maxDate: "today",
-                    disableMobile: "true",
-                    animate: true,
-                    theme: "airbnb",
-                    position: "auto",
-                    monthSelectorType: "static",
-                    yearSelectorType: "static",
-                    showMonths: 1,
-                    placeholder: "Sélectionnez votre date de naissance",
-                    ariaDateFormat: "d F Y",
+                flatpickr(".flatpickr", {
+                    locale: "fr",
+                    dateFormat: "d/m/Y",
+                    allowInput: true
                 });
             });
             </script>
@@ -199,6 +198,6 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
 <script src="js/password-toggle.js"></script>
 <script src="js/phone-formatter.js"></script>
-</script>
+<script src="js/date-formatter.js"></script>
 
 <?php include __DIR__ . '/../templates/footer.php'; ?>
