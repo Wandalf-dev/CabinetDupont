@@ -44,7 +44,7 @@ class PatientModel extends \App\Core\Model {
         $stmt->bindParam(':telephone', $data['telephone']);
         $stmt->bindParam(':password', $hashedPassword);
         $stmt->bindParam(':date_naissance', $data['date_naissance']);
-        $stmt->bindParam(':adresse', $data['adresse']);
+    // $stmt->bindParam(':adresse', $data['adresse']); (champ supprimé)
         
         return $stmt->execute();
     }
@@ -73,8 +73,7 @@ class PatientModel extends \App\Core\Model {
             ':prenom' => $data['prenom'],
             ':email' => $data['email'],
             ':telephone' => $data['telephone'],
-            ':date_naissance' => $data['date_naissance'],
-            ':adresse' => $data['adresse']
+            ':date_naissance' => $data['date_naissance']
         ];
         
         if (!empty($data['password'])) {

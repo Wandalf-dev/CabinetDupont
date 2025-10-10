@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers;
+use DateTime;
 
 use App\Models\ActuModel;
 use App\Models\ServiceModel;
@@ -179,15 +180,17 @@ class AdminController extends \App\Core\Controller {
         if (empty($data['date_naissance'])) {
             $errors[] = "La date de naissance est obligatoire.";
         } else {
-            $validated['date_naissance'] = $data['date_naissance'];
+            // Conversion d/m/Y vers Y-m-d si nécessaire
+            $date = $data['date_naissance'];
+            if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $date)) {
+                $dt = DateTime::createFromFormat('d/m/Y', $date);
+                if ($dt) {
+                    $date = $dt->format('Y-m-d');
+                }
+            }
+            $validated['date_naissance'] = $date;
         }
 
-        // Validation de l'adresse
-        if (empty($data['adresse'])) {
-            $errors[] = "L'adresse est obligatoire.";
-        } else {
-            $validated['adresse'] = trim($data['adresse']);
-        }
 
         // Validation du mot de passe (obligatoire seulement pour la création)
         if (!$isUpdate && empty($data['password'])) {

@@ -259,8 +259,32 @@ include __DIR__ . '/templates/flash-messages.php';
                                 <td><?= htmlspecialchars($patient['nom']) ?></td>
                                 <td><?= htmlspecialchars($patient['prenom']) ?></td>
                                 <td><?= htmlspecialchars($patient['email']) ?></td>
-                                <td><?= htmlspecialchars($patient['telephone']) ?></td>
-                                <td><?= htmlspecialchars($patient['date_naissance']) ?></td>
+                                <td>
+                                    <?php
+                                    $tel = $patient['telephone'];
+                                    if ($tel && strpos($tel, '+33') !== 0) {
+                                        // Ajoute le préfixe +33 si absent et le numéro commence par 0
+                                        if (substr($tel, 0, 1) === '0') {
+                                            $tel = '+33-' . substr($tel, 1);
+                                        } else {
+                                            $tel = '+33-' . $tel;
+                                        }
+                                    }
+                                    echo htmlspecialchars($tel);
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php
+                                    $date = $patient['date_naissance'];
+                                    $timestamp = strtotime($date);
+                                    // Affiche vide si date invalide ou nulle
+                                    if ($date && $timestamp && $timestamp > 0) {
+                                        echo htmlspecialchars(date('d/m/Y', $timestamp));
+                                    } else {
+                                        echo '';
+                                    }
+                                    ?>
+                                </td>
                                 <td class="actions-cell">
                                     <!-- Bouton pour modifier le patient -->
                                     <a href="index.php?page=admin&action=editPatient&id=<?= $patient['id'] ?>" class="btn-admin edit">
