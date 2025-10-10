@@ -52,27 +52,44 @@ include __DIR__ . '/templates/header.php'; ?>
         Découvrez les soins proposés par le Dr Dupont pour votre santé bucco-dentaire.
       </p>
 
-      <div class="services-grid">
-        <?php if (empty($services)): ?>
-          <!-- Message si aucun service n'est disponible -->
-          <p class="services-empty">Aucun service n'est disponible pour le moment.</p>
-        <?php else: ?>
-          <?php foreach ($services as $service): ?>
-            <article class="service-card">
-              <?php if (!empty($service['image'])): ?>
-                <!-- Affiche l'image du service si elle existe -->
-                <img
-                  src="<?php echo BASE_URL; ?>/public/uploads/<?php echo htmlspecialchars($service['image']); ?>"
-                  alt="<?php echo htmlspecialchars($service['titre'] ?? 'Service'); ?>"
-                  class="service-icon"
-                  loading="lazy"
-                />
-              <?php endif; ?>
-              <h3><?php echo htmlspecialchars($service['titre'] ?? ''); ?></h3>
-              <p><?php echo htmlspecialchars($service['description'] ?? ''); ?></p>
-            </article>
-          <?php endforeach; ?>
-        <?php endif; ?>
+      <div class="services-carousel">
+        <div class="services-track">
+          <?php if (empty($services)): ?>
+            <!-- Message si aucun service n'est disponible -->
+            <p class="services-empty">Aucun service n'est disponible pour le moment.</p>
+          <?php else: ?>
+            <?php foreach ($services as $service): ?>
+              <article class="service-card">
+                <?php if (!empty($service['image'])): ?>
+                  <!-- Affiche l'image du service si elle existe -->
+                  <img
+                    src="<?php echo BASE_URL; ?>/public/uploads/<?php echo htmlspecialchars($service['image']); ?>"
+                    alt="<?php echo htmlspecialchars($service['titre'] ?? 'Service'); ?>"
+                    class="service-icon"
+                    loading="lazy"
+                  />
+                <?php endif; ?>
+                <h3><?php echo htmlspecialchars($service['titre'] ?? ''); ?></h3>
+                <p><?php echo htmlspecialchars($service['description'] ?? ''); ?></p>
+              </article>
+            <?php endforeach; ?>
+            <!-- Duplication des cartes pour effet infini -->
+            <?php foreach ($services as $service): ?>
+              <article class="service-card" aria-hidden="true">
+                <?php if (!empty($service['image'])): ?>
+                  <img
+                    src="<?php echo BASE_URL; ?>/public/uploads/<?php echo htmlspecialchars($service['image']); ?>"
+                    alt="<?php echo htmlspecialchars($service['titre'] ?? 'Service'); ?>"
+                    class="service-icon"
+                    loading="lazy"
+                  />
+                <?php endif; ?>
+                <h3><?php echo htmlspecialchars($service['titre'] ?? ''); ?></h3>
+                <p><?php echo htmlspecialchars($service['description'] ?? ''); ?></p>
+              </article>
+            <?php endforeach; ?>
+          <?php endif; ?>
+        </div>
       </div>
     </div>
   </section>
@@ -169,5 +186,6 @@ include __DIR__ . '/templates/header.php'; ?>
 <!-- ================= SCRIPTS ================= -->
 <script src="<?php echo BASE_URL; ?>/js/scroll.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/home.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/services-carousel.js"></script>
 </body>
 </html>

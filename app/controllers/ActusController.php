@@ -218,7 +218,7 @@ class ActusController {
             // Mise à jour de l'actualité en base de données
             if ($this->actuModel->updateActu($id, $data)) {
                 $_SESSION['success'] = "L'actualité a été modifiée avec succès";
-                header('Location: index.php?page=actus');
+                header('Location: index.php?page=admin');
                 exit();
             } else {
                 $_SESSION['error'] = "Une erreur est survenue lors de la modification de l'actualité";
