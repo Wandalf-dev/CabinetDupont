@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 09 oct. 2025 à 23:51
+-- Généré le : ven. 10 oct. 2025 à 16:54
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -42,11 +42,11 @@ CREATE TABLE `actualite` (
 --
 
 INSERT INTO `actualite` (`id`, `auteur_id`, `titre`, `contenu`, `date_publication`, `statut`, `image`) VALUES
-(1, 3, 'Nouvel équipement de radiographie 3D', 'Le cabinet s’est doté d’un appareil de radiographie 3D dernière génération pour des diagnostics encore plus précis et confortables.', '2025-10-07 21:03:50', 'PUBLIE', NULL),
-(2, 3, 'Blanchiment dentaire : offres spéciales d’automne', 'Profitez d’un sourire éclatant avec notre promotion sur le blanchiment dentaire, disponible jusqu’à la fin du mois.', '2025-10-07 21:04:01', 'PUBLIE', NULL),
-(3, 3, 'Conseils pour la première visite de votre enfant', 'Découvrez nos recommandations pour préparer en douceur la première visite chez le dentiste et instaurer de bonnes habitudes dentaires.', '2025-10-07 21:04:13', 'PUBLIE', NULL),
-(4, 3, 'Nouveaux horaires pour mieux vous accueillir', 'Le cabinet élargit ses horaires d’ouverture afin de s’adapter à vos disponibilités, y compris le samedi matin.', '2025-10-07 21:04:23', 'PUBLIE', NULL),
-(5, 3, 'Téléconsultation dentaire : c’est désormais possible !', 'Pour vos suivis simples ou urgences mineures, prenez rendez-vous en ligne pour une consultation vidéo sécurisée.', '2025-10-07 21:05:11', 'PUBLIE', NULL),
+(1, 3, 'Nouvel équipement de radiographie 3D', 'Le cabinet s’est doté d’un appareil de radiographie 3D dernière génération pour des diagnostics encore plus précis et confortables.', '2025-10-07 21:03:50', 'PUBLIE', '68e8d4fea39c3_2148396206.jpg'),
+(2, 3, 'Blanchiment dentaire : offres spéciales d’automne', 'Profitez d’un sourire éclatant avec notre promotion sur le blanchiment dentaire, disponible jusqu’à la fin du mois.', '2025-10-07 21:04:01', 'PUBLIE', '68e8d4c50c8ed_11664328_20944858.jpg'),
+(3, 3, 'Conseils pour la première visite de votre enfant', 'Découvrez nos recommandations pour préparer en douceur la première visite chez le dentiste et instaurer de bonnes habitudes dentaires.', '2025-10-07 21:04:13', 'PUBLIE', '68e8d3d7a7781_26921713_Family brushing huge tooth flat vector illustration.jpg'),
+(4, 3, 'Nouveaux horaires pour mieux vous accueillir', 'Le cabinet élargit ses horaires d’ouverture afin de s’adapter à vos disponibilités, y compris le samedi matin.', '2025-10-07 21:04:23', 'PUBLIE', '68e8d37e8d841_2149241137.jpg'),
+(5, 3, 'Téléconsultation dentaire : c’est désormais possible !', 'Pour vos suivis simples ou urgences mineures, prenez rendez-vous en ligne pour une consultation vidéo sécurisée.', '2025-10-07 21:05:11', 'PUBLIE', '68e8d318e6931_2149329013.jpg'),
 (14, 3, 'Des soins plus respectueux de l’environnement', 'Nous adoptons des matériaux et pratiques écoresponsables pour réduire notre impact écologique sans compromettre la qualité des soins.', '2025-10-07 22:26:31', 'PUBLIE', '68e57777e23cd_13053.jpg');
 
 -- --------------------------------------------------------
@@ -117,13 +117,13 @@ CREATE TABLE `horaire_cabinet` (
 --
 
 INSERT INTO `horaire_cabinet` (`id`, `cabinet_id`, `jour`, `ouverture_matin`, `fermeture_matin`, `ouverture_apresmidi`, `fermeture_apresmidi`) VALUES
-(15, 1, 'lundi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
-(16, 1, 'mardi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
-(17, 1, 'mercredi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
-(18, 1, 'jeudi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
-(19, 1, 'vendredi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
-(20, 1, 'samedi', '08:00:00', '12:00:00', '00:00:00', '00:00:00'),
-(21, 1, 'dimanche', '00:00:00', '00:00:00', '00:00:00', '00:00:00');
+(22, 1, 'lundi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
+(23, 1, 'mardi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
+(24, 1, 'mercredi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
+(25, 1, 'jeudi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
+(26, 1, 'vendredi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
+(27, 1, 'samedi', '08:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(28, 1, 'dimanche', '00:00:00', '00:00:00', '00:00:00', '00:00:00');
 
 -- --------------------------------------------------------
 
@@ -176,11 +176,11 @@ CREATE TABLE `service` (
 --
 
 INSERT INTO `service` (`id`, `titre`, `description`, `statut`, `image`, `ordre`) VALUES
-(1, 'Consultation générale', 'Examen complet de la santé bucco-dentaire, diagnostic et plan de traitement personnalisé.', 'PUBLIE', '68e6b348707a8_femme-patiente-chez-dentiste.jpg', 0),
-(2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', '68e7d49939d82_19475 (1).jpg', 2),
+(1, 'Consultation générale', 'Examen complet de la santé bucco-dentaire, diagnostic et plan de traitement personnalisé.', 'PUBLIE', '68e6b348707a8_femme-patiente-chez-dentiste.jpg', 3),
+(2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', '68e7d49939d82_19475 (1).jpg', 0),
 (3, 'Implantologie', 'Remplacement des dents manquantes par des implants dentaires.', 'PUBLIE', '68e7d3d2412bf_5510224.jpg', 1),
-(4, 'Orthodontie', 'Correction de l\'alignement des dents et des problèmes d\'occlusion.', 'PUBLIE', '68e7d541958fd_17722.jpg', 3),
-(5, 'Blanchiment dentaire', 'Procédure esthétique pour éclaircir la couleur des dents.', 'PUBLIE', '68e7d4c8844fc_2598.jpg', 4);
+(4, 'Orthodontie', 'Correction de l\'alignement des dents et des problèmes d\'occlusion.', 'PUBLIE', '68e7d541958fd_17722.jpg', 2),
+(5, 'Blanchiment dentaire', 'Procédure esthétique pour éclaircir la couleur des dents.', 'ARCHIVE', '68e7d4c8844fc_2598.jpg', 4);
 
 -- --------------------------------------------------------
 
@@ -206,7 +206,9 @@ CREATE TABLE `utilisateur` (
 --
 
 INSERT INTO `utilisateur` (`id`, `role`, `nom`, `prenom`, `email`, `telephone`, `avatar`, `password_hash`, `date_inscription`, `date_naissance`) VALUES
-(3, 'MEDECIN', 'ADMIN', 'Dupont', 'admin@demo.fr', '+33-6-00-00-00-00', NULL, '$2y$10$QgebtCj.A6H2EiY0mK/wNuxUVG/8gkNxxqCzxC4hwqsc/lEAjuUhS', '2025-10-06 22:03:33', '1990-01-01');
+(3, 'MEDECIN', 'ADMIN', 'Dupont', 'admin@demo.fr', '+33-6-00-00-00-00', NULL, '$2y$10$QgebtCj.A6H2EiY0mK/wNuxUVG/8gkNxxqCzxC4hwqsc/lEAjuUhS', '2025-10-06 22:03:33', '1990-01-01'),
+(4, 'SECRETAIRE', 'DUPONT', 'Secretaire', 'secretaire@demo.fr', NULL, NULL, '$2y$10$leMn12WIQu9fTzcW.zGS4ePJsiEQC8DQVWXiXw4gGyxKop7ILSEnC', '2025-10-10 11:44:31', '1995-10-03'),
+(5, 'PATIENT', 'PATIENT', 'Jean', 'patient@demo.fr', '', NULL, '$2y$10$CbwM5992j/Jglr5KQtNOkO6KEQBeEn7OYVjW0fEewuPKqZCPXzNrC', '2025-10-10 13:26:16', '1996-10-24');
 
 --
 -- Index pour les tables déchargées
@@ -314,7 +316,7 @@ ALTER TABLE `creneau`
 -- AUTO_INCREMENT pour la table `horaire_cabinet`
 --
 ALTER TABLE `horaire_cabinet`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT pour la table `notification`
@@ -338,7 +340,7 @@ ALTER TABLE `service`
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Contraintes pour les tables déchargées
