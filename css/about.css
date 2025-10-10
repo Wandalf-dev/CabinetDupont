@@ -1,0 +1,355 @@
+﻿/* Styles pour la page À propos */
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Section Docteur */
+.doctor-section {
+    margin-bottom: 80px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.doctor-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    gap: 60px;
+}
+
+.doctor-info {
+    flex: 1;
+}
+
+.doctor-info h1 {
+    font-size: 2.8rem;
+    color: #2c5682;
+    margin-bottom: 15px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.doctor-info h2 {
+    font-size: 1.8rem;
+    color: #4a4a4a;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.doctor-image {
+    flex-shrink: 0;
+    position: relative;
+}
+
+.doctor-image::after {
+    content: "";
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: -20px;
+    bottom: -20px;
+    border-radius: 50%;
+    background: #3a6ea5;
+    opacity: 0.1;
+    z-index: 1;
+}
+
+.profile-image {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 2;
+    border: 5px solid #ffffff;
+    transition: transform 0.3s ease;
+}
+
+.profile-image:hover {
+    transform: scale(1.02);
+}
+
+/* Qualifications */
+.qualifications-section {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 15px;
+    margin: 40px 0;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+}
+
+.qualifications-section h3 {
+    color: #2c5682;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.qualifications-section h3::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: #3a6ea5;
+}
+
+.qualifications-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.qualifications-list li {
+    margin-bottom: 20px;
+    padding-left: 35px;
+    position: relative;
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.qualifications-list li::before {
+    content: "";
+    color: #3a6ea5;
+    position: absolute;
+    left: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Timeline avec animation */
+.parcours-section {
+    margin: 60px 0;
+}
+
+.parcours-section h3 {
+    color: #2c5682;
+    font-size: 2rem;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.timeline {
+    position: relative;
+    padding: 40px 0;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 50px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #3a6ea5 0%, #2c5682 100%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.timeline.visible::before {
+    opacity: 1;
+}
+
+.timeline-item {
+    display: flex;
+    margin-bottom: 40px;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.timeline-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Délais pour chaque item */
+.timeline-item:nth-child(1) { transition-delay: 0.1s; }
+.timeline-item:nth-child(2) { transition-delay: 0.2s; }
+.timeline-item:nth-child(3) { transition-delay: 0.3s; }
+.timeline-item:nth-child(4) { transition-delay: 0.4s; }
+.timeline-item:nth-child(5) { transition-delay: 0.5s; }
+
+.timeline-marker {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #3a6ea5;
+    margin: 0 40px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 0 5px rgba(58, 110, 165, 0.2);
+}
+
+.timeline-content {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    flex-grow: 1;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.timeline-content::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 20px;
+    width: 20px;
+    height: 20px;
+    background: #ffffff;
+    transform: rotate(45deg);
+}
+
+.timeline-content .year {
+    color: #3a6ea5;
+    font-weight: bold;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Section Équipe */
+.team-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    padding: 80px 40px;
+    border-radius: 20px;
+    margin: 60px 0;
+}
+
+.team-section h2 {
+    color: #2c5682;
+    font-size: 2.2rem;
+    text-align: center;
+    margin-bottom: 60px;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.team-section h2::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: #3a6ea5;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    padding: 20px;
+}
+
+.team-member {
+    background: #ffffff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+.member-image {
+    height: 250px;
+    overflow: hidden;
+    position: relative;
+}
+
+.member-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.team-member:hover .member-image img {
+    transform: scale(1.05);
+}
+
+.member-info {
+    padding: 30px;
+    text-align: center;
+}
+
+.member-info h3 {
+    color: #2c5682;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.member-info h4 {
+    color: #4a4a4a;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.member-info p {
+    color: #666;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .doctor-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 30px;
+    }
+
+    .doctor-info h1 {
+        font-size: 2.4rem;
+    }
+
+    .doctor-info h2 {
+        font-size: 1.6rem;
+    }
+
+    .timeline::before {
+        left: 30px;
+    }
+
+    .timeline-marker {
+        margin: 0 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .doctor-image {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .profile-image {
+        width: 250px;
+        height: 250px;
+    }
+
+    .team-grid {
+        grid-template-columns: 1fr;
+        padding: 10px;
+    }
+
+    .team-member {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+}

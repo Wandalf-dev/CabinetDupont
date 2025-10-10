@@ -114,30 +114,22 @@ include __DIR__ . '/templates/flash-messages.php';
             </div>
         </div>
         
-        <!-- Onglet "Horaires" : gestion des horaires d'ouverture du cabinet -->
+        <!-- Onglet "Horaires" : gestion des horaires -->
         <div class="tab-content" id="tab-horaires">
             <div class="admin-section">
-                <div class="section-header">
-                    <h2>Horaires d'ouverture du cabinet</h2>
-                    <p class="text-muted">Définissez les horaires d'ouverture pour chaque jour de la semaine</p>
-                </div>
-                <!-- Formulaire de modification des horaires -->
                 <form class="horaires-form" method="post" action="index.php?page=horaires&action=edit">
                     <!-- Champ caché pour le token CSRF (sécurité) -->
                     <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
                     <?php 
                     $joursFr = [
-                        'lundi' => 'Lundi',
-                        'mardi' => 'Mardi',
-                        'mercredi' => 'Mercredi',
-                        'jeudi' => 'Jeudi',
-                        'vendredi' => 'Vendredi',
-                        'samedi' => 'Samedi',
-                        'dimanche' => 'Dimanche'
+                        ['lundi' => 'Lundi', 'mardi' => 'Mardi'],
+                        ['mercredi' => 'Mercredi', 'jeudi' => 'Jeudi'],
+                        ['vendredi' => 'Vendredi', 'samedi' => 'Samedi'],
+                        ['dimanche' => 'Dimanche']
                     ];
 
-                    // Boucle sur chaque jour pour afficher les champs horaires
-                    foreach ($joursFr as $jourEn => $jourFr): ?>
+                    foreach ($joursFr as $paire):
+                        foreach ($paire as $jourEn => $jourFr): ?>
                         <div class="horaire-edit-card">
                             <h3><?php echo htmlspecialchars($jourFr); ?></h3>
                             <div class="horaire-section">
@@ -215,7 +207,10 @@ include __DIR__ . '/templates/flash-messages.php';
                                 </div>
                             </div>
                         </div>
-                    <?php endforeach; ?>
+                    <?php 
+                        endforeach;
+                    endforeach; 
+                    ?>
 
                     <div class="form-actions mt-4">
                         <button type="submit" class="btn-admin save">

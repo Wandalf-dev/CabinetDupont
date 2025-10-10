@@ -45,9 +45,16 @@ include __DIR__ . '/../templates/header.php';
                     <label>Téléphone :</label>
                     <span><?php 
                         if (!empty($user['telephone'])) {
-                            echo htmlspecialchars($user['telephone']);
-                            // Debug : affichage du numéro tel brut en base
-                            echo "<!-- Debug: phone in DB = " . htmlspecialchars($user['telephone']) . " -->";
+                            $tel = $user['telephone'];
+                            if ($tel && strpos($tel, '+33') !== 0) {
+                                // Ajoute le préfixe +33 si absent et le numéro commence par 0
+                                if (substr($tel, 0, 1) === '0') {
+                                    $tel = '+33-' . substr($tel, 1);
+                                } else {
+                                    $tel = '+33-' . $tel;
+                                }
+                            }
+                            echo htmlspecialchars($tel);
                         } else {
                             echo "Non renseigné";
                         }
