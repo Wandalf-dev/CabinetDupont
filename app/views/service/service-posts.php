@@ -26,6 +26,7 @@ include __DIR__ . '/../templates/flash-messages.php';
         <tr>
           <th style="width:40px;"></th>
           <th>Titre</th>
+          <th>Durée</th>
           <th>État</th>
           <th>Actions</th>
         </tr>
@@ -33,7 +34,7 @@ include __DIR__ . '/../templates/flash-messages.php';
       <tbody>
         <?php if (empty($servicesAdmin)): ?>
           <tr>
-            <td colspan="4">Aucun service n'est disponible</td>
+            <td colspan="5">Aucun service n'est disponible</td>
           </tr>
         <?php else: ?>
           <?php foreach ($servicesAdmin as $service): ?>
@@ -41,6 +42,13 @@ include __DIR__ . '/../templates/flash-messages.php';
             <tr draggable="true" data-id="<?php echo $service['id']; ?>">
               <td class="grip-cell"><span class="grip-icon">&#8942;&#8942;</span></td>
               <td><?php echo htmlspecialchars($service['titre']); ?></td>
+              <td>
+                <?php 
+                echo "<!--";
+                var_dump($service);
+                echo "-->";
+                echo htmlspecialchars($service['duree'] ?? 'non défini'); ?> min
+              </td>
               <td><?php echo htmlspecialchars($service['statut']); ?></td>
               <td>
                 <!-- Bouton pour modifier le service -->

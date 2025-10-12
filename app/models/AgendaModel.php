@@ -1,0 +1,97 @@
+<?php
+namespace App\Models;
+use App\Core\Model;
+
+class AgendaModel extends Model {
+    public function __construct() {
+        parent::__construct();
+    }
+
+    /**
+     * Récupère les rendez-vous pour une période donnée
+     */
+    public function getRendezVousByPeriod($dateDebut, $dateFin) {
+        $sql = "SELECT rdv.*, 
+                       p.nom as patient_nom, p.prenom as patient_prenom,
+                       s.nom as service
+                FROM agenda rdv
+                LEFT JOIN patients p ON rdv.patient_id = p.id
+                LEFT JOIN services s ON rdv.service_id = s.id
+                WHERE rdv.date BETWEEN ? AND ?
+                ORDER BY rdv.date ASC, rdv.heure_debut ASC";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$dateDebut, $dateFin]);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Récupère les détails d'un rendez-vous spécifique
+     */
+    public function getRendezVousById($id) {
+        $sql = "SELECT rdv.*, 
+                       p.nom as patient_nom, p.prenom as patient_prenom,
+                       s.nom as service
+                FROM agenda rdv
+                LEFT JOIN patients p ON rdv.patient_id = p.id
+                LEFT JOIN services s ON rdv.service_id = s.id
+                WHERE rdv.id = ?";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch();
+    }
+
+    /**
+     * Met à jour le statut d'un rendez-vous
+     */
+    public function updateRendezVousStatus($id, $statut) {
+        $sql = "UPDATE agenda SET statut = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$statut, $id]);
+    }
+
+    /**
+     * Reprogramme un rendez-vous
+     */
+    public function reprogrammerRendezVous($id, $date, $heureDebut, $heureFin) {
+        $sql = "UPDATE agenda 
+                SET date = ?, heure_debut = ?, heure_fin = ? 
+                WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$date, $heureDebut, $heureFin, $id]);
+    }
+
+    /**
+     * Annule un rendez-vous
+     */
+    public function annulerRendezVous($id) {
+        $sql = "UPDATE agenda SET statut = 'annule' WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$id]);
+    }
+
+    /**
+     * Ajoute une note à un rendez-vous
+     */
+    public function ajouterNote($id, $note) {
+        $sql = "UPDATE agenda SET notes = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$note, $id]);
+    }
+
+    /**
+     * Vérifie les disponibilités pour une plage horaire
+     */
+    public function verifierDisponibilite($date, $heureDebut, $heureFin) {
+        $sql = "SELECT COUNT(*) FROM agenda 
+                WHERE date = ? 
+                AND ((heure_debut BETWEEN ? AND ?) 
+                     OR (heure_fin BETWEEN ? AND ?))
+                AND statut != 'annule'";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$date, $heureDebut, $heureFin, $heureDebut, $heureFin]);
+        return $stmt->fetchColumn() == 0;
+    }
+}

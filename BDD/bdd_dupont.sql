@@ -56,9 +56,12 @@ INSERT INTO `actualite` (`id`, `auteur_id`, `titre`, `contenu`, `date_publicatio
 --
 
 CREATE TABLE `agenda` (
-  `id` int(10) UNSIGNED NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `utilisateur_id` int(10) UNSIGNED NOT NULL,
-  `semaine_iso` int(11) DEFAULT NULL
+  `titre` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `utilisateur_agenda_unique` (`utilisateur_id`),
+  FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

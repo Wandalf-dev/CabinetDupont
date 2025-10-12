@@ -45,6 +45,13 @@ nav a {
   padding: 6px 14px;
   border-radius: 6px;
   transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+nav a.nav-agenda i {
+  font-size: 1.1rem;
 }
 
 nav a:hover {

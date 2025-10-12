@@ -28,6 +28,12 @@ require_once __DIR__ . '/../templates/flash-messages.php';
         </div>
 
         <div class="form-group">
+            <label for="duree">Durée de consultation (en minutes)</label>
+            <input type="number" id="duree" name="duree" min="15" max="180" step="15" value="<?php echo htmlspecialchars($formData['duree'] ?? '30'); ?>" required>
+            <small class="form-text text-muted">Durée minimale : 15 min, maximale : 3h, par paliers de 15 min</small>
+        </div>
+
+        <div class="form-group">
             <label for="image">Image</label>
             <input type="file" id="image" name="image" accept="image/*" onchange="previewServiceImage(event)" required>
             <!-- Zone d'aperçu de l'image sélectionnée -->

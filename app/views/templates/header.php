@@ -36,6 +36,8 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/horaires.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/horaires-admin.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/about.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/creneaux.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/agenda.css" />
     <!-- Animation Lottie pour des illustrations animées -->
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
 </head>
@@ -58,6 +60,13 @@ if (session_status() === PHP_SESSION_NONE) {
                             <li>
                                 <a href="index.php?page=admin">Administration</a>
                             </li>
+                            <?php if ($_SESSION['user_role'] === 'MEDECIN'): ?>
+                            <li>
+                                <a href="index.php?page=agenda&action=planning" class="nav-agenda">
+                                    <i class="fas fa-calendar-alt"></i> Agenda
+                                </a>
+                            </li>
+                            <?php endif; ?>
                         <?php endif; ?>
                         <li><a href="index.php?page=user&action=profile">Mon profil</a></li>
                         <li><a href="index.php?page=auth&action=logout">Déconnexion</a></li>

@@ -42,13 +42,14 @@ class ServiceModel extends Model {
         $description = html_entity_decode(strip_tags($data['description']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $image = isset($data['image']) ? $data['image'] : null;
         
-        $sql = "INSERT INTO service (titre, description, image, statut) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO service (titre, description, image, statut, duree) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $result = $stmt->execute([
             $titre,
             $description,
             $image,
-            $data['statut'] ?? 'BROUILLON'
+            $data['statut'] ?? 'BROUILLON',
+            intval($data['duree'] ?? 30)
         ]);
 
         if ($result) {
@@ -61,7 +62,8 @@ class ServiceModel extends Model {
         $params = [
             $data['titre'],
             $data['description'],
-            $data['statut'] ?? 'BROUILLON'
+            $data['statut'] ?? 'BROUILLON',
+            intval($data['duree'] ?? 30)
         ];
 
         $setImage = '';
@@ -75,7 +77,8 @@ class ServiceModel extends Model {
         $sql = "UPDATE service 
                 SET titre = ?, 
                     description = ?, 
-                    statut = ?
+                    statut = ?,
+                    duree = ?
                     $setImage
                 WHERE id = ?";
         

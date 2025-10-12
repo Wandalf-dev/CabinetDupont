@@ -71,6 +71,7 @@ include __DIR__ . '/templates/flash-messages.php';
             <button class="tab-button" data-tab="tab-actus">Gestion des actualités</button>
             <button class="tab-button" data-tab="tab-horaires">Gestion des horaires</button>
             <button class="tab-button" data-tab="tab-patients">Gestion des patients</button>
+            <button class="tab-button" data-tab="tab-creneaux">Gestion des créneaux</button>
         </div>
 
         <!-- Onglet "Services" : gestion des services du cabinet -->
@@ -95,6 +96,7 @@ include __DIR__ . '/templates/flash-messages.php';
                                 <th style="width: 50px"></th>
                                 <th>Titre</th>
                                 <th>Description</th>
+                                <th>Durée</th>
                                 <th>Statut</th>
                                 <th class="actions-header">Actions</th>
                             </tr>
@@ -105,6 +107,7 @@ include __DIR__ . '/templates/flash-messages.php';
                                 <td class="grip-cell"><span class="grip-icon" title="Glisser pour réorganiser">⋮⋮</span></td>
                                 <td><?= htmlspecialchars($service['titre']) ?></td>
                                 <td><?= htmlspecialchars(substr($service['description'], 0, 100)) ?>...</td>
+                                <td><?= htmlspecialchars($service['duree']) ?> min</td>
                                 <td class="status-cell" data-status="<?= htmlspecialchars($service['statut']) ?>"><?= htmlspecialchars($service['statut']) ?></td>
                                 <td class="actions-cell">
                                     <!-- Bouton pour modifier le service -->
@@ -356,6 +359,64 @@ include __DIR__ . '/templates/flash-messages.php';
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Onglet "Créneaux" : gestion des créneaux de consultation -->
+        <div class="tab-content" id="tab-creneaux">
+            <div class="admin-section p-4">
+                <div class="admin-actions mb-4">
+                    <!-- Bouton pour générer de nouveaux créneaux -->
+                    <a href="index.php?page=creneaux&action=generer" class="btn-admin add">
+                        <i class="fas fa-calendar-plus"></i>&nbsp;Générer des créneaux
+                    </a>
+                </div>
+
+                <!-- Section pour afficher les créneaux existants -->
+                <div class="table-responsive">
+                    <?php if (!empty($creneaux)): ?>
+                        <table class="admin-table table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Heure de début</th>
+                                    <th>Heure de fin</th>
+                                    <th>Statut</th>
+                                    <th class="actions-header">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($creneaux as $creneau): ?>
+                                    <tr>
+                                        <td><?php echo date('d/m/Y', strtotime($creneau['date'])); ?></td>
+                                        <td><?php echo date('H:i', strtotime($creneau['heure_debut'])); ?></td>
+                                        <td><?php echo date('H:i', strtotime($creneau['heure_fin'])); ?></td>
+                                        <td>
+                                            <?php if ($creneau['disponible']): ?>
+                                                <span class="badge disponible">Disponible</span>
+                                            <?php else: ?>
+                                                <span class="badge reserve">Réservé</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="actions-cell">
+                                            <?php if ($creneau['disponible']): ?>
+                                                <form method="post" action="index.php?page=creneaux&action=supprimer" style="display:inline;">
+                                                    <input type="hidden" name="id" value="<?php echo $creneau['id']; ?>">
+                                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                                                    <button type="submit" class="btn-admin delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce créneau ?');">
+                                                        <i class="fas fa-trash"></i>&nbsp;Supprimer
+                                                    </button>
+                                                </form>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php else: ?>
+                        <p class="text-center">Aucun créneau disponible. Cliquez sur "Générer des créneaux" pour en créer.</p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
