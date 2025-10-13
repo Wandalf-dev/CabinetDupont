@@ -299,6 +299,28 @@
     justify-content: flex-end;
 }
 
+/* Titre de la page */
+.planning-title {
+    font-size: clamp(2rem, 3vw, 2.5rem);
+    color: #1976d2;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 2.2rem 0;
+    letter-spacing: 1px;
+    position: relative;
+}
+
+.planning-title::after {
+    content: '';
+    display: block;
+    margin: 0.7rem auto 0 auto;
+    width: 60px;
+    height: 5px;
+    background: linear-gradient(90deg, #1976d2 40%, #64b5f6 100%);
+    border-radius: 3px;
+    opacity: 0.8;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .calendar-container {

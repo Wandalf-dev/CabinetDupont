@@ -33,11 +33,11 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/tabs.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/profil.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/alerts.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/horaires.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/horaires-admin.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/about.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/creneaux.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/agenda.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/table-actions.css" />
     <!-- Animation Lottie pour des illustrations animées -->
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
 </head>
@@ -46,7 +46,7 @@ if (session_status() === PHP_SESSION_NONE) {
         <div class="container">
             <!-- Logo du cabinet en haut à gauche -->
             <a href="index.php" class="logo">
-                <img src="/cabinetdupont/assets/dupontcare-logo-horizontal-DUPONT-white.svg" alt="DupontCare" />
+                <img src="<?php echo BASE_URL; ?>/assets/dupontcare-logo-horizontal-DUPONT-white.svg" alt="DupontCare" />
             </a>
 
             <!-- Menu de navigation principal -->

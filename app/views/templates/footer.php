@@ -4,7 +4,7 @@
             <div class="footer-top">
                 <a href="index.php" class="footer-brand">
                     <!-- Logo du cabinet affiché en haut du footer -->
-                    <img src="/cabinetdupont/assets/dupontcare-logo-horizontal-DUPONT-white.svg" alt="DupontCare" />
+                    <img src="<?php echo BASE_URL; ?>/assets/dupontcare-logo-horizontal-DUPONT-white.svg" alt="DupontCare" />
                 </a>
                 <p class="footer-tagline">
                     <!-- Slogan du cabinet -->

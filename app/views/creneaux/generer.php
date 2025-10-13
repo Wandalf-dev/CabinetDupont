@@ -4,10 +4,28 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
 
 <main class="container">
-    <section class="admin-section">
-        <h2>Génération des créneaux de consultation</h2>
+    <div class="admin-form-container">
+        <h1>Génération des créneaux de consultation</h1>
         
-        <form method="post" class="form-standard">
+        <div class="creneaux-info">
+            <small><i class="fas fa-info-circle"></i> Créneaux générés :</small>
+            <div class="creneaux-resume">
+                <span>Matin : 8h-12h (8 créneaux)</span>
+                <span>Après-midi : 14h-20h (12 créneaux)</span>
+                <small>Intervalle : 30min</small>
+            </div>
+        </div>
+
+        <form method="post" class="admin-form">
+            <div class="form-group">
+                <label>Périodes prédéfinies :</label>
+                <div class="btn-group mb-3">
+                    <button type="button" class="btn btn-outline-primary" data-days="7">1 semaine</button>
+                    <button type="button" class="btn btn-outline-primary" data-days="14">2 semaines</button>
+                    <button type="button" class="btn btn-outline-primary" data-days="30">1 mois</button>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label for="date_debut">Date de début</label>
                 <input type="date" id="date_debut" name="date_debut" required
@@ -19,32 +37,34 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                 <label for="date_fin">Date de fin</label>
                 <input type="date" id="date_fin" name="date_fin" required
                        min="<?php echo date('Y-m-d'); ?>"
-                       value="<?php echo date('Y-m-d', strtotime('+1 month')); ?>">
+                       value="<?php echo date('Y-m-d', strtotime('+7 days')); ?>">
+                <small class="form-text text-muted">
+                    Pour une meilleure gestion, il est recommandé de ne pas dépasser 2 semaines à la fois.
+                </small>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn-admin save">
+                <button type="button" id="btnGenerer" class="btn-admin save">
                     <i class="fas fa-calendar-plus"></i> Générer les créneaux
                 </button>
                 <a href="index.php?page=admin" class="btn-admin">Annuler</a>
             </div>
         </form>
-    </section>
+
+        <!-- Modal de confirmation -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <h3>Confirmation</h3>
+                <p id="modalMessage"></p>
+                <div class="modal-actions">
+                    <button id="btnConfirmer" class="btn-admin save">Confirmer</button>
+                    <button id="btnAnnuler" class="btn-admin">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const dateDebut = document.getElementById('date_debut');
-    const dateFin = document.getElementById('date_fin');
-
-    // S'assurer que la date de fin n'est pas antérieure à la date de début
-    dateDebut.addEventListener('change', function() {
-        if (dateFin.value < dateDebut.value) {
-            dateFin.value = dateDebut.value;
-        }
-        dateFin.min = dateDebut.value;
-    });
-});
-</script>
+<script src="<?php echo BASE_URL; ?>/js/creneaux.js"></script>
 
 <?php require_once __DIR__ . '/../templates/footer.php'; ?>

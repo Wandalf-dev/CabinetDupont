@@ -14,7 +14,12 @@ class App {
         $action = $_GET['action'] ?? 'index';
 
         // Prépare le nom du contrôleur et de la méthode à appeler
-        $controllerName = ucfirst($page); // Exemple : 'home' devient 'Home'
+        // Gestion spéciale pour 'rendezvous' -> 'RendezVous'
+        if ($page === 'rendezvous') {
+            $controllerName = 'RendezVous';
+        } else {
+            $controllerName = ucfirst($page); // Exemple : 'home' devient 'Home'
+        }
         $method = $action;
         $params = [];
 
@@ -27,13 +32,25 @@ class App {
         $controllerClass = "App\\Controllers\\{$controllerName}Controller";
 
         try {
-            // Log technique pour le débogage : tentative de chargement du contrôleur
+            // Log technique détaillé pour le débogage
+            error_log("=== DÉBUT DEBUG ROUTAGE ===");
+            error_log("URL reçue - page: " . $page . ", action: " . $action);
+            error_log("Nom du contrôleur avant transformation: " . $controllerName);
             error_log("Tentative de chargement du contrôleur: " . $controllerClass);
-
+            error_log("Vérification de l'existence du fichier: " . __DIR__ . "/../controllers/{$controllerName}Controller.php");
+            error_log("GET params reçus: " . print_r($_GET, true));
+            error_log("Le fichier existe ? : " . (file_exists(__DIR__ . "/../controllers/{$controllerName}Controller.php") ? "OUI" : "NON"));
+            
+            // Vérifie si le fichier du contrôleur existe
+            if (!file_exists(__DIR__ . "/../controllers/{$controllerName}Controller.php")) {
+                error_log("Erreur: Le fichier du contrôleur n'existe pas");
+                throw new \Exception("Le fichier du contrôleur '{$controllerName}Controller.php' n'existe pas.");
+            }
+            
             // Vérifie si la classe du contrôleur existe
             if (!class_exists($controllerClass)) {
-                error_log("Erreur: Le contrôleur n'existe pas");
-                throw new \Exception("Le contrôleur '$controllerClass' n'existe pas.");
+                error_log("Erreur: La classe du contrôleur n'existe pas");
+                throw new \Exception("La classe '$controllerClass' n'existe pas.");
             }
 
             // Log technique : création d'une instance du contrôleur

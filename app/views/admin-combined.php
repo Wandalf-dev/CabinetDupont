@@ -67,11 +67,11 @@ include __DIR__ . '/templates/flash-messages.php';
     <div class="tabs-container">
         <!-- Navigation des onglets pour basculer entre les différentes gestions admin -->
         <div class="tabs-nav">
-            <button class="tab-button" data-tab="tab-services">Gestion des services</button>
-            <button class="tab-button" data-tab="tab-actus">Gestion des actualités</button>
-            <button class="tab-button" data-tab="tab-horaires">Gestion des horaires</button>
-            <button class="tab-button" data-tab="tab-patients">Gestion des patients</button>
-            <button class="tab-button" data-tab="tab-creneaux">Gestion des créneaux</button>
+            <button class="tab-button" data-tab="tab-services">Services</button>
+            <button class="tab-button" data-tab="tab-actus">Actualités</button>
+            <button class="tab-button" data-tab="tab-horaires">Horaires</button>
+            <button class="tab-button" data-tab="tab-patients">Patients</button>
+            <button class="tab-button" data-tab="tab-creneaux">Créneaux</button>
         </div>
 
         <!-- Onglet "Services" : gestion des services du cabinet -->
@@ -375,53 +375,125 @@ include __DIR__ . '/templates/flash-messages.php';
 
                 <!-- Section pour afficher les créneaux existants -->
                 <div class="table-responsive">
-                    <?php if (!empty($creneaux)): ?>
-                        <table class="admin-table table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Heure de début</th>
-                                    <th>Heure de fin</th>
-                                    <th>Statut</th>
-                                    <th class="actions-header">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($creneaux as $creneau): ?>
+                    <?php if (!empty($creneaux)) { ?>
+                        <form id="form-delete-creneaux" method="post" action="index.php?page=creneaux&action=deleteMultiple">
+                            <div class="mb-3">
+                                <button type="submit" class="btn-admin delete" id="delete-selected" disabled>
+                                    <i class="fas fa-trash"></i>&nbsp;Supprimer la sélection
+                                </button>
+                            </div>
+                            <table class="admin-table table table-hover">
+                                <thead>
                                     <tr>
-                                        <td><?php echo date('d/m/Y', strtotime($creneau['date'])); ?></td>
-                                        <td><?php echo date('H:i', strtotime($creneau['heure_debut'])); ?></td>
-                                        <td><?php echo date('H:i', strtotime($creneau['heure_fin'])); ?></td>
-                                        <td>
-                                            <?php if ($creneau['disponible']): ?>
-                                                <span class="badge disponible">Disponible</span>
-                                            <?php else: ?>
-                                                <span class="badge reserve">Réservé</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td class="actions-cell">
-                                            <?php if ($creneau['disponible']): ?>
-                                                <form method="post" action="index.php?page=creneaux&action=supprimer" style="display:inline;">
-                                                    <input type="hidden" name="id" value="<?php echo $creneau['id']; ?>">
-                                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                                                    <button type="submit" class="btn-admin delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce créneau ?');">
-                                                        <i class="fas fa-trash"></i>&nbsp;Supprimer
-                                                    </button>
-                                                </form>
-                                            <?php endif; ?>
-                                        </td>
+                                        <th>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="check-all">
+                                                <label class="form-check-label" for="check-all"></label>
+                                            </div>
+                                        </th>
+                                        <th>Date</th>
+                                        <th>Heure de début</th>
+                                        <th>Heure de fin</th>
+                                        <th>Service</th>
+                                        <th>Statut</th>
+                                        <th class="actions-header">Actions</th>
                                     </tr>
-                                <?php endforeach; ?>
+                                </thead>
+                                <tbody>
+                                <?php foreach ($creneaux as $creneau) { ?>
+                                <tr>
+                                    <td>
+                                        <?php if (!$creneau['est_reserve']) { ?>
+                                            <div class="form-check">
+                                                <input class="form-check-input creneau-check" 
+                                                       type="checkbox" 
+                                                       name="creneaux[]" 
+                                                       value="<?= $creneau['id'] ?>" 
+                                                       id="creneau-<?= $creneau['id'] ?>">
+                                                <label class="form-check-label" for="creneau-<?= $creneau['id'] ?>"></label>
+                                            </div>
+                                        <?php } ?>
+                                    </td>
+                                    <td><?= date('d/m/Y', strtotime($creneau['debut'])) ?></td>
+                                    <td><?= date('H:i', strtotime($creneau['debut'])) ?></td>
+                                    <td><?= date('H:i', strtotime($creneau['fin'])) ?></td>
+                                    <td><?= htmlspecialchars($creneau['service_titre']) ?></td>
+                                    <td><?= htmlspecialchars($creneau['est_reserve'] ? 'Réservé' : 'Disponible') ?></td>
+                                    <td class="actions-cell">
+                                        <?php if (!$creneau['est_reserve']) { ?>
+                                            <button type="button" onclick="deleteCreneau(<?= $creneau['id'] ?>)" class="btn-admin delete">
+                                                <i class="fas fa-trash"></i>&nbsp;Supprimer
+                                            </button>
+                                        <?php } ?>
+                                    </td>
+                                </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
-                    <?php else: ?>
-                        <p class="text-center">Aucun créneau disponible. Cliquez sur "Générer des créneaux" pour en créer.</p>
-                    <?php endif; ?>
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                        </form>
+                    <?php } else { ?>
+                        <p>Aucun créneau n'est disponible pour le moment.</p>
+                    <?php } ?>
                 </div>
+
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const checkAll = document.getElementById('check-all');
+                    const creneauChecks = document.getElementsByClassName('creneau-check');
+                    const deleteSelected = document.getElementById('delete-selected');
+                    const formDeleteCreneaux = document.getElementById('form-delete-creneaux');
+
+                    // Gérer le "cocher tout"
+                    if (checkAll) {
+                        checkAll.addEventListener('change', function() {
+                            Array.from(creneauChecks).forEach(check => {
+                                check.checked = checkAll.checked;
+                            });
+                            updateDeleteButton();
+                        });
+                    }
+
+                    // Gérer les cases individuelles
+                    Array.from(creneauChecks).forEach(check => {
+                        check.addEventListener('change', function() {
+                            updateCheckAll();
+                            updateDeleteButton();
+                        });
+                    });
+
+                    // Mettre à jour l'état de la case "cocher tout"
+                    function updateCheckAll() {
+                        const totalChecks = creneauChecks.length;
+                        const checkedChecks = Array.from(creneauChecks).filter(check => check.checked).length;
+                        
+                        if (checkAll) {
+                            checkAll.checked = totalChecks > 0 && totalChecks === checkedChecks;
+                            checkAll.indeterminate = checkedChecks > 0 && checkedChecks < totalChecks;
+                        }
+                    }
+
+                    // Mettre à jour l'état du bouton de suppression
+                    function updateDeleteButton() {
+                        const hasChecked = Array.from(creneauChecks).some(check => check.checked);
+                        if (deleteSelected) {
+                            deleteSelected.disabled = !hasChecked;
+                        }
+                    }
+
+                    // Confirmation avant suppression multiple
+                    if (formDeleteCreneaux) {
+                        formDeleteCreneaux.addEventListener('submit', function(e) {
+                            const checkedCount = Array.from(creneauChecks).filter(check => check.checked).length;
+                            if (!confirm(`Êtes-vous sûr de vouloir supprimer les ${checkedCount} créneaux sélectionnés ?`)) {
+                                e.preventDefault();
+                            }
+                        });
+                    }
+                });
+                </script>
             </div>
         </div>
-    </div>
-</main>
 
 <!-- Styles pour l'interface admin -->
 <link rel="stylesheet" href="css/admin.css">
@@ -510,6 +582,12 @@ function deletePatient(id) {
     // Confirmation avant suppression d'un patient
     if (confirm('Êtes-vous sûr de vouloir supprimer ce patient ?')) {
         window.location.href = `index.php?page=admin&action=deletePatient&id=${id}`;
+    }
+}
+function deleteCreneau(id) {
+    // Confirmation avant suppression d'un créneau
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce créneau ?')) {
+        window.location.href = `index.php?page=creneaux&action=delete&id=${id}`;
     }
 }
 // Recherche services et actualités
@@ -616,3 +694,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+<?php require_once __DIR__ . '/templates/footer.php'; ?>

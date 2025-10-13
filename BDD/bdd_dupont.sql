@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : ven. 10 oct. 2025 à 16:54
+-- Généré le : lun. 13 oct. 2025 à 12:40
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -42,12 +42,12 @@ CREATE TABLE `actualite` (
 --
 
 INSERT INTO `actualite` (`id`, `auteur_id`, `titre`, `contenu`, `date_publication`, `statut`, `image`) VALUES
-(1, 3, 'Nouvel équipement de radiographie 3D', 'Le cabinet s’est doté d’un appareil de radiographie 3D dernière génération pour des diagnostics encore plus précis et confortables.', '2025-10-07 21:03:50', 'PUBLIE', '68e8d4fea39c3_2148396206.jpg'),
 (2, 3, 'Blanchiment dentaire : offres spéciales d’automne', 'Profitez d’un sourire éclatant avec notre promotion sur le blanchiment dentaire, disponible jusqu’à la fin du mois.', '2025-10-07 21:04:01', 'PUBLIE', '68e8d4c50c8ed_11664328_20944858.jpg'),
 (3, 3, 'Conseils pour la première visite de votre enfant', 'Découvrez nos recommandations pour préparer en douceur la première visite chez le dentiste et instaurer de bonnes habitudes dentaires.', '2025-10-07 21:04:13', 'PUBLIE', '68e8d3d7a7781_26921713_Family brushing huge tooth flat vector illustration.jpg'),
 (4, 3, 'Nouveaux horaires pour mieux vous accueillir', 'Le cabinet élargit ses horaires d’ouverture afin de s’adapter à vos disponibilités, y compris le samedi matin.', '2025-10-07 21:04:23', 'PUBLIE', '68e8d37e8d841_2149241137.jpg'),
 (5, 3, 'Téléconsultation dentaire : c’est désormais possible !', 'Pour vos suivis simples ou urgences mineures, prenez rendez-vous en ligne pour une consultation vidéo sécurisée.', '2025-10-07 21:05:11', 'PUBLIE', '68e8d318e6931_2149329013.jpg'),
-(14, 3, 'Des soins plus respectueux de l’environnement', 'Nous adoptons des matériaux et pratiques écoresponsables pour réduire notre impact écologique sans compromettre la qualité des soins.', '2025-10-07 22:26:31', 'PUBLIE', '68e57777e23cd_13053.jpg');
+(14, 3, 'Des soins plus respectueux de l’environnement', 'Nous adoptons des matériaux et pratiques écoresponsables pour réduire notre impact écologique sans compromettre la qualité des soins.', '2025-10-07 22:26:31', 'PUBLIE', '68e57777e23cd_13053.jpg'),
+(16, 3, 'Nouvel équipement pour des soins encore plus précis', 'Notre cabinet s’est récemment doté d’un scanner intra-oral dernière génération. Cet outil permet de réaliser des empreintes numériques plus confortables et plus précises, sans pâte ni inconfort.', '2025-10-13 09:23:59', 'PUBLIE', '68eca90f39665_7681.jpg');
 
 -- --------------------------------------------------------
 
@@ -56,13 +56,17 @@ INSERT INTO `actualite` (`id`, `auteur_id`, `titre`, `contenu`, `date_publicatio
 --
 
 CREATE TABLE `agenda` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL,
   `utilisateur_id` int(10) UNSIGNED NOT NULL,
-  `titre` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `utilisateur_agenda_unique` (`utilisateur_id`),
-  FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE
+  `titre` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `agenda`
+--
+
+INSERT INTO `agenda` (`id`, `utilisateur_id`, `titre`) VALUES
+(1, 3, 'Agenda Dr DUPONT');
 
 -- --------------------------------------------------------
 
@@ -120,13 +124,13 @@ CREATE TABLE `horaire_cabinet` (
 --
 
 INSERT INTO `horaire_cabinet` (`id`, `cabinet_id`, `jour`, `ouverture_matin`, `fermeture_matin`, `ouverture_apresmidi`, `fermeture_apresmidi`) VALUES
-(22, 1, 'lundi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
-(23, 1, 'mardi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
-(24, 1, 'mercredi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
-(25, 1, 'jeudi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
-(26, 1, 'vendredi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
-(27, 1, 'samedi', '08:00:00', '12:00:00', '00:00:00', '00:00:00'),
-(28, 1, 'dimanche', '00:00:00', '00:00:00', '00:00:00', '00:00:00');
+(50, 1, 'lundi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
+(51, 1, 'mardi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
+(52, 1, 'mercredi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
+(53, 1, 'jeudi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
+(54, 1, 'vendredi', '08:00:00', '12:00:00', '14:00:00', '20:00:00'),
+(55, 1, 'samedi', '08:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(56, 1, 'dimanche', '00:00:00', '00:00:00', '00:00:00', '00:00:00');
 
 -- --------------------------------------------------------
 
@@ -171,19 +175,19 @@ CREATE TABLE `service` (
   `description` mediumtext NOT NULL,
   `statut` enum('BROUILLON','PUBLIE','ARCHIVE') NOT NULL DEFAULT 'BROUILLON',
   `image` varchar(255) DEFAULT NULL,
-  `ordre` int(11) NOT NULL DEFAULT 0
+  `ordre` int(11) NOT NULL DEFAULT 0,
+  `duree` int(11) NOT NULL DEFAULT 30
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `service`
 --
 
-INSERT INTO `service` (`id`, `titre`, `description`, `statut`, `image`, `ordre`) VALUES
-(1, 'Consultation générale', 'Examen complet de la santé bucco-dentaire, diagnostic et plan de traitement personnalisé.', 'PUBLIE', '68e6b348707a8_femme-patiente-chez-dentiste.jpg', 3),
-(2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', '68e7d49939d82_19475 (1).jpg', 0),
-(3, 'Implantologie', 'Remplacement des dents manquantes par des implants dentaires.', 'PUBLIE', '68e7d3d2412bf_5510224.jpg', 1),
-(4, 'Orthodontie', 'Correction de l\'alignement des dents et des problèmes d\'occlusion.', 'PUBLIE', '68e7d541958fd_17722.jpg', 2),
-(5, 'Blanchiment dentaire', 'Procédure esthétique pour éclaircir la couleur des dents.', 'ARCHIVE', '68e7d4c8844fc_2598.jpg', 4);
+INSERT INTO `service` (`id`, `titre`, `description`, `statut`, `image`, `ordre`, `duree`) VALUES
+(1, 'Consultation générale', 'Examen complet de la santé bucco-dentaire, diagnostic et plan de traitement personnalisé.', 'PUBLIE', '68e6b348707a8_femme-patiente-chez-dentiste.jpg', 3, 30),
+(2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', '68e7d49939d82_19475 (1).jpg', 1, 45),
+(3, 'Implantologie', 'Remplacement des dents manquantes par des implants dentaires.', 'PUBLIE', '68e7d3d2412bf_5510224.jpg', 0, 90),
+(4, 'Orthodontie', 'Correction de l\'alignement des dents et des problèmes d\'occlusion.', 'PUBLIE', '68e7d541958fd_17722.jpg', 2, 60);
 
 -- --------------------------------------------------------
 
@@ -211,7 +215,18 @@ CREATE TABLE `utilisateur` (
 INSERT INTO `utilisateur` (`id`, `role`, `nom`, `prenom`, `email`, `telephone`, `avatar`, `password_hash`, `date_inscription`, `date_naissance`) VALUES
 (3, 'MEDECIN', 'ADMIN', 'Dupont', 'admin@demo.fr', '+33-6-00-00-00-00', NULL, '$2y$10$QgebtCj.A6H2EiY0mK/wNuxUVG/8gkNxxqCzxC4hwqsc/lEAjuUhS', '2025-10-06 22:03:33', '1990-01-01'),
 (4, 'SECRETAIRE', 'DUPONT', 'Secretaire', 'secretaire@demo.fr', NULL, NULL, '$2y$10$leMn12WIQu9fTzcW.zGS4ePJsiEQC8DQVWXiXw4gGyxKop7ILSEnC', '2025-10-10 11:44:31', '1995-10-03'),
-(5, 'PATIENT', 'PATIENT', 'Jean', 'patient@demo.fr', '', NULL, '$2y$10$CbwM5992j/Jglr5KQtNOkO6KEQBeEn7OYVjW0fEewuPKqZCPXzNrC', '2025-10-10 13:26:16', '1996-10-24');
+(5, 'PATIENT', 'PATIENT', 'Jean', 'patient@demo.fr', '+33-6-85-99-66-33', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 13:26:16', '1988-10-13'),
+(6, 'PATIENT', 'PATIENT', 'Hugues', 'patient1@demo.fr', '4-55-88-99-99', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:21:11', '2001-12-04'),
+(7, 'PATIENT', 'Martin', 'Sophie', 'sophie.martin@email.com', '+33-6-12-34-56-78', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1985-03-12'),
+(8, 'PATIENT', 'Dupont', 'Jean', 'jean.dupont@email.com', '+33-6-23-45-67-89', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1978-07-22'),
+(9, 'PATIENT', 'Durand', 'Claire', 'claire.durand@email.com', '+33-6-34-56-78-90', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1990-11-05'),
+(10, 'PATIENT', 'Petit', 'Luc', 'luc.petit@email.com', '+33-6-45-67-89-01', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1982-01-17'),
+(11, 'PATIENT', 'Lefevre', 'Emma', 'emma.lefevre@email.com', '+33-6-56-78-90-12', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1995-06-30'),
+(12, 'PATIENT', 'Moreau', 'Paul', 'paul.moreau@email.com', '+33-6-67-89-01-23', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1988-09-14'),
+(13, 'PATIENT', 'Girard', 'Julie', 'julie.girard@email.com', '+33-6-78-90-12-34', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1992-12-03'),
+(14, 'PATIENT', 'Roux', 'Pierre', 'pierre.roux@email.com', '+33-6-89-01-23-45', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1980-04-25'),
+(15, 'PATIENT', 'Blanc', 'Laura', 'laura.blanc@email.com', '+33-6-90-12-34-56', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1997-08-19'),
+(16, 'PATIENT', 'Faure', 'Antoine', 'antoine.faure@email.com', '+33-6-11-12-13-14', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1983-05-08');
 
 --
 -- Index pour les tables déchargées
@@ -229,7 +244,8 @@ ALTER TABLE `actualite`
 --
 ALTER TABLE `agenda`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uk_agenda_utilisateur` (`utilisateur_id`);
+  ADD UNIQUE KEY `uk_agenda_utilisateur` (`utilisateur_id`),
+  ADD UNIQUE KEY `utilisateur_agenda_unique` (`utilisateur_id`);
 
 --
 -- Index pour la table `cabinet`
@@ -295,13 +311,13 @@ ALTER TABLE `utilisateur`
 -- AUTO_INCREMENT pour la table `actualite`
 --
 ALTER TABLE `actualite`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT pour la table `agenda`
 --
 ALTER TABLE `agenda`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `cabinet`
@@ -319,7 +335,7 @@ ALTER TABLE `creneau`
 -- AUTO_INCREMENT pour la table `horaire_cabinet`
 --
 ALTER TABLE `horaire_cabinet`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT pour la table `notification`
@@ -343,7 +359,7 @@ ALTER TABLE `service`
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Contraintes pour les tables déchargées
@@ -359,13 +375,14 @@ ALTER TABLE `actualite`
 -- Contraintes pour la table `agenda`
 --
 ALTER TABLE `agenda`
+  ADD CONSTRAINT `agenda_ibfk_1` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_agenda_user` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `creneau`
 --
 ALTER TABLE `creneau`
-  ADD CONSTRAINT `fk_creneau_agenda` FOREIGN KEY (`agenda_id`) REFERENCES `agenda` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_creneau_agenda` FOREIGN KEY (`agenda_id`) REFERENCES `agenda` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_creneau_service` FOREIGN KEY (`service_id`) REFERENCES `service` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --

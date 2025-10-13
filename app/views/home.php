@@ -17,7 +17,10 @@ include __DIR__ . '/templates/header.php'; ?>
           <h1>Bienvenue chez DupontCare</h1>
           <p>Un cabinet dentaire moderne, humain et à votre écoute.</p>
           <!-- Bouton pour prendre rendez-vous -->
-          <a href="#" class="btn">Prendre rendez-vous</a>
+          <a href="index.php?page=<?= isset($_SESSION['user_id']) ? 'rendezvous&action=selectConsultation' : 'auth&action=login' ?>" 
+             class="btn btn-primary">
+             Prendre rendez-vous
+          </a>
         </div>
       </div>
 

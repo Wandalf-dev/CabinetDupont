@@ -70,7 +70,7 @@ class AgendaController extends Controller {
             }
         }
 
-        $this->view('agenda/planning', $data);
+        $this->view('agenda/planning', $data); // Retour à l'ancienne vue
     }
 
     /**

@@ -5,7 +5,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 
 <main class="calendar-container">
     <div class="calendar-header">
-        <h2>Mon Planning</h2>
+        <h2 class="planning-title">Mon Planning</h2>
         
         <!-- Navigation principale -->
         <div class="calendar-navigation">

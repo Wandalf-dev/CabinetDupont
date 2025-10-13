@@ -7,6 +7,7 @@ use App\Models\ActuModel;
 use App\Models\ServiceModel;
 use App\Models\HoraireModel;
 use App\Models\PatientModel;
+use App\Models\CreneauModel;
 
 // Contrôleur pour le panneau d'administration du cabinet
 class AdminController extends \App\Core\Controller {
@@ -15,6 +16,7 @@ class AdminController extends \App\Core\Controller {
     private $serviceModel;
     private $horaireModel;
     private $patientModel;
+    private $creneauModel;
 
     // Constructeur : instancie les modèles nécessaires
     public function __construct() {
@@ -23,6 +25,7 @@ class AdminController extends \App\Core\Controller {
         $this->serviceModel = new ServiceModel();
         $this->horaireModel = new HoraireModel();
         $this->patientModel = new PatientModel();
+        $this->creneauModel = new CreneauModel();
     }
 
     // Méthode principale pour afficher le panneau d'administration
@@ -42,6 +45,9 @@ class AdminController extends \App\Core\Controller {
         $horaires = $this->horaireModel->getHoraires();
         // Récupère tous les patients pour l'administration
         $patientsAdmin = $this->patientModel->getAllPatientsAdmin();
+
+        // Récupère tous les créneaux pour l'administration
+        $creneaux = $this->creneauModel->getAllCreneaux();
 
         // Génère le token CSRF une seule fois par session
         if (!isset($_SESSION['csrf_token'])) {
