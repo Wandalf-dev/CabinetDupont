@@ -1,61 +1,3 @@
-<style>
-/* Tri visuel pour la table des patients */
-/* Tri visuel pour la table des patients */
-#patients-table th.sortable {
-    cursor: pointer;
-    user-select: none;
-    position: relative;
-    padding: 12px 25px 12px 12px;
-    background-color: #f8f9fa;
-    transition: background-color 0.2s ease;
-}
-
-#patients-table th.sortable:hover {
-    background-color: #e9ecef;
-}
-
-#patients-table th .sort-icon {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 12px;
-    height: 12px;
-    line-height: 12px;
-    text-align: center;
-    font-size: 12px;
-    color: #6c757d;
-    transition: all 0.2s ease;
-    opacity: 0.5;
-}
-
-#patients-table th.sortable:hover .sort-icon {
-    opacity: 1;
-}
-
-#patients-table th.sorted-asc, #patients-table th.sorted-desc {
-    background-color: #e3f2fd;
-    color: #0d6efd;
-    font-weight: 600;
-}
-
-#patients-table th.sorted-asc .sort-icon i::before {
-    content: "\f0de"; /* fa-sort-up */
-    color: #0d6efd;
-    opacity: 1;
-}
-
-#patients-table th.sorted-desc .sort-icon i::before {
-    content: "\f0dd"; /* fa-sort-down */
-    color: #0d6efd;
-    opacity: 1;
-}
-
-#patients-table th.sortable:not(.sorted-asc):not(.sorted-desc) .sort-icon i::before {
-    content: "\f0dc"; /* fa-sort */
-    opacity: 0.5;
-}
-</style>
 <?php
 // Inclusion du header et des messages flash (succès/erreur)
 include __DIR__ . '/templates/header.php';
@@ -363,136 +305,120 @@ include __DIR__ . '/templates/flash-messages.php';
             </div>
         </div>
 
-        <!-- Onglet "Créneaux" : gestion des créneaux de consultation -->
-        <div class="tab-content" id="tab-creneaux">
-            <div class="admin-section p-4">
-                <div class="admin-actions mb-4">
-                    <!-- Bouton pour générer de nouveaux créneaux -->
-                    <a href="index.php?page=creneaux&action=generer" class="btn-admin add">
-                        <i class="fas fa-calendar-plus"></i>&nbsp;Générer des créneaux
-                    </a>
-                </div>
+<!-- Onglet "Créneaux" : gestion des créneaux de consultation -->
+        <div class="tab-content" id="tab-creneaux" style="background: transparent !important;">
+            <div class="mb-4" style="display: flex; justify-content: flex-end;">
+                <a href="index.php?page=creneaux&action=generer" class="btn-admin add" style="width: auto;">
+                    <i class="fas fa-calendar-plus"></i>&nbsp;Générer des créneaux
+                </a>
+            </div>
 
-                <!-- Section pour afficher les créneaux existants -->
-                <div class="table-responsive">
-                    <?php if (!empty($creneaux)) { ?>
-                        <form id="form-delete-creneaux" method="post" action="index.php?page=creneaux&action=deleteMultiple">
-                            <div class="mb-3">
-                                <button type="submit" class="btn-admin delete" id="delete-selected" disabled>
-                                    <i class="fas fa-trash"></i>&nbsp;Supprimer la sélection
-                                </button>
+            <!-- Section pour afficher les créneaux existants -->
+            <div class="creneaux-accordion" style="background: transparent !important;">
+                    <?php 
+                    if (!empty($creneaux)) {
+                        // Organiser les créneaux par jour et période
+                        $creneauxParJour = [];
+                        foreach ($creneaux as $creneau) {
+                            $date = date('Y-m-d', strtotime($creneau['debut']));
+                            $heure = (int)date('H', strtotime($creneau['debut']));
+                            $periode = ($heure < 12) ? 'matin' : 'apres-midi';
+                            
+                            if (!isset($creneauxParJour[$date])) {
+                                $creneauxParJour[$date] = [
+                                    'matin' => [],
+                                    'apres-midi' => []
+                                ];
+                            }
+                            $creneauxParJour[$date][$periode][] = $creneau;
+                        }
+                        
+                        // Trier les dates
+                        ksort($creneauxParJour);
+                        
+                        foreach ($creneauxParJour as $date => $periodes): 
+                            $dateFormattee = date('d/m/Y', strtotime($date));
+                            $accordionId = "accordion-" . str_replace('/', '-', $dateFormattee);
+                    ?>
+                            <div class="accordion-date">
+                                <div class="accordion-header" id="header-<?= $accordionId ?>">
+                                    <button class="accordion-button collapsed" type="button" aria-expanded="false">
+                                        <?= $dateFormattee ?>
+                                        <span class="badge bg-primary ms-2">
+                                            <?= count($periodes['matin']) + count($periodes['apres-midi']) ?> créneaux
+                                        </span>
+                                    </button>
+                                </div>
+                                
+                                <div id="collapse-<?= $accordionId ?>" class="accordion-collapse collapse" aria-labelledby="header-<?= $accordionId ?>">
+                                        <?php foreach (['matin' => 'Matin', 'apres-midi' => 'Après-midi'] as $periode => $labelPeriode): ?>
+                                            <?php if (!empty($periodes[$periode])): ?>
+                                                <div class="periode-section <?= $periode ?>">
+                                                    <div class="periode-header">
+                                                        <button class="periode-button collapsed" type="button">
+                                                            <span class="periode-title"><?= $labelPeriode ?></span>
+                                                            <span class="badge bg-secondary ms-2">
+                                                                <?= count($periodes[$periode]) ?> créneaux
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                    <div id="collapse-<?= $accordionId ?>-<?= $periode ?>" 
+                                                         class="periode-collapse collapse" 
+                                                         aria-labelledby="header-<?= $accordionId ?>-<?= $periode ?>">
+                                                        <div class="creneaux-list">
+                                                            <div class="creneaux-actions">
+                                                                <label class="select-all">
+                                                                    <input type="checkbox" class="select-all-checkbox">
+                                                                    <span>Tout sélectionner</span>
+                                                                </label>
+                                                                <button type="button" class="btn-admin delete delete-selected" disabled>
+                                                                    <i class="fas fa-trash"></i>&nbsp;Supprimer la sélection
+                                                                </button>
+                                                            </div>
+                                                            <?php foreach ($periodes[$periode] as $creneau): ?>
+                                                                <div class="creneau-item">
+                                                                    <?php if (!$creneau['est_reserve']): ?>
+                                                                        <div class="creneau-checkbox">
+                                                                            <input type="checkbox" class="creneau-select" data-id="<?= $creneau['id'] ?>">
+                                                                        </div>
+                                                                    <?php endif; ?>
+                                                                    <div class="creneau-info">
+                                                                        <div class="creneau-horaire">
+                                                                            <i class="far fa-clock"></i>
+                                                                            <?= date('H:i', strtotime($creneau['debut'])) ?> - <?= date('H:i', strtotime($creneau['fin'])) ?>
+                                                                        </div>
+                                                                        <div class="creneau-service">
+                                                                            <i class="far fa-calendar-check"></i>
+                                                                            <?= htmlspecialchars($creneau['service_titre']) ?>
+                                                                        </div>
+                                                                        <div class="creneau-statut <?= $creneau['est_reserve'] ? 'reserve' : 'disponible' ?>">
+                                                                            <i class="fas <?= $creneau['est_reserve'] ? 'fa-lock' : 'fa-lock-open' ?>"></i>
+                                                                            <?= $creneau['est_reserve'] ? 'Réservé' : 'Disponible' ?>
+                                                                        </div>
+                                                                    </div>
+                                                                    <?php if (!$creneau['est_reserve']): ?>
+                                                                        <div class="creneau-actions">
+                                                                            <button type="button" onclick="deleteCreneau(<?= $creneau['id'] ?>)" class="btn-admin delete">
+                                                                                <i class="fas fa-trash"></i>&nbsp;Supprimer
+                                                                            </button>
+                                                                        </div>
+                                                                    <?php endif; ?>
+                                                                </div>
+                                                            <?php endforeach; ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                </div>
                             </div>
-                            <table class="admin-table table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="check-all">
-                                                <label class="form-check-label" for="check-all"></label>
-                                            </div>
-                                        </th>
-                                        <th>Date</th>
-                                        <th>Heure de début</th>
-                                        <th>Heure de fin</th>
-                                        <th>Service</th>
-                                        <th>Statut</th>
-                                        <th class="actions-header">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                <?php foreach ($creneaux as $creneau) { ?>
-                                <tr>
-                                    <td>
-                                        <?php if (!$creneau['est_reserve']) { ?>
-                                            <div class="form-check">
-                                                <input class="form-check-input creneau-check" 
-                                                       type="checkbox" 
-                                                       name="creneaux[]" 
-                                                       value="<?= $creneau['id'] ?>" 
-                                                       id="creneau-<?= $creneau['id'] ?>">
-                                                <label class="form-check-label" for="creneau-<?= $creneau['id'] ?>"></label>
-                                            </div>
-                                        <?php } ?>
-                                    </td>
-                                    <td><?= date('d/m/Y', strtotime($creneau['debut'])) ?></td>
-                                    <td><?= date('H:i', strtotime($creneau['debut'])) ?></td>
-                                    <td><?= date('H:i', strtotime($creneau['fin'])) ?></td>
-                                    <td><?= htmlspecialchars($creneau['service_titre']) ?></td>
-                                    <td><?= htmlspecialchars($creneau['est_reserve'] ? 'Réservé' : 'Disponible') ?></td>
-                                    <td class="actions-cell">
-                                        <?php if (!$creneau['est_reserve']) { ?>
-                                            <button type="button" onclick="deleteCreneau(<?= $creneau['id'] ?>)" class="btn-admin delete">
-                                                <i class="fas fa-trash"></i>&nbsp;Supprimer
-                                            </button>
-                                        <?php } ?>
-                                    </td>
-                                </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                        </form>
-                    <?php } else { ?>
+                    <?php 
+                        endforeach;
+                    } else { 
+                    ?>
                         <p>Aucun créneau n'est disponible pour le moment.</p>
                     <?php } ?>
                 </div>
-
-                <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const checkAll = document.getElementById('check-all');
-                    const creneauChecks = document.getElementsByClassName('creneau-check');
-                    const deleteSelected = document.getElementById('delete-selected');
-                    const formDeleteCreneaux = document.getElementById('form-delete-creneaux');
-
-                    // Gérer le "cocher tout"
-                    if (checkAll) {
-                        checkAll.addEventListener('change', function() {
-                            Array.from(creneauChecks).forEach(check => {
-                                check.checked = checkAll.checked;
-                            });
-                            updateDeleteButton();
-                        });
-                    }
-
-                    // Gérer les cases individuelles
-                    Array.from(creneauChecks).forEach(check => {
-                        check.addEventListener('change', function() {
-                            updateCheckAll();
-                            updateDeleteButton();
-                        });
-                    });
-
-                    // Mettre à jour l'état de la case "cocher tout"
-                    function updateCheckAll() {
-                        const totalChecks = creneauChecks.length;
-                        const checkedChecks = Array.from(creneauChecks).filter(check => check.checked).length;
-                        
-                        if (checkAll) {
-                            checkAll.checked = totalChecks > 0 && totalChecks === checkedChecks;
-                            checkAll.indeterminate = checkedChecks > 0 && checkedChecks < totalChecks;
-                        }
-                    }
-
-                    // Mettre à jour l'état du bouton de suppression
-                    function updateDeleteButton() {
-                        const hasChecked = Array.from(creneauChecks).some(check => check.checked);
-                        if (deleteSelected) {
-                            deleteSelected.disabled = !hasChecked;
-                        }
-                    }
-
-                    // Confirmation avant suppression multiple
-                    if (formDeleteCreneaux) {
-                        formDeleteCreneaux.addEventListener('submit', function(e) {
-                            const checkedCount = Array.from(creneauChecks).filter(check => check.checked).length;
-                            if (!confirm(`Êtes-vous sûr de vouloir supprimer les ${checkedCount} créneaux sélectionnés ?`)) {
-                                e.preventDefault();
-                            }
-                        });
-                    }
-                });
-                </script>
-            </div>
         </div>
 
 <!-- Styles pour l'interface admin -->
@@ -500,199 +426,18 @@ include __DIR__ . '/templates/flash-messages.php';
 <link rel="stylesheet" href="css/drag-drop.css">
 <link rel="stylesheet" href="css/tabs.css">
 <link rel="stylesheet" href="css/table-actions.css">
+<link rel="stylesheet" href="css/creneaux-accordion.css">
+<link rel="stylesheet" href="css/patient.css">
+<link rel="stylesheet" href="css/periodes.css">
 
 <!-- Scripts pour la gestion des onglets, du drag & drop et des filtres -->
 <script src="js/tabs.js"></script>
 <script src="js/service-order.js"></script>
-<script>
-// Tri des colonnes de la table patients
-document.addEventListener('DOMContentLoaded', function() {
-    const table = document.getElementById('patients-table');
-    if (!table) return;
+<script src="js/creneaux-accordion.js"></script>
+<script src="js/creneaux-selection.js"></script>
+<script src="js/admin-tables.js"></script>
 
-    function getCellValue(row, index) {
-        const cell = row.children[index];
-        return cell ? cell.textContent.trim() : '';
-    }
-
-    function compareCells(a, b, isDate) {
-        if (isDate) {
-            const [aDay, aMonth, aYear] = a.split('/').map(Number);
-            const [bDay, bMonth, bYear] = b.split('/').map(Number);
-            return new Date(aYear, aMonth - 1, aDay) - new Date(bYear, bMonth - 1, bDay);
-        }
-        return isNaN(a) || isNaN(b) ? 
-               a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}) : 
-               Number(a) - Number(b);
-    }
-
-    table.querySelectorAll('th.sortable').forEach((th, idx) => {
-        let firstClick = true;
-
-        th.addEventListener('click', () => {
-            const tbody = table.tBodies[0];
-            const rows = Array.from(tbody.querySelectorAll('tr'));
-            const isDate = th.dataset.sort === 'date_naissance';
-
-            // Réinitialiser les autres en-têtes
-            table.querySelectorAll('th.sortable').forEach(header => {
-                if (header !== th) {
-                    header.classList.remove('sorted-asc', 'sorted-desc');
-                }
-            });
-
-            let isAsc;
-            if (firstClick) {
-                isAsc = true;
-                firstClick = false;
-            } else {
-                isAsc = !th.classList.contains('sorted-asc');
-            }
-
-            // Trier les lignes
-            rows.sort((a, b) => {
-                const aValue = getCellValue(a, idx);
-                const bValue = getCellValue(b, idx);
-                const comparison = compareCells(aValue, bValue, isDate);
-                return isAsc ? comparison : -comparison;
-            });
-
-            // Appliquer le tri
-            tbody.append(...rows);
-
-            // Mettre à jour l'état visuel
-            th.classList.remove('sorted-asc', 'sorted-desc');
-            th.classList.add(isAsc ? 'sorted-asc' : 'sorted-desc');
-        });
-    });
-});
-function deleteService(id) {
-    // Confirmation avant suppression d'un service
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce service ?')) {
-        window.location.href = `index.php?page=services&action=delete&id=${id}`;
-    }
-}
-function deleteActu(id) {
-    // Confirmation avant suppression d'une actualité
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?')) {
-        window.location.href = `index.php?page=actus&action=delete&id=${id}`;
-    }
-}
-function deletePatient(id) {
-    // Confirmation avant suppression d'un patient
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce patient ?')) {
-        window.location.href = `index.php?page=admin&action=deletePatient&id=${id}`;
-    }
-}
-function deleteCreneau(id) {
-    // Confirmation avant suppression d'un créneau
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce créneau ?')) {
-        window.location.href = `index.php?page=creneaux&action=delete&id=${id}`;
-    }
-}
-// Recherche services et actualités
-function filterServices() {
-    const serviceInput = document.getElementById('service-filter-input');
-    const serviceTable = document.getElementById('services-table');
-    if (serviceInput && serviceTable) {
-        const filter = serviceInput.value.toLowerCase();
-        const rows = serviceTable.tBodies[0] ? serviceTable.tBodies[0].rows : serviceTable.rows;
-        for (const row of rows) {
-            if (row.cells.length < 3) continue;
-            const titre = row.cells[1].textContent.toLowerCase();
-            const desc = row.cells[2].textContent.toLowerCase();
-            if (filter === '' || titre.includes(filter) || desc.includes(filter)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        }
-    }
-}
-function initActusFilter() {
-    const actusInput = document.getElementById('actus-filter-input');
-    const actusTable = document.getElementById('actus-table');
-    if (actusInput && actusTable) {
-        actusInput.addEventListener('input', function() {
-            const filter = actusInput.value.toLowerCase();
-            for (const row of actusTable.tBodies[0].rows) {
-                const text = row.cells[0].textContent.toLowerCase();
-                row.style.display = text.includes(filter) ? '' : 'none';
-            }
-        });
-    }
-}
-document.addEventListener('DOMContentLoaded', function() {
-    // Filtre patients à chaque input
-    const patientInput = document.getElementById('patient-filter-input');
-    const patientsTable = document.getElementById('patients-table');
-    if (patientInput && patientsTable) {
-        patientInput.addEventListener('input', function() {
-            const filter = patientInput.value.toLowerCase();
-            const rows = patientsTable.tBodies[0].rows;
-            for (const row of rows) {
-                const nom = row.cells[0].textContent.toLowerCase();
-                const prenom = row.cells[1].textContent.toLowerCase();
-                const email = row.cells[2].textContent.toLowerCase();
-                const tel = row.cells[3].textContent.toLowerCase();
-                if (filter === '' || 
-                    nom.includes(filter) || 
-                    prenom.includes(filter) || 
-                    email.includes(filter) || 
-                    tel.includes(filter)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            }
-        });
-    }
-
-    // Filtre services à chaque input
-    const serviceInput = document.getElementById('service-filter-input');
-    if (serviceInput) {
-        serviceInput.addEventListener('input', filterServices);
-    }
-    // Filtre services à chaque affichage d'onglet
-    document.querySelector('[data-tab="tab-services"]').addEventListener('click', function() {
-        setTimeout(filterServices, 100);
-    });
-    // Filtre actualités à chaque input
-    const actusInput = document.getElementById('actus-filter-input');
-    const actusTable = document.getElementById('actus-table');
-    if (actusInput && actusTable) {
-        actusInput.addEventListener('input', function() {
-            const filter = actusInput.value.toLowerCase();
-            const rows = actusTable.tBodies[0] ? actusTable.tBodies[0].rows : actusTable.rows;
-            for (const row of rows) {
-                if (row.cells.length < 1) continue;
-                const text = row.cells[0].textContent.toLowerCase();
-                if (filter === '' || text.includes(filter)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            }
-        });
-    }
-    document.querySelector('[data-tab="tab-actus"]').addEventListener('click', function() {
-        setTimeout(function() {
-            if (actusInput && actusTable) {
-                const filter = actusInput.value.toLowerCase();
-                const rows = actusTable.tBodies[0] ? actusTable.tBodies[0].rows : actusTable.rows;
-                for (const row of rows) {
-                    if (row.cells.length < 1) continue;
-                    const text = row.cells[0].textContent.toLowerCase();
-                    if (filter === '' || text.includes(filter)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                }
-            }
-        }, 100);
-    });
-});
-</script>
+    </div> <!-- Fermeture de tabs-container -->
+</main>
 
 <?php require_once __DIR__ . '/templates/footer.php'; ?>

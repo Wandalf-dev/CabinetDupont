@@ -16,43 +16,68 @@ class CreneauxController {
     public function deleteMultiple() {
         // Vérifier les droits d'accès (médecin uniquement)
         if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'MEDECIN') {
-            $_SESSION['error'] = "Accès non autorisé";
-            header('Location: index.php');
+            http_response_code(403);
+            echo json_encode(['error' => 'Accès non autorisé']);
             exit();
         }
 
-        // Vérifier le token CSRF
-        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-            $_SESSION['error'] = "Token de sécurité invalide";
-            header('Location: index.php?page=admin');
+        // Récupérer et décoder les données JSON
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!isset($data['ids']) || !is_array($data['ids'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Données invalides']);
             exit();
         }
 
-        // Récupérer les IDs des créneaux à supprimer
-        $creneauxIds = isset($_POST['creneaux']) ? array_map('intval', $_POST['creneaux']) : [];
+        // Nettoyer et valider les IDs
+        $creneauxIds = array_map('intval', $data['ids']);
         
         if (empty($creneauxIds)) {
-            $_SESSION['error'] = "Aucun créneau sélectionné";
-            header('Location: index.php?page=admin');
+            http_response_code(400);
+            echo json_encode(['error' => 'Aucun créneau sélectionné']);
             exit();
         }
 
         // Supprimer les créneaux
         $supprimés = 0;
+        $erreurs = [];
+
         foreach ($creneauxIds as $id) {
             $creneau = $this->creneauModel->getCreneauById($id);
-            if ($creneau && !$creneau['est_reserve'] && $this->creneauModel->deleteCreneau($id)) {
+            
+            if (!$creneau) {
+                $erreurs[] = "Créneau $id introuvable";
+                continue;
+            }
+
+            if ($creneau['est_reserve']) {
+                $erreurs[] = "Créneau $id est déjà réservé";
+                continue;
+            }
+
+            if ($this->creneauModel->deleteCreneau($id)) {
                 $supprimés++;
+            } else {
+                $erreurs[] = "Erreur lors de la suppression du créneau $id";
             }
         }
 
-        if ($supprimés > 0) {
-            $_SESSION['success'] = "$supprimés créneau(x) supprimé(s) avec succès";
-        } else {
-            $_SESSION['error'] = "Aucun créneau n'a pu être supprimé";
+        // Préparer la réponse
+        $response = [
+            'success' => $supprimés > 0,
+            'message' => $supprimés > 0 ? "$supprimés créneau(x) supprimé(s) avec succès" : "Aucun créneau n'a pu être supprimé",
+            'deletedCount' => $supprimés
+        ];
+
+        if (!empty($erreurs)) {
+            $response['errors'] = $erreurs;
         }
 
-        header('Location: index.php?page=admin');
+        // Envoyer la réponse JSON
+        header('Content-Type: application/json');
+        echo json_encode($response);
         exit();
     }
 

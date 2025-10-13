@@ -1,0 +1,75 @@
+#patients-table {
+  table-layout: auto;
+  width: 100%;
+}
+
+#patients-table th {
+  text-align: left;
+  padding: 16px;
+  background-color: #f8f9fa;
+}
+
+#patients-table td {
+  padding: 12px 16px;
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+#patients-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  vertical-align: middle;
+  padding-right: 18px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+#patients-table th.sortable:hover,
+#patients-table th.sortable:focus {
+  background-color: #e9ecef;
+  outline: none;
+}
+
+#patients-table th .sort-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  text-align: center;
+  font-size: 14px;
+  color: #888;
+  margin-left: 2px;
+  vertical-align: middle;
+  transition: color 0.2s, transform 0.2s, opacity 0.2s;
+  opacity: 0.5;
+}
+
+#patients-table th.sortable:hover .sort-icon,
+#patients-table th.sortable:focus .sort-icon {
+  color: #007bff;
+  opacity: 1;
+}
+
+#patients-table th.sorted-asc,
+#patients-table th.sorted-desc {
+  background: #eaf6ff;
+  color: #007bff;
+  font-weight: 600;
+}
+
+#patients-table th.sorted-asc .sort-icon {
+  color: #007bff;
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+#patients-table th.sorted-desc .sort-icon {
+  color: #007bff;
+  transform: rotate(0deg);
+  opacity: 1;
+}
+
+#patients-table th.sortable:not(.sorted-asc):not(.sorted-desc) .sort-icon i::before {
+  content: "\\f0dc"; /* fa-sort */
+  opacity: 0.5;
+}
