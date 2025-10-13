@@ -78,11 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    window.deleteCreneau = function(id) {
-        if (confirm('Êtes-vous sûr de vouloir supprimer ce créneau ?')) {
-            window.location.href = `index.php?page=creneaux&action=delete&id=${id}`;
-        }
-    }
+    // La fonction deleteCreneau a été déplacée vers creneaux-delete.js
 
     // Fonctions de filtrage
     window.filterServices = function() {

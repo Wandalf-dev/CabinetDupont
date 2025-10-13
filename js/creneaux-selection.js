@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function() {
     const initCreneauxSelection = (periodeElement) => {
         const selectAllCheckbox = periodeElement.querySelector('.select-all-checkbox');
@@ -9,9 +10,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const selectedCount = periodeElement.querySelectorAll('.creneau-select:checked').length;
             if (selectedCount > 0) {
                 deleteSelectedButton.classList.add('active');
-                deleteSelectedButton.textContent = `Supprimer la sélection (${selectedCount})`;
+                deleteSelectedButton.disabled = false;
+                const pluriel = selectedCount > 1 ? 'créneaux' : 'créneau';
+                deleteSelectedButton.textContent = `Supprimer la sélection (${selectedCount} ${pluriel})`;
             } else {
                 deleteSelectedButton.classList.remove('active');
+                deleteSelectedButton.disabled = true;
                 deleteSelectedButton.textContent = 'Supprimer la sélection';
             }
         };
@@ -51,9 +55,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (!selectedIds.length) return;
 
-            if (confirm(`Êtes-vous sûr de vouloir supprimer ${selectedIds.length} créneau(x) ?`)) {
+            // Créer une boîte de dialogue de confirmation personnalisée
+            const confirmDialog = document.createElement('div');
+            confirmDialog.classList.add('alert-popup');
+                const pluriel = selectedIds.length > 1 ? 'créneaux' : 'créneau';
+                confirmDialog.innerHTML = `
+                <i class="fas fa-question-circle"></i>
+                <span class="message">Êtes-vous sûr de vouloir supprimer ${selectedIds.length} ${pluriel} ?</span>
+                <div class="alert-actions">
+                    <button class="btn-confirm">Confirmer</button>
+                    <button class="btn-cancel">Annuler</button>
+                </div>
+            `;
+            document.body.appendChild(confirmDialog);
+
+            // Gérer la confirmation
+            const proceed = await new Promise(resolve => {
+                const btnConfirm = confirmDialog.querySelector('.btn-confirm');
+                const btnCancel = confirmDialog.querySelector('.btn-cancel');
+
+                btnConfirm.addEventListener('click', () => {
+                    confirmDialog.remove();
+                    resolve(true);
+                });
+
+                btnCancel.addEventListener('click', () => {
+                    confirmDialog.remove();
+                    resolve(false);
+                });
+            });
+
+            if (proceed) {
                 try {
-                    const response = await fetch('index.php?page=creneaux&action=delete-multiple', {
+                    const response = await fetch('index.php?page=creneaux&action=deleteMultiple', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -73,15 +107,86 @@ document.addEventListener('DOMContentLoaded', function() {
                             selectAllCheckbox.checked = false;
                         }
                         updateDeleteButton();
+
+                        // Mettre à jour les compteurs dans le bandeau de la période
+                        const periodeSection = periodeElement.closest('.periode-section');
+                        if (periodeSection) {
+                            const periodeHeader = periodeSection.querySelector('.periode-header');
+                            const periodeBadge = periodeHeader?.querySelector('.badge');
+                            
+                            if (periodeBadge) {
+                                const remainingCreneaux = periodeElement.querySelectorAll('.creneau-item').length;
+                                periodeBadge.textContent = `${remainingCreneaux} créneaux`;
+                            }
+
+                            // Mettre à jour le compteur global de la date
+                            const accordionDate = periodeSection.closest('.accordion-date');
+                            const dateBadge = accordionDate?.querySelector('.accordion-header .badge');
+                            
+                            if (dateBadge) {
+                                const totalCreneaux = accordionDate.querySelectorAll('.creneau-item').length;
+                                dateBadge.textContent = `${totalCreneaux} créneaux`;
+                            }
+
+                            // Masquer la section période si elle est vide
+                            if (periodeElement.querySelectorAll('.creneau-item').length === 0) {
+                                periodeSection.style.display = 'none';
+                                
+                                // Si c'était la dernière période, masquer aussi la section date
+                                const visiblePeriodes = accordionDate.querySelectorAll('.periode-section:not([style*="display: none"])').length;
+                                if (visiblePeriodes === 0) {
+                                    accordionDate.style.display = 'none';
+                                }
+                            }
+                        }
                         
-                        // Afficher un message de succès
-                        alert('Les créneaux sélectionnés ont été supprimés avec succès.');
+                        // Afficher un message de succès personnalisé
+                        const successAlert = document.createElement('div');
+                        successAlert.classList.add('alert-popup', 'success');
+                        successAlert.innerHTML = `
+                            <i class="fas fa-check-circle"></i>
+                            <span class="message">Les créneaux sélectionnés ont été supprimés avec succès.</span>
+                        `;
+                        document.body.appendChild(successAlert);
+                        
+                        // Auto-supprimer l'alerte après 5 secondes
+                        setTimeout(() => {
+                            if (successAlert && successAlert.parentElement) {
+                                successAlert.parentElement.removeChild(successAlert);
+                            }
+                        }, 5000);
                     } else {
-                        throw new Error('Erreur lors de la suppression');
+                        const data = await response.json();
+                        if (data.errors) {
+                            const errorAlert = document.createElement('div');
+                            errorAlert.classList.add('alert-popup', 'error');
+                            errorAlert.innerHTML = `
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span class="message">Erreurs lors de la suppression :<br>${data.errors.join('<br>')}</span>
+                            `;
+                            document.body.appendChild(errorAlert);
+                            setTimeout(() => errorAlert.remove(), 5000);
+                        } else if (!data.success) {
+                            const errorAlert = document.createElement('div');
+                            errorAlert.classList.add('alert-popup', 'error');
+                            errorAlert.innerHTML = `
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span class="message">${data.message || 'Erreur lors de la suppression'}</span>
+                            `;
+                            document.body.appendChild(errorAlert);
+                            setTimeout(() => errorAlert.remove(), 5000);
+                        }
                     }
                 } catch (error) {
-                    alert('Une erreur est survenue lors de la suppression des créneaux.');
-                    console.error(error);
+                    console.error('Erreur détaillée:', error);
+                    const errorAlert = document.createElement('div');
+                    errorAlert.classList.add('alert-popup', 'error');
+                    errorAlert.innerHTML = `
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span class="message">Une erreur est survenue lors de la suppression des créneaux.</span>
+                    `;
+                    document.body.appendChild(errorAlert);
+                    setTimeout(() => errorAlert.remove(), 5000);
                 }
             }
         });

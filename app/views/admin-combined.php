@@ -398,7 +398,7 @@ include __DIR__ . '/templates/flash-messages.php';
                                                                     </div>
                                                                     <?php if (!$creneau['est_reserve']): ?>
                                                                         <div class="creneau-actions">
-                                                                            <button type="button" onclick="deleteCreneau(<?= $creneau['id'] ?>)" class="btn-admin delete">
+                                                                            <button type="button" class="btn-admin delete btn-delete-creneau" data-id="<?= $creneau['id'] ?>">
                                                                                 <i class="fas fa-trash"></i>&nbsp;Supprimer
                                                                             </button>
                                                                         </div>
@@ -436,6 +436,8 @@ include __DIR__ . '/templates/flash-messages.php';
 <script src="js/creneaux-accordion.js"></script>
 <script src="js/creneaux-selection.js"></script>
 <script src="js/admin-tables.js"></script>
+<script src="js/creneaux-alerts.js"></script>
+<script src="js/creneaux-delete.js"></script>
 
     </div> <!-- Fermeture de tabs-container -->
 </main>
