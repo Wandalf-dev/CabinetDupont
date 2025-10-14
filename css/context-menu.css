@@ -1,0 +1,38 @@
+/* Menu contextuel */
+.context-menu {
+    position: absolute;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    padding: 8px 0;
+    min-width: 180px;
+    z-index: 1000;
+    pointer-events: auto;
+}
+
+.context-menu-item {
+    padding: 8px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #333;
+    transition: background-color 0.2s;
+}
+
+.context-menu-item:hover {
+    background-color: #f3f4f6;
+}
+
+.context-menu-item i {
+    width: 16px;
+    text-align: center;
+    color: #666;
+}
+
+/* Séparateur entre les options */
+.context-menu-separator {
+    height: 1px;
+    background-color: #e5e7eb;
+    margin: 4px 0;
+}

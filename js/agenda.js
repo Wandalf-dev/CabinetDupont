@@ -3,6 +3,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentDate = new Date();
     let currentView = 'week';
 
+    // Écouter l'événement de mise à jour des rendez-vous
+    document.addEventListener('appointmentUpdated', function(event) {
+        // Recharger la vue et les rendez-vous
+        updateView();
+        loadAppointments();
+    });
+
     // Configuration locale
     const locale = {
         days: {
@@ -238,6 +245,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Créer un nouvel élément pour le rendez-vous
                         const appointmentElement = document.createElement('div');
                         appointmentElement.classList.add('slot-cell', 'reserved');
+                        
+                        // Ajouter les données du rendez-vous pour la modification
+                        const appointmentData = {
+                            id: event.id,
+                            patient: event.patient.prenom + ' ' + event.patient.nom,
+                            service: event.service.titre,
+                            date: formatDateISO(startTime),
+                            time: startTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+                            status: event.status
+                        };
+                        appointmentElement.setAttribute('data-appointment', JSON.stringify(appointmentData));
+                        appointmentElement.setAttribute('data-id', event.id);
                         
                         // Calculer la hauteur exacte basée sur la durée
                         const exactHeight = (durationMinutes / 30) * slotHeight;

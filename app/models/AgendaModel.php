@@ -72,6 +72,7 @@ class AgendaModel extends Model {
                 LEFT JOIN utilisateur u ON r.patient_id = u.id
                 WHERE c.agenda_id = ? 
                 AND DATE(c.debut) BETWEEN ? AND ?
+                AND r.statut != 'ANNULE'
                 ORDER BY c.debut ASC";
         
         $stmt = $this->db->prepare($sql);

@@ -26,9 +26,6 @@
     right: 20px;
     z-index: 1000;
     min-width: 300px;
-}
-
-.alert-popup {
     padding: 20px 30px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -39,6 +36,29 @@
     min-width: 400px;
     max-width: 500px;
     background-color: white;
+    opacity: 1;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
 }
 
 .alert-popup.success {

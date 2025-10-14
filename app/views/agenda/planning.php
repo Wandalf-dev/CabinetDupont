@@ -10,6 +10,10 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 <link rel="stylesheet" href="/CabinetDupont/css/agenda-grid.css">
 <link rel="stylesheet" href="/CabinetDupont/css/agenda-slots.css">
 <link rel="stylesheet" href="/CabinetDupont/css/agenda-day-view.css">
+<link rel="stylesheet" href="/CabinetDupont/css/context-menu.css">
+<link rel="stylesheet" href="/CabinetDupont/css/confirmation-dialog.css">
+<link rel="stylesheet" href="/CabinetDupont/css/notifications.css">
+<link rel="stylesheet" href="/CabinetDupont/css/edit-appointment.css">
 
 <main class="calendar-container">
     <div class="calendar-header">
@@ -194,7 +198,40 @@ require_once __DIR__ . '/../templates/flash-messages.php';
     </div>
 </div>
 
+<!-- Formulaire de modification de rendez-vous -->
+<div class="edit-appointment-overlay">
+    <div class="edit-appointment-form">
+        <h3>Modifier le rendez-vous</h3>
+        <div class="edit-appointment-details">
+            <p><strong>Patient :</strong> <span class="patient-name"></span></p>
+            <p><strong>Service :</strong> <span class="service-name"></span></p>
+            <p><strong>Durée :</strong> <span class="appointment-duration"></span> minutes</p>
+        </div>
+        <form id="edit-appointment-form">
+            <input type="hidden" name="appointment_id" id="edit-appointment-id">
+            <div class="form-group">
+                <label for="edit-appointment-date">Nouvelle date :</label>
+                <input type="date" id="edit-appointment-date" name="appointment_date" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-appointment-time">Nouvelle heure :</label>
+                <select id="edit-appointment-time" name="appointment_time" required>
+                    <!-- Les options seront remplies dynamiquement -->
+                </select>
+            </div>
+            <div class="buttons">
+                <button type="button" class="cancel">Annuler</button>
+                <button type="submit" class="confirm">Confirmer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="<?php echo BASE_URL; ?>/js/notifications.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/agenda.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/agenda-appointments.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/agenda-unavailable.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/context-menu.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/appointment-actions.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/edit-appointment.js"></script>
 <?php require_once __DIR__ . '/../templates/footer.php'; ?>
