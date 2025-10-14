@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 14 oct. 2025 à 13:46
+-- Généré le : mar. 14 oct. 2025 à 19:22
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -202,8 +202,8 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (200, 1, NULL, '2025-10-20 09:30:00', '2025-10-20 10:00:00', 0),
 (201, 1, NULL, '2025-10-20 10:00:00', '2025-10-20 10:30:00', 0),
 (202, 1, NULL, '2025-10-20 10:30:00', '2025-10-20 11:00:00', 0),
-(203, 1, NULL, '2025-10-20 11:00:00', '2025-10-20 11:30:00', 0),
-(204, 1, NULL, '2025-10-20 11:30:00', '2025-10-20 12:00:00', 0),
+(203, 1, 2, '2025-10-20 11:00:00', '2025-10-20 11:30:00', 1),
+(204, 1, 4, '2025-10-20 11:30:00', '2025-10-20 12:00:00', 1),
 (205, 1, NULL, '2025-10-20 14:00:00', '2025-10-20 14:30:00', 0),
 (206, 1, NULL, '2025-10-20 14:30:00', '2025-10-20 15:00:00', 0),
 (207, 1, NULL, '2025-10-20 15:00:00', '2025-10-20 15:30:00', 0),
@@ -392,7 +392,9 @@ CREATE TABLE `rendezvous` (
 INSERT INTO `rendezvous` (`id`, `creneau_id`, `patient_id`, `medecin_id`, `secretaire_id`, `statut`, `commentaire`) VALUES
 (2, 197, 6, 3, NULL, 'DEMANDE', NULL),
 (3, 198, 6, 3, NULL, 'DEMANDE', NULL),
-(4, 199, 6, 3, NULL, 'DEMANDE', NULL);
+(4, 199, 6, 3, NULL, 'DEMANDE', NULL),
+(5, 203, 6, 3, NULL, 'DEMANDE', NULL),
+(6, 204, 6, 3, NULL, 'DEMANDE', NULL);
 
 -- --------------------------------------------------------
 
@@ -416,11 +418,12 @@ CREATE TABLE `service` (
 --
 
 INSERT INTO `service` (`id`, `titre`, `description`, `statut`, `image`, `ordre`, `duree`, `couleur`) VALUES
-(1, 'Consultation générale', 'Examen complet de la santé bucco-dentaire, diagnostic et plan de traitement personnalisé.', 'PUBLIE', '68e6b348707a8_femme-patiente-chez-dentiste.jpg', 4, 30, '#4CAF50'),
-(2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', '68e7d49939d82_19475 (1).jpg', 3, 30, '#2196F3'),
-(3, 'Implantologie', 'Remplacement des dents manquantes par des implants dentaires.', 'PUBLIE', '68e7d3d2412bf_5510224.jpg', 1, 90, '#9C27B0'),
-(4, 'Orthodontie', 'Correction de l\'alignement des dents et des problèmes d\'occlusion.', 'PUBLIE', '68e7d541958fd_17722.jpg', 2, 30, '#c11515'),
-(7, 'TEST SERVICE COULEUR', 'JE SUIS UN TEST', 'PUBLIE', '68ee1cd403fb2_ChatGPT Image 6 oct. 2025, 18_38_36.png', 0, 120, '#e0ed2c');
+(1, 'Consultation générale', 'Examen complet, diagnostic et plan de traitement personnalisé.', 'PUBLIE', '68e6b348707a8_femme-patiente-chez-dentiste.jpg', 0, 30, '#4caf50'),
+(2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', '68e7d49939d82_19475 (1).jpg', 1, 30, '#2196F3'),
+(3, 'Implantologie', 'Pose d’implants pour remplacer les dents manquantes.', 'PUBLIE', '68e7d3d2412bf_5510224.jpg', 4, 90, '#9c27b0'),
+(4, 'Orthodontie', 'Alignement des dents : appareils fixes ou aligneurs transparents.', 'PUBLIE', '68e7d541958fd_17722.jpg', 2, 30, '#00c9cc'),
+(7, 'Parodontologie', 'Soins des gencives et traitement des maladies parodontales.', 'PUBLIE', '68ee48ae76743_5536487.jpg', 3, 120, '#e0ed2c'),
+(8, 'Urgences dentaires', 'Prise en charge rapide des douleurs et traumatismes dentaires.', 'PUBLIE', '68ee4d73cf020_ChatGPT Image 14 oct. 2025, 15_13_39.png', 5, 60, '#ed0202');
 
 -- --------------------------------------------------------
 
@@ -580,13 +583,13 @@ ALTER TABLE `notification`
 -- AUTO_INCREMENT pour la table `rendezvous`
 --
 ALTER TABLE `rendezvous`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `service`
 --
 ALTER TABLE `service`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
