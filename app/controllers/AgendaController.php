@@ -131,7 +131,16 @@ class AgendaController extends Controller {
                 ),
                 'status' => $rdv['rdv_statut'],
                 'couleur' => $rdv['service_couleur'] ?? '#4CAF50',
-                'duree' => $service_duree
+                'duree' => $service_duree,
+                'patient' => [
+                    'nom' => $rdv['patient_nom'],
+                    'prenom' => $rdv['patient_prenom']
+                ],
+                'service' => [
+                    'titre' => $rdv['service_titre'],
+                    'couleur' => $rdv['service_couleur'] ?? '#4CAF50',
+                    'duree' => $service_duree
+                ]
             ];
         }
         

@@ -4,6 +4,9 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
 <link rel="stylesheet" href="/CabinetDupont/css/services-legend.css">
 <link rel="stylesheet" href="/CabinetDupont/css/agenda-unavailable.css">
+<link rel="stylesheet" href="/CabinetDupont/css/agenda-appointments.css">
+<link rel="stylesheet" href="/CabinetDupont/css/agenda-week-view.css">
+<link rel="stylesheet" href="/CabinetDupont/css/tooltip.css">
 
 <main class="calendar-container">
     <div class="calendar-header">
@@ -122,7 +125,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                     </div>
                     
                     <!-- Colonne du jour -->
-                    <div class="day-column">
+                    <div class="day-column" data-date="">
                         <div class="day-header">
                             <span class="day-name"></span>
                             <span class="day-date"></span>

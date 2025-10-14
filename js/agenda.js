@@ -42,6 +42,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }).split('/').reverse().join('-');
     }
 
+    // Helper pour formater une date en format ISO (YYYY-MM-DD)
+    function formatDateISO(date) {
+        return date.getFullYear() + '-' + 
+               String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+               String(date.getDate()).padStart(2, '0');
+    }
+
     // Initialisation
     function init() {
         attachEventListeners();
@@ -108,6 +115,15 @@ document.addEventListener('DOMContentLoaded', function() {
             updateWeekView();
         } else {
             updateDayView();
+            // Mettre à jour l'attribut data-date pour la vue jour
+            const dayColumn = document.querySelector('.day-view .day-column');
+            if (dayColumn) {
+                dayColumn.setAttribute('data-date', formatDateISO(currentDate));
+                const dayName = locale.days[currentDate.toLocaleString('en-US', { weekday: 'long' })];
+                const formattedDate = currentDate.getDate() + ' ' + locale.months[currentDate.getMonth()];
+                dayColumn.querySelector('.day-name').textContent = dayName;
+                dayColumn.querySelector('.day-date').textContent = formattedDate;
+            }
         }
         loadAppointments();
     }
@@ -189,47 +205,82 @@ document.addEventListener('DOMContentLoaded', function() {
                             selector: `${activeView} .day-column[data-date="${formatDateISO(startTime)}"]`
                         });
 
-                        // Trouver la colonne du jour correspondant par la date
-                        let dayColumn = document.querySelector(`${activeView} .day-column[data-date="${formatDateISO(startTime)}"]`);
-                        
-                        if (!dayColumn) {
-                            console.warn('Colonne non trouvée par date, tentative avec le nom du jour');
-                            dayColumn = document.querySelector(`${activeView} .day-column[data-day="${dayName}"]`);
+                        // Trouver la colonne du jour correspondant selon la vue
+                        let dayColumn;
+                        if (currentView === 'week') {
+                            dayColumn = document.querySelector(`${activeView} .day-column[data-date="${formatDateISO(startTime)}"]`);
+                            if (!dayColumn) {
+                                dayColumn = document.querySelector(`${activeView} .day-column[data-day="${dayName}"]`);
+                            }
+                        } else {
+                            // Pour la vue jour, utiliser la seule colonne disponible si la date correspond
+                            if (formatDateISO(startTime) === formatDateISO(currentDate)) {
+                                dayColumn = document.querySelector('.day-view .day-column');
+                            }
                         }
-                        
+
                         if (!dayColumn) {
-                            console.error('Impossible de trouver la colonne du jour:', {
-                                dayName,
+                            console.log('Colonne non trouvée pour:', {
+                                view: currentView,
                                 date: formatDateISO(startTime),
-                                activeView,
-                                availableColumns: [...document.querySelectorAll(`${activeView} .day-column`)].map(col => ({
-                                    dataDay: col.getAttribute('data-day'),
-                                    dataDate: col.getAttribute('data-date')
-                                }))
+                                currentDate: formatDateISO(currentDate),
+                                dayName: dayName
                             });
                             return;
                         }
 
-                        // Créer un nouvel élément pour le rendez-vous
-                        const appointmentElement = document.createElement('div');
-                        appointmentElement.classList.add('slot-cell', 'reserved');
-                        
                         // Calculer la position et la hauteur
                         const dayStartHour = 8; // Le calendrier commence à 8h
                         const startMinutes = (startTime.getHours() - dayStartHour) * 60 + startTime.getMinutes();
                         const durationMinutes = (endTime - startTime) / (60 * 1000);
                         const slotHeight = 30; // hauteur d'un créneau en pixels
-                        const heightInPx = (durationMinutes / 30) * slotHeight;
-                        const topPosition = (startMinutes / 30) * slotHeight;
                         
-                        console.log('Calcul position rendez-vous:', {
-                            startTime: startTime.toLocaleTimeString(),
-                            startHour: startTime.getHours(),
-                            startMinutes,
-                            topPosition,
-                            duration: durationMinutes,
-                            height: heightInPx
-                        });
+                        // Créer un nouvel élément pour le rendez-vous
+                        const appointmentElement = document.createElement('div');
+                        appointmentElement.classList.add('slot-cell', 'reserved');
+                        
+                        // Ajouter une classe pour les rendez-vous longs
+                        if (durationMinutes >= 60) {
+                            appointmentElement.classList.add('long-appointment');
+                        }
+                        const heightInPx = ((durationMinutes / 30) * slotHeight) - 4; // -4 pour réduire la hauteur
+                        const topPosition = (startMinutes / 30) * slotHeight + 2; // +2 pour centrer dans le créneau
+                        
+                        // Log pour déboguer
+                        console.log('Données du rendez-vous:', event);
+
+                        // Créer le contenu détaillé pour la vue jour
+                        if (currentView === 'day') {
+                            console.log('Création du rendez-vous en vue jour');
+                            
+                            const formattedStartTime = startTime.toLocaleTimeString('fr-FR', { 
+                                hour: '2-digit', 
+                                minute: '2-digit' 
+                            });
+                            const formattedEndTime = endTime.toLocaleTimeString('fr-FR', { 
+                                hour: '2-digit', 
+                                minute: '2-digit' 
+                            });
+
+                            // Récupérer les données du rendez-vous
+                            const patientName = event.patient ? `${event.patient.nom} ${event.patient.prenom}` : 'Patient';
+                            const serviceTitle = event.service ? event.service.titre : 'Service';
+
+                            // Ajouter un conteneur pour les détails
+                            const detailsContent = document.createElement('div');
+                            detailsContent.classList.add('appointment-details');
+                            
+                            // Ajouter les informations détaillées
+                            detailsContent.innerHTML = `
+                                <div class="appointment-time">${formattedStartTime}</div>
+                                <strong>${patientName}</strong>
+                                ${durationMinutes <= 30 ? '' : `<div class="appointment-service">${serviceTitle}</div>`}
+                                ${durationMinutes >= 90 ? `<div class="appointment-duration">${durationMinutes} min</div>` : ''}
+                            `;
+                            
+                            appointmentElement.appendChild(detailsContent);
+                            console.log('Contenu du rendez-vous ajouté:', detailsContent.innerHTML);
+                        }
 
                         // Appliquer le style
                         appointmentElement.style.position = 'absolute';
@@ -243,14 +294,61 @@ document.addEventListener('DOMContentLoaded', function() {
                         const patientName = event.title.length > 20 ? event.title.substring(0, 20) + '...' : event.title;
                         
                         // Ajouter les informations du rendez-vous
-                        appointmentElement.setAttribute('title', `${event.title}\nDe ${formatTime(startTime)} à ${formatTime(endTime)}\nDurée : ${durationMinutes} minutes`);
                         appointmentElement.setAttribute('data-id', event.id);
+                        appointmentElement.setAttribute('data-tooltip', `${event.title}\nDe ${formatTime(startTime)} à ${formatTime(endTime)}\nDurée : ${durationMinutes} minutes`);
                         
-                        // Ajouter le contenu structuré à l'élément
-                        appointmentElement.innerHTML = `
-                            <div class="appointment-title">${patientName}</div>
-                            <div class="appointment-time">${formatTime(startTime)} - ${formatTime(endTime)}</div>
-                        `;
+                        // Ajouter le contenu structuré à l'élément selon la vue
+                        if (currentView === 'day') {
+                            appointmentElement.innerHTML = `
+                                <div class="appointment-title">${patientName}</div>
+                                <div class="appointment-time">${formatTime(startTime)} - ${formatTime(endTime)}</div>
+                            `;
+                        } else {
+                            // Vue semaine : affichage simplifié
+                            appointmentElement.innerHTML = `<div class="appointment-indicator"></div>`;
+                        }
+
+                        // Gérer l'affichage de l'infobulle
+                        let tooltipTimeout;
+                        
+                        appointmentElement.addEventListener('mouseenter', function(e) {
+                            // Supprimer toute infobulle existante
+                            const existingTooltip = document.querySelector('.custom-tooltip');
+                            if (existingTooltip) {
+                                existingTooltip.remove();
+                            }
+                            
+                            // Annuler tout timeout en cours
+                            if (tooltipTimeout) {
+                                clearTimeout(tooltipTimeout);
+                            }
+                            
+                            const tooltip = document.createElement('div');
+                            tooltip.className = 'custom-tooltip';
+                            tooltip.textContent = this.getAttribute('data-tooltip');
+                            document.body.appendChild(tooltip);
+
+                            const rect = this.getBoundingClientRect();
+                            const tooltipRect = tooltip.getBoundingClientRect();
+                            
+                            // Positionner l'infobulle au-dessus de l'élément
+                            tooltip.style.left = `${rect.left + (rect.width / 2) - (tooltipRect.width / 2)}px`;
+                            tooltip.style.top = `${rect.top - tooltipRect.height - 5}px`;
+                            
+                            requestAnimationFrame(() => tooltip.classList.add('show'));
+                        });
+
+                        appointmentElement.addEventListener('mouseleave', function() {
+                            const tooltip = document.querySelector('.custom-tooltip');
+                            if (tooltip) {
+                                tooltip.classList.remove('show');
+                                tooltipTimeout = setTimeout(() => {
+                                    if (tooltip && tooltip.parentNode) {
+                                        tooltip.remove();
+                                    }
+                                }, 200);
+                            }
+                        });
 
                         // Ajouter l'élément à la colonne du jour
                         dayColumn.querySelector('.day-content').appendChild(appointmentElement);
@@ -320,6 +418,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentView: currentView
             });
 
+            // Récupérer tous les créneaux de la vue jour
+            const slots = dayElement.querySelectorAll('.day-content .slot-cell');
             slots.forEach(slot => {
                 const hour = slot.dataset.hour;
                 slot.dataset.date = dateStr;
