@@ -25,14 +25,141 @@ class CreneauModel extends Model {
      * @return array Liste de tous les créneaux
      */
     public function getAllCreneaux() {
-        $sql = "SELECT c.*, s.titre as service_titre 
-                FROM creneau c
-                LEFT JOIN service s ON c.service_id = s.id
-                WHERE DATE(c.debut) >= CURDATE()
-                ORDER BY c.debut ASC";
+        try {
+            error_log("=== Début getAllCreneaux avec logs détaillés ===");
+            
+            // 1. Vérifions d'abord la connexion à la base de données
+            if (!$this->db) {
+                error_log("ERREUR CRITIQUE: Pas de connexion à la base de données");
+                throw new \Exception("Pas de connexion à la base de données");
+            }
+            error_log("Connexion à la base de données OK");
+            
+            // 2. Vérifions que les tables existent
+            try {
+                $tables = ['creneau', 'service', 'rendezvous'];
+                foreach ($tables as $table) {
+                    $stmt = $this->db->prepare("SELECT 1 FROM $table LIMIT 1");
+                    $stmt->execute();
+                    error_log("Table $table vérifiée avec succès");
+                }
+            } catch (\PDOException $e) {
+                error_log("ERREUR lors de la vérification des tables: " . $e->getMessage());
+                throw $e;
+            }
+            
+            // 3. Faisons d'abord une requête simple pour voir les rendez-vous
+            try {
+                $stmt = $this->db->prepare("SELECT COUNT(*) as total FROM rendezvous WHERE statut != 'annulé'");
+                $stmt->execute();
+                $count = $stmt->fetch();
+                error_log("Nombre de rendez-vous actifs trouvés: " . $count['total']);
+            } catch (\PDOException $e) {
+                error_log("ERREUR lors du comptage des rendez-vous: " . $e->getMessage());
+            }
+            
+            error_log("=== Début de la requête principale ===");
+            // Requête qui prend en compte la durée des RDV
+            $sql = "SELECT c.*, s.titre as service_titre,
+                    EXISTS (
+                        SELECT 1 
+                        FROM rendezvous r
+                        JOIN creneau c_rdv ON r.creneau_id = c_rdv.id
+                        JOIN service s_rdv ON c_rdv.service_id = s_rdv.id
+                        WHERE r.statut != 'annulé'
+                        AND DATE(c_rdv.debut) = DATE(c.debut)
+                        AND c.debut >= c_rdv.debut
+                        AND c.debut < TIMESTAMPADD(MINUTE, s_rdv.duree, c_rdv.debut)
+                    ) as est_reserve
+                    FROM creneau c
+                    LEFT JOIN service s ON c.service_id = s.id
+                    WHERE DATE(c.debut) >= CURDATE()
+                    ORDER BY c.debut ASC";
+                    
+            error_log("Requête SQL: " . str_replace("\n", " ", $sql));
+                    
+            error_log("Requête SQL à exécuter: " . $sql);
+            
+            try {
+                $stmt = $this->db->prepare($sql);
+                error_log("Requête préparée avec succès");
+                
+                $stmt->execute();
+                error_log("Requête exécutée avec succès");
+                
+                $creneaux = $stmt->fetchAll();
+                error_log("Nombre de créneaux trouvés: " . count($creneaux));
+                
+                // Log des 5 premiers créneaux pour vérification
+                $i = 0;
+                foreach ($creneaux as $creneau) {
+                    if ($i >= 5) break;
+                    error_log(sprintf(
+                        "Créneau #%d: début=%s, fin=%s, est_reserve=%s",
+                        $creneau['id'],
+                        $creneau['debut'],
+                        $creneau['fin'],
+                        $creneau['est_reserve']
+                    ));
+                    $i++;
+                }
+                
+                return $creneaux;
+            } catch (\PDOException $e) {
+                error_log("ERREUR SQL: " . $e->getMessage());
+                error_log("Code erreur: " . $e->getCode());
+                throw $e;
+            }
+            
+        } catch (\Exception $e) {
+            error_log("ERREUR dans getAllCreneaux: " . $e->getMessage());
+            error_log("Trace: " . $e->getTraceAsString());
+            throw $e;
+        }
+        
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll();
+        $creneaux = $stmt->fetchAll();
+        
+        // 2. Récupérer tous les rendez-vous actifs
+        $sql_rdv = "SELECT r.date, r.heure_debut, r.service_id, s.duree 
+                    FROM rendezvous r
+                    JOIN service s ON r.service_id = s.id
+                    WHERE r.statut != 'annulé'
+                    AND r.date >= ?";
+                    
+        error_log("Recherche des rendez-vous à partir de : " . $aujourdhui);
+        $stmt_rdv = $this->db->prepare($sql_rdv);
+        $stmt_rdv->execute([$aujourdhui]);
+        $stmt_rdv = $this->db->prepare($sql_rdv);
+        $stmt_rdv->execute();
+        $rdvs = $stmt_rdv->fetchAll();
+        
+        // 3. Pour chaque créneau
+        foreach ($creneaux as &$creneau) {
+            // Si le créneau est hors des horaires d'ouverture, on le marque comme réservé
+            if ($creneau['hors_horaires'] == 1) {
+                $creneau['est_reserve'] = 1;
+                continue;
+            }
+
+            $date_creneau = date('Y-m-d', strtotime($creneau['debut']));
+            $heure_creneau = date('H:i:s', strtotime($creneau['debut']));
+            
+            // Vérifier chaque rendez-vous
+            foreach ($rdvs as $rdv) {
+                if ($rdv['date'] == $date_creneau) {
+                    $heure_fin_rdv = date('H:i:s', strtotime($rdv['heure_debut'] . ' + ' . $rdv['duree']));
+                    
+                    if ($heure_creneau >= $rdv['heure_debut'] && $heure_creneau < $heure_fin_rdv) {
+                        $creneau['est_reserve'] = 1;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return $creneaux;
     }
 
     /**
@@ -63,22 +190,71 @@ class CreneauModel extends Model {
      * @return array Liste des créneaux
      */
     public function getCreneauxPourDate($agendaId, $date) {
-        $sql = "SELECT c.*, 
-                       CASE WHEN r.id IS NOT NULL THEN 1 ELSE 0 END as est_reserve
+        $sql = "SELECT c.*,
+                       s.titre as service_titre,
+                       CASE WHEN EXISTS (
+                           SELECT 1 
+                           FROM rendezvous r2
+                           JOIN creneau c2 ON r2.creneau_id = c2.id
+                           WHERE DATE(c2.debut) = DATE(c.debut)
+                           AND c2.debut < c.fin
+                           AND c2.fin > c.debut
+                       ) THEN 1 ELSE 0 END as est_reserve
                 FROM creneau c
-                LEFT JOIN rendezvous r ON c.id = r.creneau_id
-                WHERE c.agenda_id = ? 
+                LEFT JOIN service s ON c.service_id = s.id
+                WHERE c.agenda_id = ?
                 AND DATE(c.debut) = ?
                 ORDER BY c.debut ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$agendaId, $date]);
-        return $stmt->fetchAll();
+        $creneaux = $stmt->fetchAll();
+        
+        // Debug log pour vérifier les créneaux et leur statut
+        $logFile = __DIR__ . '/../../debug_creneaux.log';
+        file_put_contents($logFile, "=== Créneaux pour le $date ===\n", FILE_APPEND);
+        
+        foreach ($creneaux as $creneau) {
+            $logMessage = sprintf(
+                "Créneau: %s - %s | ID: %d | Est réservé: %s\n",
+                date('H:i', strtotime($creneau['debut'])),
+                date('H:i', strtotime($creneau['fin'])),
+                $creneau['id'],
+                $creneau['est_reserve'] ? 'Oui' : 'Non'
+            );
+            file_put_contents($logFile, $logMessage, FILE_APPEND);
+            
+            // Vérifions aussi les rendez-vous qui chevauchent
+            $sqlCheck = "SELECT c2.* FROM rendezvous r2
+                        JOIN creneau c2 ON r2.creneau_id = c2.id
+                        WHERE DATE(c2.debut) = DATE(?)
+                        AND c2.debut < ?
+                        AND c2.fin > ?";
+            $stmtCheck = $this->db->prepare($sqlCheck);
+            $stmtCheck->execute([$creneau['debut'], $creneau['fin'], $creneau['debut']]);
+            $chevauchements = $stmtCheck->fetchAll();
+            
+            if (!empty($chevauchements)) {
+                file_put_contents($logFile, "  Rendez-vous qui chevauchent:\n", FILE_APPEND);
+                foreach ($chevauchements as $rdv) {
+                    file_put_contents($logFile, sprintf("    - %s - %s (ID: %d)\n",
+                        date('H:i', strtotime($rdv['debut'])),
+                        date('H:i', strtotime($rdv['fin'])),
+                        $rdv['id']
+                    ), FILE_APPEND);
+                }
+            }
+        }
+        
+        return $creneaux;
     }
 
     public function getCreneauById($id) {
-        $sql = "SELECT c.*, r.id as reservation_id 
+        $sql = "SELECT c.*, 
+                       s.titre as service_titre,
+                       r.id as reservation_id 
                 FROM creneau c
                 LEFT JOIN rendezvous r ON r.creneau_id = c.id
+                LEFT JOIN service s ON c.service_id = s.id
                 WHERE c.id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);

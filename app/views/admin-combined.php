@@ -389,7 +389,7 @@ include __DIR__ . '/templates/flash-messages.php';
                                                                         </div>
                                                                         <div class="creneau-service">
                                                                             <i class="far fa-calendar-check"></i>
-                                                                            <?= htmlspecialchars($creneau['service_titre']) ?>
+                                                                            <?= htmlspecialchars($creneau['service_titre'] ?? 'Non spécifié') ?>
                                                                         </div>
                                                                         <div class="creneau-statut <?= $creneau['est_reserve'] ? 'reserve' : 'disponible' ?>">
                                                                             <i class="fas <?= $creneau['est_reserve'] ? 'fa-lock' : 'fa-lock-open' ?>"></i>

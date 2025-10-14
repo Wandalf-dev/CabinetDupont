@@ -19,6 +19,12 @@ RewriteRule ^(.*)$ index.php [QSA,L]
 # Set default character set
 AddDefaultCharset UTF-8
 
+# Error handling and logging
+php_flag display_errors on
+php_value error_reporting E_ALL
+php_flag log_errors on
+php_value error_log "C:/xampp/htdocs/CabinetDupont/php_error.log"
+
 # Enable error logging
 php_flag log_errors on
 php_value error_log "error_log.txt"

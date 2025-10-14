@@ -6,7 +6,17 @@ namespace App\Core;
 class App {
     // Méthode principale qui lance l'application
     public function run() {
+        // Configuration des erreurs
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+        
         session_start(); // Démarre la session PHP pour gérer les utilisateurs et les messages
+        
+        error_log("=== NOUVELLE REQUÊTE ===");
+        error_log("SESSION: " . print_r($_SESSION, true));
+        error_log("GET: " . print_r($_GET, true));
+        error_log("POST: " . print_r($_POST, true));
 
         error_log("=== DÉBUT DU ROUTAGE ===");
         
@@ -38,7 +48,8 @@ class App {
             'agenda' => ['name' => 'Agenda', 'class' => 'App\\Controllers\\AgendaController'],
             'creneaux' => ['name' => 'Creneaux', 'class' => 'App\\Controllers\\CreneauxController'],
             'horaires' => ['name' => 'Horaires', 'class' => 'App\\Controllers\\HorairesController'],
-            'service' => ['name' => 'Service', 'class' => 'App\\Controllers\\ServicesController']
+            'service' => ['name' => 'Service', 'class' => 'App\\Controllers\\ServicesController'],
+            'admin' => ['name' => 'Admin', 'class' => 'App\\Controllers\\AdminController']
         ];
         
         // Nettoyage et normalisation de la page
@@ -46,13 +57,21 @@ class App {
         error_log("Page après nettoyage : " . $page);
 
         // Prépare le nom du contrôleur et sa classe
+        error_log("=== DEBUG ROUTAGE DÉTAILLÉ ===");
+        error_log("Page recherchée: " . $page);
+        error_log("Special controllers: " . print_r($specialControllers, true));
+        
         if (array_key_exists($page, $specialControllers)) {
+            error_log("Contrôleur spécial trouvé pour: " . $page);
             $controllerName = $specialControllers[$page]['name'];
             $controllerClass = $specialControllers[$page]['class'];
         } else {
+            error_log("Contrôleur standard utilisé pour: " . $page);
             $controllerName = ucfirst($page);
             $controllerClass = "App\\Controllers\\{$controllerName}Controller";
         }
+        error_log("Nom du contrôleur: " . $controllerName);
+        error_log("Classe du contrôleur: " . $controllerClass);
 
         // Vérification supplémentaire du contrôleur
         $controllerFile = __DIR__ . "/../controllers/{$controllerName}Controller.php";

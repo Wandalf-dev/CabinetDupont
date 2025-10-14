@@ -30,8 +30,15 @@ class AdminController extends \App\Core\Controller {
 
     // Méthode principale pour afficher le panneau d'administration
     public function index() {
+        // Debug
+        error_log("=== ADMIN DEBUG ===");
+        error_log("Session: " . print_r($_SESSION, true));
+        error_log("Request Method: " . $_SERVER['REQUEST_METHOD']);
+        error_log("=== END DEBUG ===");
+
         // Vérifie que l'utilisateur est bien un administrateur (médecin ou secrétaire)
         if (!isset($_SESSION['user_role']) || ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')) {
+            error_log("Accès refusé - Role: " . ($_SESSION['user_role'] ?? 'non défini'));
             // Si ce n'est pas le cas, redirige vers la page d'accueil
             header('Location: index.php?page=home');
             exit();
