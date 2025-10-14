@@ -111,14 +111,11 @@
 /* Conteneur des vues */
 .calendar-views {
     position: relative;
-    height: auto;
-    min-height: 800px;
 }
 
 .week-view,
 .day-view {
     display: none;
-    height: 100%;
 }
 
 .week-view.active,
@@ -197,11 +194,10 @@
 }
 
 .day-content {
-    display: grid;
-    grid-template-rows: repeat(24, 30px);
+    display: flex;
+    flex-direction: column;
     position: relative;
     border-top: 1px solid var(--calendar-border);
-    min-height: 100%;
 }
 
 .slot-cell {
@@ -209,21 +205,18 @@
     background: transparent;
     transition: all 0.2s;
     cursor: pointer;
-    position: relative;
-    min-height: 30px;
-}
-
-.slot-cell:hover {
-    background-color: var(--calendar-slot-hover);
-}
-
-.slot-cell.reserved {
-    background-color: var(--calendar-primary);
-    color: white;
-    cursor: default;
 }
 
 /* Style des créneaux horaires */
+.time-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.time-row:last-child .slot-cell {
+    border-bottom: 1px solid var(--calendar-border);
+}
+
 .time-slot {
     height: var(--calendar-slot-height);
     padding: 4px;
@@ -390,13 +383,13 @@
 
 /* Cellules de temps (heures et demi-heures) */
 .hour-cell,
-.half-hour-cell,
-.slot-cell {
-    height: 30px;
+.half-hour-cell {
+    height: 25px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     font-size: 0.875rem;
+    padding-right: 8px;
 }
 
 .hour-cell {

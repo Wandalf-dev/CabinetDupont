@@ -3,15 +3,14 @@ require_once __DIR__ . '/../templates/header.php';
 require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
 <link rel="stylesheet" href="/CabinetDupont/css/services-legend.css">
-<link rel="stylesheet" href="/CabinetDupont/css/agenda-unavailable.css">
+<link rel="stylesheet" href="/CabinetDupont/css/agenda.css">
 <link rel="stylesheet" href="/CabinetDupont/css/agenda-appointments.css">
-<link rel="stylesheet" href="/CabinetDupont/css/agenda-week-view.css">
+<link rel="stylesheet" href="/CabinetDupont/css/agenda-unavailable.css">
 <link rel="stylesheet" href="/CabinetDupont/css/tooltip.css">
+<link rel="stylesheet" href="/CabinetDupont/css/agenda-grid.css">
 
 <main class="calendar-container">
     <div class="calendar-header">
-        <h2 class="planning-title">Mon Planning</h2>
-        
         <!-- Navigation principale -->
         <div class="calendar-navigation">
             <div class="nav-buttons">
@@ -51,14 +50,16 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                         <div class="time-header"></div>
                         <div class="time-slots">
                         <?php
-                        for ($hour = $heure_min; $hour <= $heure_max; $hour++) {
+                        for ($hour = $heure_min; $hour < $heure_max; $hour++) {
                             echo '<div class="time-row">';
                             echo '<div class="hour-cell">' . sprintf('%02d:00', $hour) . '</div>';
-                            if ($hour < $heure_max) {
-                                echo '<div class="half-hour-cell">' . sprintf('%02d:30', $hour) . '</div>';
-                            }
+                            echo '<div class="half-hour-cell">' . sprintf('%02d:30', $hour) . '</div>';
                             echo '</div>';
                         }
+                        // Dernière heure (sans demi-heure)
+                        echo '<div class="time-row">';
+                        echo '<div class="hour-cell">' . sprintf('%02d:00', $heure_max) . '</div>';
+                        echo '</div>';
                         ?>
                         </div>
                     </div>
@@ -86,14 +87,16 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                             </div>
                             <div class="day-content">
                                 <?php
-                                for ($hour = $heure_min; $hour <= $heure_max; $hour++) {
+                                for ($hour = $heure_min; $hour < $heure_max; $hour++) {
                                     echo '<div class="time-row">';
                                     echo '<div class="slot-cell" data-hour="' . sprintf('%02d:00', $hour) . '"></div>';
-                                    if ($hour < $heure_max) {
-                                        echo '<div class="slot-cell" data-hour="' . sprintf('%02d:30', $hour) . '"></div>';
-                                    }
+                                    echo '<div class="slot-cell" data-hour="' . sprintf('%02d:30', $hour) . '"></div>';
                                     echo '</div>';
                                 }
+                                // Dernier créneau pour 20h00
+                                echo '<div class="time-row">';
+                                echo '<div class="slot-cell" data-hour="' . sprintf('%02d:00', $heure_max) . '"></div>';
+                                echo '</div>';
                                 ?>
                             </div>
                         </div>
@@ -112,14 +115,17 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                         <div class="time-header"></div>
                         <div class="time-slots">
                         <?php
-                        for ($hour = $heure_min; $hour <= $heure_max; $hour++) {
+                        // Heures avec demi-heures (jusqu'à heure_max - 1)
+                        for ($hour = $heure_min; $hour < $heure_max; $hour++) {
                             echo '<div class="time-row">';
                             echo '<div class="hour-cell">' . sprintf('%02d:00', $hour) . '</div>';
-                            if ($hour < $heure_max) {
-                                echo '<div class="half-hour-cell">' . sprintf('%02d:30', $hour) . '</div>';
-                            }
+                            echo '<div class="half-hour-cell">' . sprintf('%02d:30', $hour) . '</div>';
                             echo '</div>';
                         }
+                        // Dernière heure (sans demi-heure)
+                        echo '<div class="time-row">';
+                        echo '<div class="hour-cell">' . sprintf('%02d:00', $heure_max) . '</div>';
+                        echo '</div>';
                         ?>
                         </div>
                     </div>
@@ -132,14 +138,16 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                         </div>
                         <div class="day-content">
                             <?php
-                            for ($hour = $heure_min; $hour <= $heure_max; $hour++) {
+                            for ($hour = $heure_min; $hour < $heure_max; $hour++) {
                                 echo '<div class="time-row">';
                                 echo '<div class="slot-cell" data-hour="' . sprintf('%02d:00', $hour) . '"></div>';
-                                if ($hour < $heure_max) {
-                                    echo '<div class="slot-cell" data-hour="' . sprintf('%02d:30', $hour) . '"></div>';
-                                }
+                                echo '<div class="slot-cell" data-hour="' . sprintf('%02d:30', $hour) . '"></div>';
                                 echo '</div>';
                             }
+                            // Dernier créneau pour 20h00
+                            echo '<div class="time-row">';
+                            echo '<div class="slot-cell" data-hour="' . sprintf('%02d:00', $heure_max) . '"></div>';
+                            echo '</div>';
                             ?>
                         </div>
                     </div>
@@ -185,5 +193,6 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 </div>
 
 <script src="<?php echo BASE_URL; ?>/js/agenda.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/agenda-appointments.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/agenda-unavailable.js"></script>
 <?php require_once __DIR__ . '/../templates/footer.php'; ?>

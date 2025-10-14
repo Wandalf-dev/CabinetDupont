@@ -233,18 +233,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         const dayStartHour = 8; // Le calendrier commence à 8h
                         const startMinutes = (startTime.getHours() - dayStartHour) * 60 + startTime.getMinutes();
                         const durationMinutes = (endTime - startTime) / (60 * 1000);
-                        const slotHeight = 30; // hauteur d'un créneau en pixels
+                        const slotHeight = 25; // hauteur d'un créneau de 30min en pixels
                         
                         // Créer un nouvel élément pour le rendez-vous
                         const appointmentElement = document.createElement('div');
                         appointmentElement.classList.add('slot-cell', 'reserved');
                         
-                        // Ajouter une classe pour les rendez-vous longs
-                        if (durationMinutes >= 60) {
-                            appointmentElement.classList.add('long-appointment');
-                        }
-                        const heightInPx = ((durationMinutes / 30) * slotHeight) - 4; // -4 pour réduire la hauteur
-                        const topPosition = (startMinutes / 30) * slotHeight + 2; // +2 pour centrer dans le créneau
+                        // Calculer la hauteur exacte basée sur la durée
+                        const exactHeight = (durationMinutes / 30) * slotHeight;
+                        const exactTop = (startMinutes / 30) * slotHeight;
                         
                         // Log pour déboguer
                         console.log('Données du rendez-vous:', event);
@@ -282,12 +279,13 @@ document.addEventListener('DOMContentLoaded', function() {
                             console.log('Contenu du rendez-vous ajouté:', detailsContent.innerHTML);
                         }
 
-                        // Appliquer le style
+                        // Appliquer le style avec précision
                         appointmentElement.style.position = 'absolute';
-                        appointmentElement.style.top = `${topPosition}px`;
-                        appointmentElement.style.height = `${heightInPx}px`;
-                        appointmentElement.style.left = '4px';
-                        appointmentElement.style.right = '4px';
+                        appointmentElement.style.top = `${exactTop}px`;
+                        appointmentElement.style.height = `${exactHeight}px`;
+                        appointmentElement.style.left = '2px';
+                        appointmentElement.style.right = '2px';
+                        appointmentElement.style.width = 'calc(100% - 4px)';
                         appointmentElement.style.backgroundColor = event.couleur || 'var(--calendar-primary)';
                         
                         // Préparer le nom du patient avec une limite de caractères si nécessaire

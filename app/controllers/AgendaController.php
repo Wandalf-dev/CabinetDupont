@@ -51,24 +51,40 @@ class AgendaController extends Controller {
 
                 // Traite les horaires du matin
                 if ($has_morning) {
-                    $heure_debut = (int)substr($horaire['ouverture_matin'], 0, 2);
-                    $heure_fin = (int)substr($horaire['fermeture_matin'], 0, 2);
-                    if ($heure_debut > 0) { // Ignore les heures à 00:00
+                    $time = strtotime($horaire['ouverture_matin']);
+                    $heure_debut = (int)date('G', $time);
+                    if ($heure_debut > 0 || (int)date('i', $time) > 0) {
                         $data['heure_min'] = min($data['heure_min'], $heure_debut);
                     }
-                    if ($heure_fin > 0) {
+
+                    $time = strtotime($horaire['fermeture_matin']);
+                    $heure_fin = (int)date('G', $time);
+                    $minutes = (int)date('i', $time);
+                    if ($heure_fin > 0 || $minutes > 0) {
+                        // Si on a des minutes, on arrondit à l'heure supérieure
+                        if ($minutes > 0) {
+                            $heure_fin++;
+                        }
                         $data['heure_max'] = max($data['heure_max'], $heure_fin);
                     }
                 }
 
                 // Traite les horaires de l'après-midi
                 if ($has_afternoon) {
-                    $heure_debut = (int)substr($horaire['ouverture_apresmidi'], 0, 2);
-                    $heure_fin = (int)substr($horaire['fermeture_apresmidi'], 0, 2);
-                    if ($heure_debut > 0) { // Ignore les heures à 00:00
+                    $time = strtotime($horaire['ouverture_apresmidi']);
+                    $heure_debut = (int)date('G', $time);
+                    if ($heure_debut > 0 || (int)date('i', $time) > 0) {
                         $data['heure_min'] = min($data['heure_min'], $heure_debut);
                     }
-                    if ($heure_fin > 0) {
+
+                    $time = strtotime($horaire['fermeture_apresmidi']);
+                    $heure_fin = (int)date('G', $time);
+                    $minutes = (int)date('i', $time);
+                    if ($heure_fin > 0 || $minutes > 0) {
+                        // Si on a des minutes, on arrondit à l'heure supérieure
+                        if ($minutes > 0) {
+                            $heure_fin++;
+                        }
                         $data['heure_max'] = max($data['heure_max'], $heure_fin);
                     }
                 }
