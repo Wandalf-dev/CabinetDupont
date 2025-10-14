@@ -43,6 +43,10 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                 </small>
             </div>
 
+            <!-- Champs cachés pour confirmation -->
+            <input type="hidden" id="confirmed_date_debut" name="confirmed_date_debut" value="">
+            <input type="hidden" id="confirmed_date_fin" name="confirmed_date_fin" value="">
+
             <div class="form-actions">
                 <button type="button" id="btnGenerer" class="btn-admin save">
                     <i class="fas fa-calendar-plus"></i> Générer les créneaux

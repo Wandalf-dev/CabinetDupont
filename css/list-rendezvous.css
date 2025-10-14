@@ -1,0 +1,127 @@
+/* Styles pour la page de liste des rendez-vous */
+main {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 0;
+}
+
+.rdv-container {
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.rdv-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.rdv-title {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin: 0;
+    font-weight: 600;
+}
+
+.rdv-empty {
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.rdv-empty i {
+    font-size: 3rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.rdv-empty p {
+    font-size: 1.1rem;
+    color: #495057;
+    margin-bottom: 1.5rem;
+}
+
+/* Style de la table */
+.rdv-table {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+    margin-bottom: 1rem;
+}
+
+.rdv-table table {
+    margin-bottom: 0;
+}
+
+.rdv-table thead {
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+}
+
+.rdv-table th {
+    border: none;
+    padding: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.rdv-table td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-color: #f1f1f1;
+}
+
+/* Boutons */
+.btn-new-rdv {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.btn-new-rdv:hover {
+    transform: translateY(-2px);
+}
+
+.btn-cancel {
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.btn-cancel:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .rdv-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .rdv-table {
+        box-shadow: none;
+    }
+
+    .rdv-table td, 
+    .rdv-table th {
+        padding: 0.75rem;
+    }
+}
+
+/* Footer */
+.site-footer {
+    margin-top: auto;
+}

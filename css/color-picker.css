@@ -1,0 +1,71 @@
+/* Conteneur du sélecteur de couleur */
+.color-picker-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    max-width: 400px; /* Limite la largeur du conteneur */
+}
+
+/* Style du champ de texte pour le code couleur */
+.color-input-text {
+    width: 100px;
+    padding: 0.5rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+/* Style du sélecteur de couleur */
+.color-picker-container input[type="color"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 50px;
+    height: 35px;
+    padding: 0;
+    border: 2px solid #e2e8f0;
+    border-radius: 6px;
+    cursor: pointer;
+    flex-shrink: 0; /* Empêche le rétrécissement */
+}
+
+/* Style spécifique pour Firefox */
+.color-picker-container input[type="color"]::-moz-color-swatch {
+    border: none;
+    border-radius: 6px;
+}
+
+/* Style spécifique pour Chrome */
+.color-picker-container input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border-radius: 6px;
+}
+
+.color-picker-container input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 6px;
+}
+
+/* Aperçu de la couleur sélectionnée */
+.color-preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    background-color: #f8f9fa;
+    font-size: 0.9rem;
+    color: #4a5568;
+    flex-shrink: 0; /* Empêche le rétrécissement */
+}
+
+.color-preview-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid #e2e8f0;
+    flex-shrink: 0; /* Empêche le rétrécissement */
+}

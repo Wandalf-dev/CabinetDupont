@@ -4,6 +4,7 @@ require_once __DIR__ . '/../templates/header.php';
 require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
 <link rel="stylesheet" href="/cabinetdupont/css/service-update.css">
+<link rel="stylesheet" href="/cabinetdupont/css/color-picker.css">
 
 <section class="service-update-section">
     <!-- Formulaire pour modifier un service existant -->
@@ -25,6 +26,30 @@ require_once __DIR__ . '/../templates/flash-messages.php';
             <label for="duree">Durée de consultation (en minutes)</label>
             <input type="number" id="duree" name="duree" min="15" max="180" step="15" value="<?php echo htmlspecialchars($service['duree'] ?? '30'); ?>" required>
             <small class="form-text text-muted">Durée minimale : 15 min, maximale : 3h, par paliers de 15 min</small>
+        </div>
+
+        <div class="form-group">
+            <label for="couleur">Couleur d'affichage dans le planning</label>
+            <div class="color-picker-container">
+                <input type="color" 
+                       id="couleur" 
+                       name="couleur" 
+                       value="<?php echo htmlspecialchars($service['couleur'] ?? '#4CAF50'); ?>" 
+                       required
+                       onchange="updateColorInputs(this)">
+                <input type="text" 
+                       id="couleurText"
+                       class="color-input-text"
+                       value="<?php echo htmlspecialchars($service['couleur'] ?? '#4CAF50'); ?>"
+                       pattern="^#[0-9A-Fa-f]{6}$"
+                       title="Code couleur hexadécimal (ex: #FF0000)"
+                       onchange="updateColorFromText(this)"
+                       oninput="this.value = this.value.toUpperCase()">
+                <div class="color-preview">
+                    <span class="color-preview-dot" id="colorPreviewDot" style="background-color: <?php echo htmlspecialchars($service['couleur'] ?? '#4CAF50'); ?>"></span>
+                </div>
+            </div>
+            <small class="form-text text-muted">Cette couleur sera utilisée pour identifier ce service dans le planning</small>
         </div>
 
         <div class="form-group">
@@ -60,6 +85,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
     </form>
 </section>
 
+<script src="/cabinetdupont/js/color-picker.js"></script>
 <script>
 // Fonction pour afficher un aperçu de la nouvelle image sélectionnée
 function previewServiceImage(event) {

@@ -10,8 +10,9 @@
     --calendar-grid-border: #e2e8f0;
     --calendar-slot-hover: #f1f5f9;
     --calendar-shadow: rgba(0, 0, 0, 0.1);
-    --calendar-time-width: 100px;
+    --calendar-time-width: 80px;
     --calendar-header-height: 60px;
+    --calendar-slot-height: 30px;
 }
 
 /* Container principal */
@@ -128,17 +129,18 @@
 /* Grille du calendrier */
 .calendar-grid {
     display: grid;
-    grid-template-columns: var(--calendar-time-width) repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: var(--calendar-time-width) repeat(6, 1fr);
     background: var(--calendar-bg);
     border: 1px solid var(--calendar-border);
-    height: auto;
-    min-height: 800px;
+    position: relative;
 }
 
 /* Colonne des heures */
 .time-column {
     border-right: 1px solid var(--calendar-border);
     background-color: var(--calendar-header-bg);
+    position: relative;
+    z-index: 1;
 }
 
 .time-header {
@@ -147,14 +149,20 @@
 }
 
 .time-slot {
-    height: var(--calendar-header-height);
-    padding: 0.5rem;
+    height: 30px;
+    padding: 0.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--calendar-text-light);
     font-size: 0.875rem;
     border-bottom: 1px solid var(--calendar-border);
+    background-color: var(--calendar-header-bg);
+}
+
+.time-slot[data-hour$=":00"] {
+    font-weight: 600;
+    color: var(--calendar-text);
 }
 
 /* Colonnes des jours */
@@ -189,9 +197,50 @@
 }
 
 .day-content {
-    height: calc(100% - var(--calendar-header-height));
     display: grid;
-    grid-template-rows: repeat(auto-fill, var(--calendar-header-height));
+    grid-template-rows: repeat(24, 30px);
+    position: relative;
+    border-top: 1px solid var(--calendar-border);
+    min-height: 100%;
+}
+
+.slot-cell {
+    border-bottom: 1px solid var(--calendar-border);
+    background: transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+    min-height: 30px;
+}
+
+.slot-cell:hover {
+    background-color: var(--calendar-slot-hover);
+}
+
+.slot-cell.reserved {
+    background-color: var(--calendar-primary);
+    color: white;
+    cursor: default;
+}
+
+/* Style des créneaux horaires */
+.time-slot {
+    height: var(--calendar-slot-height);
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8px;
+    color: var(--calendar-text-light);
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--calendar-border);
+    background-color: var(--calendar-header-bg);
+}
+
+.time-slot[data-hour$=":00"] {
+    font-weight: 600;
+    color: var(--calendar-text);
+    border-top: 1px solid var(--calendar-border);
 }
 
 .day-content .time-slot {
@@ -203,6 +252,17 @@
 .day-content .time-slot:hover {
     background: var(--calendar-slot-hover);
     cursor: pointer;
+}
+
+.day-content .time-slot.reserved {
+    background-color: #3498db;
+    color: white;
+    cursor: not-allowed;
+    position: relative;
+}
+
+.day-content .time-slot.reserved:hover {
+    background-color: #2980b9;
 }
 
 /* Vue jour */
@@ -319,6 +379,165 @@
     background: linear-gradient(90deg, #1976d2 40%, #64b5f6 100%);
     border-radius: 3px;
     opacity: 0.8;
+}
+
+/* Structure de base des lignes temporelles */
+.time-row {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid var(--calendar-border);
+}
+
+/* Cellules de temps (heures et demi-heures) */
+.hour-cell,
+.half-hour-cell,
+.slot-cell {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+}
+
+.hour-cell {
+    color: var(--calendar-text);
+}
+
+.half-hour-cell {
+    color: var(--calendar-text-light);
+    font-size: 0.8125rem;
+}
+
+/* Cellules de rendez-vous */
+.slot-cell {
+    background: transparent;
+    transition: background-color 0.2s;
+    cursor: pointer;
+    border: none;
+    position: relative;
+}
+
+.slot-cell:hover {
+    background-color: var(--calendar-slot-hover);
+}
+
+.slot-cell:not(.reserved) {
+    border-bottom: 1px solid var(--calendar-border);
+}
+
+.slot-cell.reserved {
+    background-color: var(--calendar-primary);
+    color: white;
+    cursor: default;
+    position: absolute;
+    margin: 0;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 2;
+    box-sizing: border-box; /* Décalage d'une unité pour aligner avec les heures */
+}
+
+.appointment-title {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.appointment-time {
+    font-size: 0.75rem;
+    opacity: 0.9;
+    margin-top: 2px;
+}
+
+.day-content {
+    position: relative;
+    min-height: 720px; /* 24h * 30px */
+}
+
+/* Style des heures */
+.time-column .time-slot {
+    font-size: 0.85rem;
+    padding: 4px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--calendar-header-bg);
+}
+
+.time-column .time-slot[data-hour$=":00"] {
+    font-weight: 600;
+    border-top: 2px solid var(--calendar-border);
+    color: var(--calendar-text);
+}
+
+.time-column .time-slot[data-hour$=":30"] {
+    color: var(--calendar-text-light);
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* Ligne séparatrice entre les créneaux d'un même RDV */
+.slot-cell.reserved::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    bottom: 0;
+    height: 1px;
+    opacity: 0.3;
+    background-color: white;
+}
+
+/* Ajout de connecteurs visuels entre les créneaux */
+.slot-cell.reserved:not(:last-of-type)[data-appointment-id]::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background-color: inherit;
+    opacity: 0.8;
+    z-index: 1;
+}
+
+/* Pour le dernier créneau du rendez-vous */
+.slot-cell.reserved:last-of-type {
+    border-bottom: 1px solid var(--calendar-border);
+}
+
+/* Pour lier visuellement les créneaux */
+.slot-cell.reserved + .slot-cell.reserved {
+    border-top: none;
+    margin-top: -1px;
+}
+
+/* Conteneur des créneaux */
+.time-slots,
+.day-content {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ajustements pour la vue des colonnes */
+.day-column {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.time-slot.reserved {
+    background-color: var(--calendar-primary);
+    color: white;
 }
 
 /* Responsive */

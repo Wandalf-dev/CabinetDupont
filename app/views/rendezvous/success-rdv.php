@@ -1,0 +1,29 @@
+<?php require_once 'app/views/templates/header.php'; ?>
+<link rel="stylesheet" href="css/success-rdv.css">
+
+<main>
+    <div class="success-container">
+        <div class="success-content">
+            <div class="text-center">
+                <div class="success-alert">
+                    <i class="fas fa-check-circle fa-4x success-icon"></i>
+                    <h2 class="success-title">Rendez-vous confirmé avec succès !</h2>
+                    <p class="success-message">Un email de confirmation vous a été envoyé avec les détails de votre rendez-vous.</p>
+                </div>
+                
+                <div class="success-buttons">
+                    <a href="index.php" class="btn btn-primary me-3">
+                        <i class="fas fa-home me-2"></i>
+                        Retour à l'accueil
+                    </a>
+                    <a href="index.php?page=rendezvous&action=list" class="btn btn-secondary">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        Voir mes rendez-vous
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<?php require_once 'app/views/templates/footer.php'; ?>

@@ -26,9 +26,14 @@ class AgendaController extends Controller {
         $horaireModel = new \App\Models\HoraireModel();
         $horaires = $horaireModel->getHoraires();
 
+        // Récupère la liste des services pour la légende
+        $serviceModel = new \App\Models\ServiceModel();
+        $services = $serviceModel->getAllServices();
+
         // Prépare les données pour la vue
         $data = [
             'horaires' => $horaires,
+            'services' => $services, // Liste des services avec leurs couleurs
             'jours_ouverture' => [], // Liste des jours où le cabinet est ouvert
             'heure_min' => 23, // Sera mis à jour avec l'heure d'ouverture la plus tôt
             'heure_max' => 0   // Sera mis à jour avec l'heure de fermeture la plus tard
@@ -88,12 +93,53 @@ class AgendaController extends Controller {
         $dateDebut = $_GET['start'] ?? date('Y-m-d');
         $dateFin = $_GET['end'] ?? date('Y-m-d', strtotime('+7 days'));
 
-        // Récupère les rendez-vous
-        $appointments = $this->agendaModel->getRendezVousByPeriod($dateDebut, $dateFin);
+        // Récupère l'agenda du médecin
+        $agenda = $this->agendaModel->getAgendaByUtilisateur($_SESSION['user_id']);
+        if (!$agenda) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Agenda non trouvé']);
+            return;
+        }
 
-        // Renvoie les données en JSON
+        // Récupère les rendez-vous
+        $appointments = $this->agendaModel->getRendezVousByPeriod($dateDebut, $dateFin, $agenda['id']);
+        
+        // Formater les rendez-vous pour le JavaScript
+        $formattedAppointments = [];
+        foreach ($appointments as $rdv) {
+            error_log("Traitement du rendez-vous : " . print_r($rdv, true));
+            error_log("Données du rendez-vous avant formatage : " . print_r($rdv, true));
+            
+            // Récupérer la durée du service
+            $service_duree = isset($rdv['service_duree']) ? intval($rdv['service_duree']) : 30;
+            $debut = new \DateTime($rdv['debut']);
+            $fin = clone $debut;
+            $fin->modify("+{$service_duree} minutes");
+
+            error_log("Durée du service : {$service_duree} minutes");
+            error_log("Début : {$rdv['debut']}, Fin calculée : {$fin->format('Y-m-d H:i:s')}");
+
+            $formattedAppointments[] = [
+                'id' => $rdv['rdv_id'],
+                'start' => $debut->format('Y-m-d H:i:s'),
+                'end' => $fin->format('Y-m-d H:i:s'),
+                'title' => sprintf(
+                    '%s %s - %s',
+                    $rdv['patient_prenom'],
+                    $rdv['patient_nom'],
+                    $rdv['service_titre']
+                ),
+                'status' => $rdv['rdv_statut'],
+                'couleur' => $rdv['service_couleur'] ?? '#4CAF50',
+                'duree' => $service_duree
+            ];
+        }
+        
+        error_log("Rendez-vous formatés : " . print_r($formattedAppointments, true));
+        
+        // Retourner les rendez-vous formatés
         header('Content-Type: application/json');
-        echo json_encode($appointments);
+        echo json_encode($formattedAppointments);
     }
 
     /**

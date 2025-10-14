@@ -1,0 +1,58 @@
+.calendar-container {
+    margin: 20px auto;
+    max-width: 1200px;
+}
+
+/* Alignement des cercles de jours */
+.day-circles {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+    align-items: center;
+    justify-items: center;
+}
+
+.day-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin: 0 auto;
+}
+
+/* Alignement du tableau des créneaux */
+.calendar-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 10px 0;
+}
+
+.calendar-table th {
+    text-align: center;
+    padding: 10px;
+    width: calc(100% / 7);
+}
+
+.calendar-table td {
+    text-align: center;
+    padding: 10px;
+    vertical-align: top;
+}
+
+/* Correction de l'alignement des colonnes */
+.time-column {
+    width: calc(100% / 7);
+    display: inline-block;
+    vertical-align: top;
+}
+
+/* Style pour les jours indisponibles */
+.day-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    background-color: #f5f5f5;
+}

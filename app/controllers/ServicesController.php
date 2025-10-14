@@ -56,8 +56,15 @@ class ServicesController {
             $data = [
                 'titre' => trim($_POST['titre']),
                 'description' => trim($_POST['description']),
-                'statut' => 'PUBLIE'
+                'statut' => 'PUBLIE',
+                'couleur' => trim($_POST['couleur']),
+                'duree' => intval($_POST['duree'])
             ];
+
+            // Validation de la couleur
+            if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $data['couleur'])) {
+                $data['couleur'] = '#4CAF50'; // Couleur par défaut si invalide
+            }
 
             // Vérifie que le titre et la description sont remplis
             if (!$data['titre'] || !$data['description']) {
@@ -132,8 +139,16 @@ class ServicesController {
             $data = [
                 'titre' => trim($_POST['titre']),
                 'description' => trim($_POST['description']),
-                'statut' => $_POST['statut'] ?? 'BROUILLON'
+                'statut' => $_POST['statut'] ?? 'BROUILLON',
+                'couleur' => trim($_POST['couleur']),
+                'duree' => intval($_POST['duree'])
             ];
+
+            // Validation de la couleur
+            if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $data['couleur'])) {
+                error_log("Couleur invalide reçue : " . $data['couleur']);
+                $data['couleur'] = '#4CAF50'; // Couleur par défaut si invalide
+            }
 
             if (empty($data['titre']) || empty($data['description'])) {
                 $_SESSION['error'] = "Le titre et la description sont obligatoires";

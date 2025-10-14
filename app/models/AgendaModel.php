@@ -49,19 +49,55 @@ class AgendaModel extends Model {
     /**
      * Récupère les rendez-vous pour une période donnée
      */
-    public function getRendezVousByPeriod($dateDebut, $dateFin) {
-        $sql = "SELECT rdv.*, 
-                       p.nom as patient_nom, p.prenom as patient_prenom,
-                       s.nom as service
-                FROM agenda rdv
-                LEFT JOIN patients p ON rdv.patient_id = p.id
-                LEFT JOIN services s ON rdv.service_id = s.id
-                WHERE rdv.date BETWEEN ? AND ?
-                ORDER BY rdv.date ASC, rdv.heure_debut ASC";
+    public function getRendezVousByPeriod($dateDebut, $dateFin, $agendaId) {
+        error_log("Recherche des rendez-vous entre $dateDebut et $dateFin pour l'agenda $agendaId");
+        
+        $sql = "SELECT 
+                       c.id as creneau_id,
+                       c.debut, 
+                       c.fin, 
+                       c.est_reserve,
+                       c.service_id,
+                       r.id as rdv_id,
+                       s.titre as service_titre, 
+                       s.duree as service_duree,
+                       s.couleur as service_couleur,
+                       u.nom as patient_nom, 
+                       u.prenom as patient_prenom,
+                       r.statut as rdv_statut,
+                       TIMESTAMPDIFF(MINUTE, c.debut, c.fin) as duree_calculee
+                FROM creneau c
+                INNER JOIN rendezvous r ON c.id = r.creneau_id
+                LEFT JOIN service s ON c.service_id = s.id
+                LEFT JOIN utilisateur u ON r.patient_id = u.id
+                WHERE c.agenda_id = ? 
+                AND DATE(c.debut) BETWEEN ? AND ?
+                ORDER BY c.debut ASC";
         
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$dateDebut, $dateFin]);
-        return $stmt->fetchAll();
+        $stmt->execute([$agendaId, $dateDebut, $dateFin]);
+        $results = $stmt->fetchAll();
+        
+        foreach ($results as $result) {
+            error_log(sprintf(
+                "RDV trouvé - ID: %d, Service: %s, Durée service: %d min, Durée calculée: %d min, Début: %s, Fin: %s",
+                $result['rdv_id'],
+                $result['service_titre'],
+                $result['service_duree'],
+                $result['duree_calculee'],
+                $result['debut'],
+                $result['fin']
+            ));
+        }
+        
+        return $results;
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$agendaId, $dateDebut, $dateFin]);
+        $results = $stmt->fetchAll();
+        
+        error_log("Rendez-vous trouvés : " . print_r($results, true));
+        return $results;
     }
 
     /**

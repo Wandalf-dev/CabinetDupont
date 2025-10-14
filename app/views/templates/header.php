@@ -38,6 +38,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/creneaux.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/agenda.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/table-actions.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/confirmation-rdv.css" />
     <!-- Animation Lottie pour des illustrations animées -->
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
 </head>
@@ -67,6 +68,13 @@ if (session_status() === PHP_SESSION_NONE) {
                                 </a>
                             </li>
                             <?php endif; ?>
+                        <?php endif; ?>
+                        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'PATIENT'): ?>
+                            <li>
+                                <a href="index.php?page=rendezvous&action=list" class="nav-rdv">
+                                    <i class="fas fa-calendar-check"></i> Mes Rendez-vous
+                                </a>
+                            </li>
                         <?php endif; ?>
                         <li><a href="index.php?page=user&action=profile">Mon profil</a></li>
                         <li><a href="index.php?page=auth&action=logout">Déconnexion</a></li>

@@ -43,6 +43,18 @@ class Database {
         return $this->connection->lastInsertId(); // Retourne le dernier ID inséré
     }
 
+    public function beginTransaction() {
+        return $this->connection->beginTransaction();
+    }
+
+    public function commit() {
+        return $this->connection->commit();
+    }
+
+    public function rollBack() {
+        return $this->connection->rollBack();
+    }
+
     public static function getInstance() {
         if (self::$instance === null) {
             self::$instance = new self(); // Crée l'instance si elle n'existe pas

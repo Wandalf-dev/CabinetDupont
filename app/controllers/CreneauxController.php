@@ -145,10 +145,31 @@ class CreneauxController {
             error_log("Agenda trouvé : " . print_r($agenda, true));
 
             // Récupérer et valider les dates depuis le formulaire
+            error_log("=== DEBUG: Début de la génération des créneaux ===");
+            error_log("POST reçu : " . print_r($_POST, true));
+            
             $dateDebut = $_POST['date_debut'] ?? '';
             $dateFin = $_POST['date_fin'] ?? '';
+            $confirmedDateDebut = $_POST['confirmed_date_debut'] ?? '';
+            $confirmedDateFin = $_POST['confirmed_date_fin'] ?? '';
             
             error_log("Dates reçues - Début: $dateDebut, Fin: $dateFin");
+            error_log("Dates confirmées - Début: $confirmedDateDebut, Fin: $confirmedDateFin");
+            
+            if (empty($dateDebut) || empty($dateFin) || empty($confirmedDateDebut) || empty($confirmedDateFin)) {
+                error_log("ERREUR: Dates manquantes dans le formulaire");
+                $_SESSION['error'] = "Les dates sont obligatoires";
+                header('Location: index.php?page=creneaux&action=generer');
+                exit();
+            }
+            
+            // Vérifier que les dates correspondent
+            if ($dateDebut !== $confirmedDateDebut || $dateFin !== $confirmedDateFin) {
+                error_log("ERREUR: Les dates ne correspondent pas aux dates confirmées");
+                $_SESSION['error'] = "Une erreur est survenue lors de la validation des dates";
+                header('Location: index.php?page=creneaux&action=generer');
+                exit();
+            }
 
             // Vérifier si des créneaux existent déjà pour cette période
             $creneauxExistants = $this->creneauModel->getCreneauxPourPeriode($dateDebut, $dateFin, $agenda['id']);
@@ -167,12 +188,8 @@ class CreneauxController {
             // 20 créneaux par jour (8 le matin + 12 l'après-midi)
             $nombreCreneauxEstime = $nombreJours * 20;
 
-            if ($nombreCreneauxEstime > 200) { // Limite arbitraire de 200 créneaux
-                $_SESSION['warning'] = "Attention : Vous allez générer environ {$nombreCreneauxEstime} créneaux. 
-                    Veuillez réduire la période pour une meilleure gestion.";
-                header('Location: index.php?page=creneaux&action=generer');
-                exit();
-            }
+            // On affiche juste une information sur le nombre de créneaux qui seront générés
+            $_SESSION['info'] = "Vous allez générer environ {$nombreCreneauxEstime} créneaux.";
 
             // Valider les dates
             if (empty($dateDebut) || empty($dateFin)) {
@@ -186,18 +203,28 @@ class CreneauxController {
             error_log("Date de fin : " . $dateFin);
 
             // Générer les créneaux
-            $success = $this->creneauModel->genererCreneaux(
-                $agenda['id'],
-                $dateDebut,
-                $dateFin
-            );
+            error_log("Tentative de génération des créneaux avec les paramètres suivants :");
+            error_log("Agenda ID : " . $agenda['id']);
+            error_log("Date début : " . $dateDebut);
+            error_log("Date fin : " . $dateFin);
 
-            if ($success) {
-                $_SESSION['success'] = "Les créneaux ont été générés avec succès";
-                error_log("Génération des créneaux réussie");
-            } else {
-                $_SESSION['error'] = "Une erreur est survenue lors de la génération des créneaux";
-                error_log("Échec de la génération des créneaux");
+            try {
+                $success = $this->creneauModel->genererCreneaux(
+                    $agenda['id'],
+                    $dateDebut,
+                    $dateFin
+                );
+
+                if ($success) {
+                    $_SESSION['success'] = "Les créneaux ont été générés avec succès";
+                    error_log("Génération des créneaux réussie");
+                } else {
+                    $_SESSION['error'] = "Une erreur est survenue lors de la génération des créneaux";
+                    error_log("Échec de la génération des créneaux");
+                }
+            } catch (\Exception $e) {
+                error_log("Exception lors de la génération des créneaux : " . $e->getMessage());
+                $_SESSION['error'] = "Une erreur inattendue est survenue";
             }
 
             header('Location: index.php?page=admin');

@@ -14,9 +14,10 @@ require_once __DIR__ . '/../templates/flash-messages.php';
             <div class="time-slots">
                 <!-- Les créneaux seront affichés ici -->
                 <?php foreach ($availableSlots as $slot): ?>
-                <button class="time-slot" data-time="<?= htmlspecialchars($slot) ?>">
-                    <?= htmlspecialchars($slot) ?>
-                </button>
+                <a href="index.php?page=rendezvous&action=confirmation&service_id=<?= $service['id'] ?>&creneau_id=<?= $slot['id'] ?>" 
+                   class="time-slot">
+                    <?= date('H:i', strtotime($slot['debut'])) ?>
+                </a>
                 <?php endforeach; ?>
             </div>
         </div>

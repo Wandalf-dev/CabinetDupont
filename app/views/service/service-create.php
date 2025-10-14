@@ -4,6 +4,7 @@ require_once __DIR__ . '/../templates/header.php';
 require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
 <link rel="stylesheet" href="/cabinetdupont/css/service-create.css">
+<link rel="stylesheet" href="/cabinetdupont/css/color-picker.css">
 <style>
 /* Style pour limiter la largeur du formulaire */
 .actu-create-section {
@@ -34,6 +35,30 @@ require_once __DIR__ . '/../templates/flash-messages.php';
         </div>
 
         <div class="form-group">
+            <label for="couleur">Couleur d'affichage dans le planning</label>
+            <div class="color-picker-container">
+                <input type="color" 
+                       id="couleur" 
+                       name="couleur" 
+                       value="<?php echo htmlspecialchars($formData['couleur'] ?? '#4CAF50'); ?>" 
+                       required
+                       onchange="updateColorInputs(this)">
+                <input type="text" 
+                       id="couleurText"
+                       class="color-input-text"
+                       value="<?php echo htmlspecialchars($formData['couleur'] ?? '#4CAF50'); ?>"
+                       pattern="^#[0-9A-Fa-f]{6}$"
+                       title="Code couleur hexadécimal (ex: #FF0000)"
+                       onchange="updateColorFromText(this)"
+                       oninput="this.value = this.value.toUpperCase()">
+                <div class="color-preview">
+                    <span class="color-preview-dot" id="colorPreviewDot" style="background-color: <?php echo htmlspecialchars($formData['couleur'] ?? '#4CAF50'); ?>"></span>
+                </div>
+            </div>
+            <small class="form-text text-muted">Cette couleur sera utilisée pour identifier ce service dans le planning</small>
+        </div>
+
+        <div class="form-group">
             <label for="image">Image</label>
             <input type="file" id="image" name="image" accept="image/*" onchange="previewServiceImage(event)" required>
             <!-- Zone d'aperçu de l'image sélectionnée -->
@@ -47,6 +72,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
     </form>
 </section>
 
+<script src="/cabinetdupont/js/color-picker.js"></script>
 <script>
 // Fonction pour afficher un aperçu de l'image sélectionnée
 function previewServiceImage(event) {

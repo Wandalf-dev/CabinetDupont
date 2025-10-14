@@ -41,15 +41,17 @@ class ServiceModel extends Model {
         $titre = html_entity_decode(strip_tags($data['titre']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $description = html_entity_decode(strip_tags($data['description']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $image = isset($data['image']) ? $data['image'] : null;
+        $couleur = isset($data['couleur']) ? $data['couleur'] : '#4CAF50';
         
-        $sql = "INSERT INTO service (titre, description, image, statut, duree) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO service (titre, description, image, statut, duree, couleur) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $result = $stmt->execute([
             $titre,
             $description,
             $image,
             $data['statut'] ?? 'BROUILLON',
-            intval($data['duree'] ?? 30)
+            intval($data['duree'] ?? 30),
+            $couleur
         ]);
 
         if ($result) {
@@ -59,28 +61,29 @@ class ServiceModel extends Model {
     }
 
     public function updateService($id, $data) {
+        // Construction de base de la requête
+        $sql = "UPDATE service SET titre = ?, description = ?, statut = ?, duree = ?, couleur = ?";
         $params = [
             $data['titre'],
             $data['description'],
             $data['statut'] ?? 'BROUILLON',
-            intval($data['duree'] ?? 30)
+            intval($data['duree'] ?? 30),
+            $data['couleur'] ?? '#4CAF50'
         ];
 
-        $setImage = '';
+        // Ajout de l'image si elle existe
         if (isset($data['image']) && $data['image']) {
-            $setImage = ', image = ?'; // Ajoute l'image si elle existe
+            $sql .= ", image = ?";
             $params[] = $data['image'];
         }
         
+        // Ajout de la condition WHERE
+        $sql .= " WHERE id = ?";
         $params[] = $id;
         
-        $sql = "UPDATE service 
-                SET titre = ?, 
-                    description = ?, 
-                    statut = ?,
-                    duree = ?
-                    $setImage
-                WHERE id = ?";
+        // Log pour déboguer
+        error_log("SQL: " . $sql);
+        error_log("Params: " . print_r($params, true));
         
         $stmt = $this->db->prepare($sql);
         return $stmt->execute($params); // Met à jour le service

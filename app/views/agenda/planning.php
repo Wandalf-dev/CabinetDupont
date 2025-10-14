@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../templates/header.php';
 require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
+<link rel="stylesheet" href="/CabinetDupont/css/services-legend.css">
 
 <main class="calendar-container">
     <div class="calendar-header">
@@ -26,6 +27,16 @@ require_once __DIR__ . '/../templates/flash-messages.php';
         </div>
     </div>
 
+    <!-- Légende des services -->
+    <div class="services-legend">
+        <?php foreach ($services as $service): ?>
+        <div class="legend-item">
+            <span class="color-dot" style="background-color: <?php echo htmlspecialchars($service['couleur'] ?? '#4CAF50'); ?>"></span>
+            <span class="service-name"><?php echo htmlspecialchars($service['titre']); ?></span>
+        </div>
+        <?php endforeach; ?>
+    </div>
+
         <!-- Conteneur des vues -->
         <div class="calendar-views">
             <!-- Vue semaine -->
@@ -34,11 +45,18 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                     <!-- Colonne des heures -->
                     <div class="time-column">
                         <div class="time-header"></div>
+                        <div class="time-slots">
                         <?php
                         for ($hour = $heure_min; $hour <= $heure_max; $hour++) {
-                            echo '<div class="time-slot">' . sprintf('%02d:00', $hour) . '</div>';
+                            echo '<div class="time-row">';
+                            echo '<div class="hour-cell">' . sprintf('%02d:00', $hour) . '</div>';
+                            if ($hour < $heure_max) {
+                                echo '<div class="half-hour-cell">' . sprintf('%02d:30', $hour) . '</div>';
+                            }
+                            echo '</div>';
                         }
                         ?>
+                        </div>
                     </div>
 
                     <!-- Colonnes des jours -->
@@ -65,7 +83,12 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                             <div class="day-content">
                                 <?php
                                 for ($hour = $heure_min; $hour <= $heure_max; $hour++) {
-                                    echo '<div class="time-slot" data-hour="' . $hour . '"></div>';
+                                    echo '<div class="time-row">';
+                                    echo '<div class="slot-cell" data-hour="' . sprintf('%02d:00', $hour) . '"></div>';
+                                    if ($hour < $heure_max) {
+                                        echo '<div class="slot-cell" data-hour="' . sprintf('%02d:30', $hour) . '"></div>';
+                                    }
+                                    echo '</div>';
                                 }
                                 ?>
                             </div>
@@ -83,11 +106,18 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                     <!-- Colonne des heures -->
                     <div class="time-column">
                         <div class="time-header"></div>
+                        <div class="time-slots">
                         <?php
                         for ($hour = $heure_min; $hour <= $heure_max; $hour++) {
-                            echo '<div class="time-slot">' . sprintf('%02d:00', $hour) . '</div>';
+                            echo '<div class="time-row">';
+                            echo '<div class="hour-cell">' . sprintf('%02d:00', $hour) . '</div>';
+                            if ($hour < $heure_max) {
+                                echo '<div class="half-hour-cell">' . sprintf('%02d:30', $hour) . '</div>';
+                            }
+                            echo '</div>';
                         }
                         ?>
+                        </div>
                     </div>
                     
                     <!-- Colonne du jour -->
@@ -99,7 +129,12 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                         <div class="day-content">
                             <?php
                             for ($hour = $heure_min; $hour <= $heure_max; $hour++) {
-                                echo '<div class="time-slot" data-hour="' . $hour . '"></div>';
+                                echo '<div class="time-row">';
+                                echo '<div class="slot-cell" data-hour="' . sprintf('%02d:00', $hour) . '"></div>';
+                                if ($hour < $heure_max) {
+                                    echo '<div class="slot-cell" data-hour="' . sprintf('%02d:30', $hour) . '"></div>';
+                                }
+                                echo '</div>';
                             }
                             ?>
                         </div>

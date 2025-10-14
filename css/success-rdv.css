@@ -1,0 +1,76 @@
+/* Style pour la page de succès de rendez-vous */
+main {
+    min-height: calc(100vh - 80px); /* 80px est la hauteur approximative du header */
+    display: flex;
+    flex-direction: column;
+}
+
+.success-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 4rem 0;
+}
+
+.success-content {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.success-alert {
+    background: linear-gradient(145deg, #f8fff8, #f0fff0);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 128, 0, 0.1);
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.success-icon {
+    color: #28a745;
+    margin-bottom: 1.5rem;
+    animation: scaleIn 0.5s ease-out;
+}
+
+.success-title {
+    color: #1a5928;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.success-message {
+    color: #2d672d;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.success-buttons {
+    margin-top: 2rem;
+}
+
+.success-buttons .btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+    transition: transform 0.2s ease;
+}
+
+.success-buttons .btn:hover {
+    transform: translateY(-2px);
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Ajustement du footer */
+.site-footer {
+    margin-top: auto;
+}

@@ -8,6 +8,12 @@ require_once __DIR__ . '/../templates/flash-messages.php';
         <h2 class="section-title">Choisissez une date de rendez-vous</h2>
         
         <div class="calendar-wrapper">
+            <!-- Dates disponibles en format JSON pour JavaScript -->
+            <script>
+                var datesDisponibles = <?php echo json_encode($datesDisponibles); ?>;
+                var serviceId = <?php echo json_encode($service['id']); ?>;
+            </script>
+            
             <div class="calendar-navigation">
                 <button class="nav-btn prev-month">
                     <i class="fas fa-chevron-left"></i>
@@ -47,8 +53,11 @@ require_once __DIR__ . '/../templates/flash-messages.php';
     background: white;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
-    margin-top: 2rem;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    max-width: 500px;  /* Réduire la largeur maximale */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .calendar-navigation {
@@ -87,23 +96,37 @@ require_once __DIR__ . '/../templates/flash-messages.php';
     width: 100%;
 }
 
+.calendar {
+    width: 100%;
+    padding: 0 8px; /* Ajouter un peu de padding pour éviter que les cercles touchent les bords */
+}
+
 .calendar-header {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     text-align: center;
     font-weight: 600;
     color: #666;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem; /* Réduire l'espace entre l'en-tête et les jours */
+    padding: 0 4px; /* Aligner avec les cercles en dessous */
+}
+
+.calendar-header div {
+    width: 36px; /* Même largeur que les cercles */
+    margin: 0 auto; /* Centrer dans la colonne */
 }
 
 .calendar-days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
+    gap: 4px;
+    font-size: 0.9rem;
+    justify-items: center; /* Centrer les éléments horizontalement */
 }
 
 .calendar-day {
-    aspect-ratio: 1;
+    width: 36px; /* Taille fixe pour les cercles */
+    height: 36px; /* Taille fixe pour les cercles */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -213,6 +236,8 @@ class Calendar {
         // Désactiver les dimanches
         if (date.getDay() === 0) return true;
         
+        // Pour les autres jours, ne pas les désactiver par défaut
+        // car les créneaux seront vérifiés à l'étape suivante
         return false;
     }
 
@@ -223,8 +248,12 @@ class Calendar {
             day
         );
         
-        // Redirection vers la sélection de l'heure avec la date choisie
-        const formattedDate = selectedDate.toISOString().split('T')[0];
+        // Formater la date en préservant le fuseau horaire local
+        const year = selectedDate.getFullYear();
+        const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+        const dayStr = String(selectedDate.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${dayStr}`;
+        
         window.location.href = `index.php?page=rendezvous&action=selectTime&service_id=${this.serviceId}&date=${formattedDate}`;
     }
 

@@ -52,6 +52,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Gérer la confirmation
         btnConfirmer.addEventListener('click', function() {
+            // Mettre à jour les champs de confirmation
+            document.getElementById('confirmed_date_debut').value = dateDebut.value;
+            document.getElementById('confirmed_date_fin').value = dateFin.value;
+            
+            console.log('Soumission du formulaire avec les dates :', {
+                debut: dateDebut.value,
+                fin: dateFin.value,
+                confirmedDebut: document.getElementById('confirmed_date_debut').value,
+                confirmedFin: document.getElementById('confirmed_date_fin').value
+            });
+            
             modal.classList.remove('show');
             form.submit();
         });
