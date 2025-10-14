@@ -94,16 +94,24 @@ class CreneauModel extends Model {
      * @return array Liste des dates avec des créneaux disponibles
      */
     public function getDatesDisponibles() {
-        // D'abord, récupérer toutes les dates où il y a des créneaux
+        error_log("=== Début getDatesDisponibles ===");
+        
+        // Récupérer uniquement les dates avec des créneaux disponibles
         $sql = "SELECT DISTINCT DATE(c.debut) as date
                 FROM creneau c
-                WHERE DATE(c.debut) >= CURDATE()
+                LEFT JOIN rendezvous r ON c.id = r.creneau_id
+                WHERE c.debut >= CURRENT_DATE()
+                AND c.debut <= DATE_ADD(CURRENT_DATE(), INTERVAL 14 DAY)
+                AND r.id IS NULL  -- Créneau non réservé
                 ORDER BY date ASC";
+        
+        error_log("Exécution de la requête : " . $sql);
+        
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         $dates = $stmt->fetchAll(\PDO::FETCH_COLUMN);
         
-        error_log("Dates avec des créneaux : " . print_r($dates, true));
+        error_log("Dates trouvées : " . print_r($dates, true));
         return $dates;
     }
 
@@ -130,33 +138,63 @@ class CreneauModel extends Model {
         error_log("Date demandée : " . $date);
         error_log("Service ID demandé : " . $serviceId);
 
-        // Vérifie si des créneaux existent pour cette date
-        $sql = "SELECT c.* 
-                FROM creneau c
-                LEFT JOIN rendezvous r ON c.id = r.creneau_id
-                WHERE DATE(c.debut) = ?
-                AND r.id IS NULL
-                ORDER BY c.debut ASC";
-                
+        error_log("Date demandée : " . $date);
+        error_log("Service ID demandé : " . $serviceId);
+
+        // Récupérer la durée du service demandé
+        $sql = "SELECT duree FROM service WHERE id = :service_id";
+        error_log("Requête durée service : " . $sql);
+        
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$date]);
-        $creneaux = $stmt->fetchAll();
+        $stmt->execute([':service_id' => $serviceId]);
+        $service = $stmt->fetch();
+        $dureeService = $service ? $service['duree'] : 30; // Par défaut 30 minutes
+        error_log("Durée du service : " . $dureeService . " minutes");
+
+        $sql = "SELECT c.id, c.debut, c.fin
+                FROM creneau c
+                WHERE DATE(c.debut) = :date
+                AND NOT EXISTS (
+                    SELECT 1 
+                    FROM rendezvous r2
+                    JOIN creneau c2 ON r2.creneau_id = c2.id
+                    WHERE DATE(c2.debut) = DATE(c.debut)
+                    AND c2.service_id IS NOT NULL
+                    AND (
+                        /* Vérifie si le nouveau créneau chevauche un rdv existant */
+                        (c.debut < DATE_ADD(c2.debut, INTERVAL 
+                            (SELECT duree FROM service WHERE id = c2.service_id) MINUTE) 
+                        AND DATE_ADD(c.debut, INTERVAL :duree MINUTE) > c2.debut)
+                    )
+                )
+                AND EXISTS (
+                    SELECT 1 
+                    FROM creneau c4
+                    WHERE DATE(c4.debut) = DATE(c.debut)
+                    AND c4.debut >= c.debut
+                    AND c4.debut < DATE_ADD(c.debut, INTERVAL :duree MINUTE)
+                    AND NOT EXISTS (
+                        SELECT 1
+                        FROM rendezvous r3
+                        WHERE r3.creneau_id = c4.id
+                    )
+                    GROUP BY DATE(c4.debut)
+                    HAVING COUNT(*) >= CEIL(:duree/30)
+                )
+                ORDER BY c.debut ASC";
+
+        error_log("Requête SQL : " . $sql);
+        error_log("Paramètres : date = " . $date . ", durée = " . $dureeService);
         
-        // Si aucun créneau n'existe pour cette date, vérifie si des créneaux ont été générés
-        if (empty($creneaux)) {
-            $sql = "SELECT COUNT(*) FROM creneau WHERE DATE(debut) = ?";
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute([$date]);
-            $hasCreneaux = $stmt->fetchColumn() > 0;
-            
-            // Si aucun créneau n'a été généré pour cette date, elle est considérée comme disponible
-            if (!$hasCreneaux) {
-                return [];
-            }
-        }
-        
-        error_log("Créneaux trouvés : " . print_r($creneaux, true));
-        return $creneaux;
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':date' => $date,
+            ':duree' => $dureeService
+        ]);
+
+        $slots = $stmt->fetchAll();
+        error_log("Créneaux trouvés : " . print_r($slots, true));
+        return $slots;
     }
 
     /**
@@ -290,42 +328,49 @@ class CreneauModel extends Model {
             $medecinId = $medecin['id'];
             error_log("Médecin trouvé avec ID: " . $medecinId);
 
+            // Récupérer la durée du service
+            $sql = "SELECT duree FROM service WHERE id = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$serviceId]);
+            $service = $stmt->fetch();
+            if (!$service) {
+                throw new \Exception("Service introuvable");
+            }
+            $dureeService = $service['duree'];
+            
+            // Récupérer tous les créneaux nécessaires pour couvrir la durée du service
+            $sql = "SELECT c.id, c.debut 
+                   FROM creneau c 
+                   WHERE c.id >= ? 
+                   AND c.debut < (
+                       SELECT DATE_ADD(c2.debut, INTERVAL ? MINUTE) 
+                       FROM creneau c2 
+                       WHERE c2.id = ?
+                   )
+                   AND c.est_reserve = 0
+                   ORDER BY c.debut ASC";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$creneauId, $dureeService, $creneauId]);
+            $creneauxNecessaires = $stmt->fetchAll();
+            
+            // Vérifier qu'on a tous les créneaux nécessaires
+            $totalMinutes = count($creneauxNecessaires) * 30;
+            if ($totalMinutes < $dureeService) {
+                throw new \Exception("Pas assez de créneaux disponibles pour ce service");
+            }
+            
             // Créer le rendez-vous
             $sql = "INSERT INTO rendezvous (creneau_id, patient_id, medecin_id, statut) 
                     VALUES (?, ?, ?, 'DEMANDE')";
-            error_log("SQL insert rendezvous: " . $sql);
-            error_log("Paramètres insertion: creneauId = " . $creneauId . ", patientId = " . $patientId . ", medecinId = " . $medecinId);
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$creneauId, $patientId, $medecinId]);
             
-            try {
-                $stmt = $this->db->prepare($sql);
-                $success = $stmt->execute([$creneauId, $patientId, $medecinId]);
-                error_log("Insertion rendez-vous réussie: " . ($success ? 'oui' : 'non'));
-                
-                if (!$success) {
-                    throw new \Exception("Échec de l'insertion du rendez-vous - Erreur SQL");
-                }
-            } catch (\PDOException $e) {
-                error_log("Erreur PDO lors de l'insertion du rendez-vous: " . $e->getMessage());
-                throw new \Exception("Erreur lors de l'insertion du rendez-vous: " . $e->getMessage());
-            }
-
-            // Mettre à jour le créneau
-            $sql = "UPDATE creneau SET service_id = ?, est_reserve = 1 WHERE id = ?";
-            error_log("SQL update creneau: " . $sql);
-            error_log("Paramètres mise à jour: serviceId = " . $serviceId . ", creneauId = " . $creneauId);
-            
-            try {
-                $stmt = $this->db->prepare($sql);
-                $updateSuccess = $stmt->execute([$serviceId, $creneauId]);
-                error_log("Mise à jour du créneau réussie: " . ($updateSuccess ? 'oui' : 'non'));
-                
-                if (!$updateSuccess) {
-                    throw new \Exception("Échec de la mise à jour du créneau - Aucune ligne affectée");
-                }
-            } catch (\PDOException $e) {
-                error_log("Erreur PDO lors de la mise à jour du créneau: " . $e->getMessage());
-                throw new \Exception("Erreur lors de la mise à jour du créneau: " . $e->getMessage());
-            }
+            // Mettre à jour tous les créneaux nécessaires
+            $sql = "UPDATE creneau 
+                   SET service_id = ?, est_reserve = 1 
+                   WHERE id IN (" . implode(',', array_column($creneauxNecessaires, 'id')) . ")";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$serviceId]);
 
             $this->db->commit();
             error_log("Transaction validée avec succès");

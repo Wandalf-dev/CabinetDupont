@@ -1,14 +1,24 @@
 RewriteEngine On
 
-# Si le fichier ou le répertoire n'existe pas physiquement
+# Base directory configuration
+RewriteBase /cabinetdupont/
+
+# If the requested resource exists as a file or directory, skip rewrites
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Redirige vers index.php
+# Route all other requests to index.php
 RewriteRule ^(.*)$ index.php [QSA,L]
 
-# Permettre l'accès direct aux ressources statiques
-<FilesMatch "\.(jpg|jpeg|png|gif|svg|css|js)$">
+# Allow direct access to assets
+<FilesMatch "\.(css|js|jpg|jpeg|png|gif|ico|svg)$">
     Order Allow,Deny
     Allow from all
 </FilesMatch>
+
+# Set default character set
+AddDefaultCharset UTF-8
+
+# Enable error logging
+php_flag log_errors on
+php_value error_log "error_log.txt"

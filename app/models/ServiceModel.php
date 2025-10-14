@@ -16,6 +16,7 @@ class ServiceModel extends Model {
     }
 
     public function getAllServices() {
+        // Récupère les services par leur ordre défini
         $sql = "SELECT * FROM service WHERE statut = 'PUBLIE' ORDER BY ordre ASC, titre ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();

@@ -1,0 +1,27 @@
+.slot-cell.unavailable {
+    background-color: #f3f4f6;
+    pointer-events: none;
+    position: relative;
+}
+
+.slot-cell.unavailable::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(200, 200, 200, 0.1),
+        rgba(200, 200, 200, 0.1) 10px,
+        rgba(200, 200, 200, 0.2) 10px,
+        rgba(200, 200, 200, 0.2) 20px
+    );
+}
+
+.slot-cell.lunch-break {
+    background-color: #f3f4f6;
+    pointer-events: none;
+    position: relative;
+}

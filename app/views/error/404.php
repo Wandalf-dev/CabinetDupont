@@ -12,7 +12,7 @@ include __DIR__ . '/../templates/header.php'; ?>
             <!-- Message d'information pour l'utilisateur -->
             <p>La page que vous recherchez n'existe pas.</p>
             <!-- Lien pour retourner à la page d'accueil -->
-            <a href="index.php?page=home" class="btn btn-primary">Retour à l'accueil</a>
+            <a href="<?= BASE_URL ?>/index.php?page=home" class="btn btn-primary">Retour à l'accueil</a>
         </div>
     </section>
 </main>

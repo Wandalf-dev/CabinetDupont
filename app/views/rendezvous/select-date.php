@@ -233,12 +233,26 @@ class Calendar {
         // Désactiver les dates passées
         if (date < new Date().setHours(0,0,0,0)) return true;
         
-        // Désactiver les dimanches
+        // Désactiver uniquement les dimanches
         if (date.getDay() === 0) return true;
         
-        // Pour les autres jours, ne pas les désactiver par défaut
-        // car les créneaux seront vérifiés à l'étape suivante
-        return false;
+        // Désactiver les dates au-delà de 2 semaines
+        const twoWeeksFromNow = new Date();
+        twoWeeksFromNow.setDate(twoWeeksFromNow.getDate() + 14);
+        if (date > twoWeeksFromNow) return true;
+        
+        // Vérifier si la date est dans la liste des dates disponibles
+        const formattedDate = this.formatDate(date);
+        console.log('Vérification de la date:', formattedDate);
+        console.log('Dates disponibles:', datesDisponibles);
+        return !datesDisponibles.includes(formattedDate);
+    }
+
+    formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
 
     selectDate(day) {

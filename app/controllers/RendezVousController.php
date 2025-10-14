@@ -29,7 +29,7 @@ class RendezVousController extends Controller {
         // Vérifie si l'utilisateur est connecté
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['flash_message'] = "Vous devez être connecté pour prendre un rendez-vous.";
-            header('Location: index.php?page=auth&action=login');
+            header('Location: ' . BASE_URL . '/index.php?page=auth&action=login');
             exit;
         }
 
@@ -44,9 +44,19 @@ class RendezVousController extends Controller {
 
     public function selectDate() {
         error_log("=== Début méthode selectDate() ===");
+        error_log("GET params reçus : " . print_r($_GET, true));
+        error_log("Session user_id : " . (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'non défini'));
         
-        if (!isset($_SESSION['user_id']) || !isset($_GET['service_id'])) {
-            header('Location: index.php?page=rendezvous&action=selectConsultation');
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['error'] = "Vous devez être connecté pour prendre un rendez-vous.";
+            header('Location: ' . BASE_URL . '/index.php?page=auth&action=login');
+            exit;
+        }
+
+        if (!isset($_GET['service_id'])) {
+            error_log("service_id manquant");
+            $_SESSION['error'] = "Veuillez sélectionner un service.";
+            header('Location: ' . BASE_URL . '/index.php?page=rendezvous&action=selectConsultation');
             exit;
         }
 
@@ -78,9 +88,17 @@ class RendezVousController extends Controller {
     }
 
     public function selectTime() {
-        error_log("=== Début méthode selectTime() ===");
-        if (!isset($_SESSION['user_id']) || !isset($_GET['service_id']) || !isset($_GET['date'])) {
-            header('Location: index.php?page=rendezvous&action=selectConsultation');
+        // Vérifier la session
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['error'] = "Vous devez être connecté pour prendre un rendez-vous.";
+            header('Location: ' . BASE_URL . '/index.php?page=auth&action=login');
+            exit;
+        }
+
+        // Vérifier les paramètres requis
+        if (!isset($_GET['service_id']) || !isset($_GET['date'])) {
+            $_SESSION['error'] = "Des informations sont manquantes pour la sélection de l'horaire.";
+            header('Location: ' . BASE_URL . '/index.php?page=rendezvous&action=selectConsultation');
             exit;
         }
 
@@ -90,35 +108,47 @@ class RendezVousController extends Controller {
         $serviceId = (int)$_GET['service_id'];
         $date = $_GET['date'];
         
-        // Convertir la date dans le fuseau horaire correct si nécessaire
-        $dateObj = new \DateTime($date, new \DateTimeZone('Europe/Paris'));
-        $date = $dateObj->format('Y-m-d');
-        
-        error_log("Paramètres reçus - serviceId: $serviceId, date: $date");
-
-        // Récupérer le service
-        $service = $this->serviceModel->getServiceById($serviceId);
-        if (!$service) {
-            $_SESSION['error'] = "Le service demandé n'existe pas.";
-            header('Location: index.php?page=rendezvous&action=selectConsultation');
+        // Valider le format de la date
+        if (!preg_match("/^\d{4}-\d{2}-\d{2}$/", $date)) {
+            $_SESSION['error'] = "Format de date invalide.";
+            header('Location: ' . BASE_URL . '/index.php?page=rendezvous&action=selectConsultation');
             exit;
         }
         
-        // Récupérer les créneaux disponibles pour cette date
-        $availableSlots = $this->creneauModel->getAvailableSlots($date, $serviceId);
-        error_log("Créneaux disponibles trouvés : " . print_r($availableSlots, true));
+        try {
+            // Convertir la date dans le fuseau horaire correct
+            $dateObj = new \DateTime($date, new \DateTimeZone('Europe/Paris'));
+            $date = $dateObj->format('Y-m-d');
+            
+            // Vérifier que la date n'est pas dans le passé
+            $today = new \DateTime('today', new \DateTimeZone('Europe/Paris'));
+            if ($dateObj < $today) {
+                $_SESSION['error'] = "Impossible de prendre un rendez-vous à une date passée.";
+                header('Location: ' . BASE_URL . '/index.php?page=rendezvous&action=selectDate&service_id=' . $serviceId);
+                exit;
+            }
 
-        if (empty($availableSlots)) {
-            $_SESSION['error'] = "Aucun créneau disponible pour cette date.";
-            header('Location: index.php?page=rendezvous&action=selectDate&service_id=' . $serviceId);
+            // Récupérer le service et sa durée
+            $service = $this->serviceModel->getServiceById($serviceId);
+            if (!$service) {
+                throw new \Exception("Le service demandé n'existe pas.");
+            }
+
+            // Récupérer les créneaux disponibles
+            $availableSlots = $this->creneauModel->getAvailableSlots($date, $serviceId);
+            
+            // Afficher la vue
+            $this->view('rendezvous/select-time', [
+                'service' => $service,
+                'date' => $date,
+                'availableSlots' => $availableSlots
+            ]);
+            
+        } catch (\Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            header('Location: ' . BASE_URL . '/index.php?page=rendezvous&action=selectDate&service_id=' . $serviceId);
             exit;
         }
-
-        $this->view('rendezvous/select-time', [
-            'availableSlots' => $availableSlots,
-            'service' => $service,
-            'date' => $date
-        ]);
     }
 
     public function confirmation() {

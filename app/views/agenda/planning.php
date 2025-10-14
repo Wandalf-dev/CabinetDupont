@@ -3,6 +3,7 @@ require_once __DIR__ . '/../templates/header.php';
 require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
 <link rel="stylesheet" href="/CabinetDupont/css/services-legend.css">
+<link rel="stylesheet" href="/CabinetDupont/css/agenda-unavailable.css">
 
 <main class="calendar-container">
     <div class="calendar-header">
@@ -181,4 +182,5 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 </div>
 
 <script src="<?php echo BASE_URL; ?>/js/agenda.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/agenda-unavailable.js"></script>
 <?php require_once __DIR__ . '/../templates/footer.php'; ?>
