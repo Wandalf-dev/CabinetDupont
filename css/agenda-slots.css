@@ -1,0 +1,24 @@
+/* Styles pour les rendez-vous dans la grille */
+.slot-cell.reserved {
+    position: absolute;
+    z-index: 2;
+    margin: 0;
+    padding: 2px 4px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+    color: white;
+    font-size: 0.65rem;
+    line-height: 1.1;
+    font-family: monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-height: calc(100% - 4px);
+}
+
+/* Style pour les cellules réservées au survol */
+.slot-cell.reserved:hover {
+    z-index: 3;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}

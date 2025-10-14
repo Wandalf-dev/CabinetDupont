@@ -21,9 +21,10 @@
     border-radius: 12px;
     box-shadow: 0 4px 6px -1px var(--calendar-shadow);
     margin: 2rem auto;
-    max-width: 1400px;
+    max-width: 1800px; /* Augmenté de 1400px à 1800px */
     overflow: hidden;
     padding: 0;
+    width: 95%; /* Ajouté pour s'assurer qu'il prend presque toute la largeur disponible */
 }
 
 /* En-tête du calendrier */

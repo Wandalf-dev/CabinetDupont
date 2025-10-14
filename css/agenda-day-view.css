@@ -1,0 +1,8 @@
+.day-view .slot-cell.reserved {
+    font-size: 0.65rem;
+    line-height: 1.1;
+    font-family: monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

@@ -247,38 +247,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log('Données du rendez-vous:', event);
 
                         // Créer le contenu détaillé pour la vue jour
-                        if (currentView === 'day') {
-                            console.log('Création du rendez-vous en vue jour');
-                            
-                            const formattedStartTime = startTime.toLocaleTimeString('fr-FR', { 
-                                hour: '2-digit', 
-                                minute: '2-digit' 
-                            });
-                            const formattedEndTime = endTime.toLocaleTimeString('fr-FR', { 
-                                hour: '2-digit', 
-                                minute: '2-digit' 
-                            });
-
-                            // Récupérer les données du rendez-vous
-                            const patientName = event.patient ? `${event.patient.nom} ${event.patient.prenom}` : 'Patient';
-                            const serviceTitle = event.service ? event.service.titre : 'Service';
-
-                            // Ajouter un conteneur pour les détails
-                            const detailsContent = document.createElement('div');
-                            detailsContent.classList.add('appointment-details');
-                            
-                            // Ajouter les informations détaillées
-                            detailsContent.innerHTML = `
-                                <div class="appointment-time">${formattedStartTime}</div>
-                                <strong>${patientName}</strong>
-                                ${durationMinutes <= 30 ? '' : `<div class="appointment-service">${serviceTitle}</div>`}
-                                ${durationMinutes >= 90 ? `<div class="appointment-duration">${durationMinutes} min</div>` : ''}
-                            `;
-                            
-                            appointmentElement.appendChild(detailsContent);
-                            console.log('Contenu du rendez-vous ajouté:', detailsContent.innerHTML);
-                        }
-
                         // Appliquer le style avec précision
                         appointmentElement.style.position = 'absolute';
                         appointmentElement.style.top = `${exactTop}px`;
@@ -288,23 +256,22 @@ document.addEventListener('DOMContentLoaded', function() {
                         appointmentElement.style.width = 'calc(100% - 4px)';
                         appointmentElement.style.backgroundColor = event.couleur || 'var(--calendar-primary)';
                         
-                        // Préparer le nom du patient avec une limite de caractères si nécessaire
-                        const patientName = event.title.length > 20 ? event.title.substring(0, 20) + '...' : event.title;
-                        
                         // Ajouter les informations du rendez-vous
                         appointmentElement.setAttribute('data-id', event.id);
                         appointmentElement.setAttribute('data-tooltip', `${event.title}\nDe ${formatTime(startTime)} à ${formatTime(endTime)}\nDurée : ${durationMinutes} minutes`);
                         
-                        // Ajouter le contenu structuré à l'élément selon la vue
-                        if (currentView === 'day') {
-                            appointmentElement.innerHTML = `
-                                <div class="appointment-title">${patientName}</div>
-                                <div class="appointment-time">${formatTime(startTime)} - ${formatTime(endTime)}</div>
-                            `;
-                        } else {
-                            // Vue semaine : affichage simplifié
-                            appointmentElement.innerHTML = `<div class="appointment-indicator"></div>`;
+                        // Préparation du contenu commun aux deux vues
+                        let titleDisplay = event.title;
+                        let durationText = durationMinutes + 'min';
+                        
+                        // Pour les rendez-vous courts, tronquer après le premier espace si trop long
+                        const parts = event.title.split(' ');
+                        if (parts.length > 2) {
+                            titleDisplay = parts[0] + ' ' + parts[1];
                         }
+                        
+                        // Format uniforme pour les deux vues
+                        appointmentElement.innerHTML = `${formatTime(startTime)} - ${formatTime(endTime)} ${titleDisplay} ${durationText}`;
 
                         // Gérer l'affichage de l'infobulle
                         let tooltipTimeout;

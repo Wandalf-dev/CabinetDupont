@@ -8,6 +8,8 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 <link rel="stylesheet" href="/CabinetDupont/css/agenda-unavailable.css">
 <link rel="stylesheet" href="/CabinetDupont/css/tooltip.css">
 <link rel="stylesheet" href="/CabinetDupont/css/agenda-grid.css">
+<link rel="stylesheet" href="/CabinetDupont/css/agenda-slots.css">
+<link rel="stylesheet" href="/CabinetDupont/css/agenda-day-view.css">
 
 <main class="calendar-container">
     <div class="calendar-header">

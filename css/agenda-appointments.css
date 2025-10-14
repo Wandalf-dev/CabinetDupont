@@ -1,0 +1,179 @@
+.slot-cell.reserved {/* Styles pour les rendez-vous */
+
+    position: absolute;/* Conteneur principal pour les rendez-vous */
+
+    z-index: 2;.day-content {
+
+    margin: 0;    position: relative;
+
+    padding: 2px 4px;}
+
+    border-radius: 4px;
+
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);/* Styles communs pour les rendez-vous */
+
+    box-sizing: border-box;.slot-cell.reserved {
+
+    color: white;    position: absolute !important;
+
+    font-size: 0.65rem;    z-index: 1;
+
+    line-height: 1;    color: white !important;
+
+    font-family: monospace;    cursor: pointer;
+
+    white-space: pre-line;    box-sizing: border-box;
+
+    overflow: hidden;    padding: 2px 4px;
+
+    text-overflow: ellipsis;    margin: 0;
+
+}    border: none;
+
+    border-left: 3px solid rgba(0,0,0,0.2);
+
+/* Style pour les cellules réservées au survol */    overflow: hidden;
+
+.slot-cell.reserved:hover {    height: 50px; /* Hauteur exacte d'un créneau */
+
+    z-index: 3;}
+
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+
+}/* Gestion des colonnes pour les rendez-vous qui se chevauchent */
+.slot-cell.reserved[data-column="0"] { left: 0; right: 0; }
+.slot-cell.reserved[data-column="1"] { left: 0; right: 50%; border-right: 1px solid rgba(255,255,255,0.3); }
+.slot-cell.reserved[data-column="2"] { left: 50%; right: 0; }
+.slot-cell.reserved[data-column="3"] { left: 0; right: 66.66%; border-right: 1px solid rgba(255,255,255,0.3); }
+.slot-cell.reserved[data-column="4"] { left: 33.33%; right: 33.33%; border-right: 1px solid rgba(255,255,255,0.3); }
+.slot-cell.reserved[data-column="5"] { left: 66.66%; right: 0; }
+
+/* Vue semaine - style spécifique */
+.week-view .slot-cell.reserved {
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+/* Vue jour - style spécifique */
+.day-view .slot-cell.reserved {
+    font-size: 12px;
+    line-height: 1.3;
+}
+
+/* Détails des rendez-vous */
+.appointment-details {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 2px;
+    overflow: hidden;
+}
+
+.appointment-details strong {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+/* États des rendez-vous */
+.slot-cell.reserved.confirmed {
+    background-color: #2E7D32;
+    border-left-color: #1B5E20;
+}
+
+.slot-cell.reserved.pending {
+    background-color: #F57C00;
+    border-left-color: #E65100;
+}
+
+.slot-cell.reserved.urgent {
+    background-color: #C62828;
+    border-left-color: #B71C1C;
+}
+
+/* Effets au survol subtils */
+.slot-cell.reserved:hover {
+    filter: brightness(1.1);
+}
+
+/* Animation d'apparition douce */
+.slot-cell.reserved {
+    animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.appointment-time {
+    font-size: 11px;
+    font-weight: normal;
+    opacity: 0.95;
+    margin-bottom: 1px;
+}
+
+.appointment-service {
+    font-size: 10px;
+    opacity: 0.9;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.appointment-duration {
+    display: none;
+}
+
+/* Style spécial pour les longs rendez-vous (plus de 60 minutes) */
+.day-view .slot-cell.reserved[style*="height: 90px"] .appointment-duration,
+.day-view .slot-cell.reserved[style*="height: 120px"] .appointment-duration {
+    display: block;
+    font-size: 11px;
+    opacity: 0.9;
+    margin-top: 2px;
+}
+
+/* Pour les petits rendez-vous (30 minutes) */
+.day-view .slot-cell.reserved[style*="height: 30px"] {
+    padding: 2px 4px;
+}
+
+.day-view .slot-cell.reserved[style*="height: 30px"] .appointment-service {
+    display: none;
+}
+
+/* Pour les rendez-vous moyens (45-60 minutes) */
+.day-view .slot-cell.reserved[style*="height: 60px"],
+.day-view .slot-cell.reserved[style*="height: 45px"] {
+    padding: 3px 4px;
+}
+
+/* Pour les longs rendez-vous (90+ minutes) */
+.day-view .slot-cell.reserved[style*="height: 90px"],
+.day-view .slot-cell.reserved[style*="height: 120px"] {
+    padding: 4px 5px;
+}
+
+.day-view .slot-cell.reserved[style*="height: 90px"] .appointment-duration,
+.day-view .slot-cell.reserved[style*="height: 120px"] .appointment-duration {
+    display: block;
+    font-size: 10px;
+    opacity: 0.9;
+    margin-top: 1px;
+}
+
+/* Effet au survol */
+.day-view .slot-cell.reserved:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 20;
+}
