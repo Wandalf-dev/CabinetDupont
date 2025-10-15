@@ -371,9 +371,14 @@ include __DIR__ . '/templates/flash-messages.php';
                                                                     <input type="checkbox" class="select-all-checkbox">
                                                                     <span>Tout sélectionner</span>
                                                                 </label>
-                                                                <button type="button" class="btn-admin delete delete-selected" disabled>
-                                                                    <i class="fas fa-trash"></i>&nbsp;Supprimer la sélection
-                                                                </button>
+                                                                <div class="actions-group">
+                                                                    <button type="button" class="btn-admin warning mark-unavailable-selected" disabled>
+                                                                        <i class="fas fa-ban"></i>&nbsp;Marquer indisponible
+                                                                    </button>
+                                                                    <button type="button" class="btn-admin delete delete-selected" disabled>
+                                                                        <i class="fas fa-trash"></i>&nbsp;Supprimer la sélection
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                             <?php foreach ($periodes[$periode] as $creneau): ?>
                                                                 <div class="creneau-item">
@@ -391,13 +396,19 @@ include __DIR__ . '/templates/flash-messages.php';
                                                                             <i class="far fa-calendar-check"></i>
                                                                             <?= htmlspecialchars($creneau['service_titre'] ?? 'Non spécifié') ?>
                                                                         </div>
-                                                                        <div class="creneau-statut <?= $creneau['est_reserve'] ? 'reserve' : 'disponible' ?>">
-                                                                            <i class="fas <?= $creneau['est_reserve'] ? 'fa-lock' : 'fa-lock-open' ?>"></i>
-                                                                            <?= $creneau['est_reserve'] ? 'Réservé' : 'Disponible' ?>
+                                                                        <div class="creneau-statut <?= $creneau['est_reserve'] ? 'reserve' : ($creneau['statut'] === 'indisponible' ? 'indisponible' : 'disponible') ?>">
+                                                                            <i class="fas <?= $creneau['est_reserve'] ? 'fa-lock' : ($creneau['statut'] === 'indisponible' ? 'fa-ban' : 'fa-lock-open') ?>"></i>
+                                                                            <?= $creneau['est_reserve'] ? 'Réservé' : ($creneau['statut'] === 'indisponible' ? 'Indisponible' : 'Disponible') ?>
                                                                         </div>
                                                                     </div>
                                                                     <?php if (!$creneau['est_reserve']): ?>
                                                                         <div class="creneau-actions">
+                                                                            <button type="button" 
+                                                                                    class="btn <?php echo $creneau['statut'] === 'indisponible' ? 'btn-success' : 'btn-warning'; ?> btn-toggle-dispo" 
+                                                                                    data-creneau-id="<?php echo $creneau['id']; ?>"
+                                                                                    style="margin-right: 10px;">
+                                                                                <?php echo $creneau['statut'] === 'indisponible' ? 'Rendre disponible' : 'Marquer indisponible'; ?>
+                                                                            </button>
                                                                             <button type="button" class="btn-admin delete btn-delete-creneau" data-id="<?= $creneau['id'] ?>">
                                                                                 <i class="fas fa-trash"></i>&nbsp;Supprimer
                                                                             </button>
@@ -429,6 +440,9 @@ include __DIR__ . '/templates/flash-messages.php';
 <link rel="stylesheet" href="css/creneaux-accordion.css">
 <link rel="stylesheet" href="css/patient.css">
 <link rel="stylesheet" href="css/periodes.css">
+<link rel="stylesheet" href="css/components/status-buttons.css">
+<link rel="stylesheet" href="css/components/button-group.css">
+<link rel="stylesheet" href="css/components/creneau-indisponible.css">
 
 <!-- Scripts pour la gestion des onglets, du drag & drop et des filtres -->
 <script src="js/tabs.js"></script>
@@ -438,6 +452,7 @@ include __DIR__ . '/templates/flash-messages.php';
 <script src="js/admin-tables.js"></script>
 <script src="js/creneaux-alerts.js"></script>
 <script src="js/creneaux-delete.js"></script>
+<script src="js/creneaux-indisponibilite.js"></script>
 
     </div> <!-- Fermeture de tabs-container -->
 </main>

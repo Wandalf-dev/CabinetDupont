@@ -8,6 +8,37 @@ class CreneauxController {
     private $creneauModel;
     private $agendaModel;
 
+    public function toggleIndisponible() {
+        // Vérifier les droits d'accès (médecin uniquement)
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'MEDECIN') {
+            http_response_code(403);
+            echo json_encode(['success' => false, 'error' => 'Accès non autorisé']);
+            exit();
+        }
+
+        // Récupérer l'ID du créneau depuis la requête POST
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+        $id = $data['id'] ?? 0;
+
+        if ($id <= 0) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'ID de créneau invalide']);
+            exit();
+        }
+
+        // Vérifier que le créneau existe et n'est pas réservé
+        $success = $this->creneauModel->toggleIndisponible($id);
+        
+        if ($success) {
+            echo json_encode(['success' => true, 'message' => 'Statut du créneau modifié avec succès']);
+        } else {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Impossible de modifier le statut du créneau']);
+        }
+        exit();
+    }
+
     public function __construct() {
         $this->creneauModel = new CreneauModel();
         $this->agendaModel = new AgendaModel();

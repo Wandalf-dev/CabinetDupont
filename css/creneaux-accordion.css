@@ -229,6 +229,7 @@
   align-items: center;
   padding: 0.875rem 1rem;
   background-color: #ffffff;
+  transition: all 0.3s ease;
   border: 1px solid #e9ecef;
   border-radius: 6px;
   transition: all 0.2s ease;

@@ -51,44 +51,10 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                         </button>
                     </div>
                     <div class="accordion-content">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Heure de début</th>
-                                        <th>Heure de fin</th>
-                                        <th>Statut</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($creneauxMatins as $creneau): ?>
-                                        <tr>
-                                            <td><?php echo date('H:i', strtotime($creneau['debut'])); ?></td>
-                                            <td><?php echo date('H:i', strtotime($creneau['fin'])); ?></td>
-                                            <td>
-                                                <?php if (!$creneau['est_reserve']): ?>
-                                                    <span class="badge disponible">Disponible</span>
-                                                <?php else: ?>
-                                                    <span class="badge reserve">Réservé</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="actions">
-                                                <?php if (!$creneau['est_reserve']): ?>
-                                                    <form method="post" action="index.php?page=creneaux&action=supprimer"
-                                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce créneau ?');">
-                                                        <input type="hidden" name="id" value="<?php echo $creneau['id']; ?>">
-                                                        <button type="submit" class="btn-action delete" title="Supprimer">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
+                        <?php 
+                        $creneauxSection = $creneauxMatins;
+                        require __DIR__ . '/tableau-creneaux.php'; 
+                        ?>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -115,44 +81,10 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                         </button>
                     </div>
                     <div class="accordion-content">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Heure de début</th>
-                                        <th>Heure de fin</th>
-                                        <th>Statut</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($creneauxApresMidi as $creneau): ?>
-                                        <tr>
-                                            <td><?php echo date('H:i', strtotime($creneau['debut'])); ?></td>
-                                            <td><?php echo date('H:i', strtotime($creneau['fin'])); ?></td>
-                                            <td>
-                                                <?php if (!$creneau['est_reserve']): ?>
-                                                    <span class="badge disponible">Disponible</span>
-                                                <?php else: ?>
-                                                    <span class="badge reserve">Réservé</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="actions">
-                                                <?php if (!$creneau['est_reserve']): ?>
-                                                    <form method="post" action="index.php?page=creneaux&action=supprimer"
-                                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce créneau ?');">
-                                                        <input type="hidden" name="id" value="<?php echo $creneau['id']; ?>">
-                                                        <button type="submit" class="btn-action delete" title="Supprimer">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
+                        <?php 
+                        $creneauxSection = $creneauxApresMidi;
+                        require __DIR__ . '/tableau-creneaux.php'; 
+                        ?>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -172,5 +104,43 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 
 <!-- Inclusion du JavaScript spécifique -->
 <script src="<?php echo BASE_URL; ?>/js/creneaux-liste.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/creneaux-status.js"></script>
+
+<style>
+.badge.indisponible {
+    background-color: #dc3545;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.btn-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-toggle-dispo {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-toggle-dispo:hover {
+    opacity: 0.9;
+}
+
+.btn-toggle-dispo.btn-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.btn-toggle-dispo.btn-success {
+    background-color: #28a745;
+}
+</style>
 
 <?php require_once __DIR__ . '/../templates/footer.php'; ?>

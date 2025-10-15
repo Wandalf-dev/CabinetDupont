@@ -10,6 +10,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 <link rel="stylesheet" href="/CabinetDupont/css/agenda-grid.css">
 <link rel="stylesheet" href="/CabinetDupont/css/agenda-slots.css">
 <link rel="stylesheet" href="/CabinetDupont/css/agenda-day-view.css">
+<link rel="stylesheet" href="/CabinetDupont/css/components/unavailable-slots.css">
 <link rel="stylesheet" href="/CabinetDupont/css/context-menu.css">
 <link rel="stylesheet" href="/CabinetDupont/css/confirmation-dialog.css">
 <link rel="stylesheet" href="/CabinetDupont/css/notifications.css">
@@ -84,7 +85,9 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                     foreach ($jours_fr as $jour_en => $jour_fr) {
                         if (in_array($jour_en, $jours_ouverture)) {
                     ?>
-                        <div class="day-column" data-day="<?php echo $jour_en; ?>">
+                        <div class="day-column" 
+                             data-day="<?php echo $jour_en; ?>"
+                             data-date="<?php echo date('Y-m-d', strtotime($jour_en . ' this week')); ?>">
                             <div class="day-header">
                                 <span class="day-name"><?php echo $jour_fr; ?></span>
                                 <span class="day-date">

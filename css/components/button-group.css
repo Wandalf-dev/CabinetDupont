@@ -1,0 +1,56 @@
+.actions-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.creneaux-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.mark-unavailable-selected {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.mark-unavailable-selected.active {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+.btn-admin.warning {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.btn-admin.warning:hover {
+    background-color: #e0a800;
+}
+
+/* Couleur neutre (gris) */
+.btn-creneau-neutral {
+    background-color: #bfc3c9;
+    color: #222;
+}
+
+/* Jaune/orange */
+.btn-creneau-warning {
+    background-color: #ffc107;
+    color: #222;
+}
+
+/* Vert */
+.btn-creneau-success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+/* Rouge flashy */
+.btn-creneau-danger {
+    background-color: #ff1744;
+    color: #fff;
+    box-shadow: 0 0 8px #ff1744;
+}

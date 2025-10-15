@@ -9,6 +9,40 @@ class CreneauModel extends Model {
     }
 
     /**
+     * Marque un créneau comme indisponible ou disponible
+     * @param int $id ID du créneau
+     * @return bool True si succès, false sinon
+     */
+    public function toggleIndisponible($id) {
+        try {
+            // Vérifie d'abord le statut actuel du créneau
+            $sql = "SELECT est_reserve, statut FROM creneau WHERE id = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id]);
+            $creneau = $stmt->fetch();
+
+            if (!$creneau) {
+                return false;
+            }
+
+            // Si le créneau est réservé, on ne peut pas le modifier
+            if ($creneau['est_reserve']) {
+                return false;
+            }
+
+            // Change le statut (toggle entre disponible et indisponible)
+            $nouveauStatut = $creneau['statut'] === 'indisponible' ? 'disponible' : 'indisponible';
+            
+            $sql = "UPDATE creneau SET statut = ? WHERE id = ?";
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([$nouveauStatut, $id]);
+        } catch (\Exception $e) {
+            error_log("Erreur lors du changement de statut du créneau : " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Vérifie si un agenda existe
      * @param int $agendaId ID de l'agenda
      * @return bool True si l'agenda existe, false sinon
@@ -199,7 +233,11 @@ class CreneauModel extends Model {
                            WHERE DATE(c2.debut) = DATE(c.debut)
                            AND c2.debut < c.fin
                            AND c2.fin > c.debut
-                       ) THEN 1 ELSE 0 END as est_reserve
+                           AND r2.statut != 'annulé'
+                       ) THEN 1 
+                       ELSE 0 
+                       END as est_reserve,
+                       c.statut
                 FROM creneau c
                 LEFT JOIN service s ON c.service_id = s.id
                 WHERE c.agenda_id = ?
@@ -279,6 +317,7 @@ class CreneauModel extends Model {
                 WHERE c.debut >= CURRENT_DATE()
                 AND c.debut <= DATE_ADD(CURRENT_DATE(), INTERVAL 14 DAY)
                 AND r.id IS NULL  -- Créneau non réservé
+                AND c.statut != 'indisponible'  -- Exclure les créneaux marqués comme indisponibles
                 ORDER BY date ASC";
         
         error_log("Exécution de la requête : " . $sql);
@@ -330,6 +369,7 @@ class CreneauModel extends Model {
         $sql = "SELECT c.id, c.debut, c.fin
                 FROM creneau c
                 WHERE DATE(c.debut) = :date
+                AND c.statut != 'indisponible'  /* Exclure les créneaux marqués comme indisponibles */
                 AND NOT EXISTS (
                     SELECT 1 
                     FROM rendezvous r2
@@ -389,6 +429,26 @@ class CreneauModel extends Model {
         
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$userId]);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Récupère les créneaux indisponibles pour une période donnée
+     * @param string $dateDebut Date de début (Y-m-d)
+     * @param string $dateFin Date de fin (Y-m-d)
+     * @param int $agendaId ID de l'agenda
+     * @return array Liste des créneaux indisponibles
+     */
+    public function getCreneauxIndisponiblesByPeriod($dateDebut, $dateFin, $agendaId) {
+        $sql = "SELECT c.* 
+                FROM creneau c
+                WHERE c.agenda_id = ?
+                AND DATE(c.debut) BETWEEN ? AND ?
+                AND c.statut = 'indisponible'
+                ORDER BY c.debut ASC";
+                
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$agendaId, $dateDebut, $dateFin]);
         return $stmt->fetchAll();
     }
 

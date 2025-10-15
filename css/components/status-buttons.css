@@ -1,0 +1,184 @@
+/* Styles des boutons d'action */
+.creneau-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.creneau-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    min-height: 36px;
+}
+
+.creneau-actions .btn i {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+/* Styles spécifiques pour le bouton toggle disponibilité */
+.creneau-actions .btn-toggle-dispo {
+    width: 180px; /* Largeur fixe au lieu de min-width */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    white-space: nowrap; /* Empêche le texte de passer à la ligne */
+    justify-content: center; /* Centre le texte */
+}
+
+.creneau-actions .btn-toggle-dispo.btn-warning {
+    background-color: #f8c43c;
+    color: #2c2c2c;
+}
+
+.creneau-actions .btn-toggle-dispo.btn-warning:hover {
+    background-color: #f6b816;
+}
+
+.creneau-actions .btn-toggle-dispo.btn-success {
+    background-color: #34c759;
+    color: white;
+}
+
+.creneau-actions .btn-toggle-dispo.btn-success:hover {
+    background-color: #2db14f;
+}
+
+/* Style du bouton supprimer */
+.creneau-actions .btn-delete-creneau {
+    background-color: #ff3b30;
+    color: white;
+}
+
+.creneau-actions .btn-delete-creneau:hover {
+    background-color: #e0352b;
+}
+
+/* Styles des badges de statut */
+.creneau-statut {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.creneau-statut i {
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+.creneau-statut.disponible {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.creneau-statut.indisponible {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.creneau-statut.reserve {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+
+/* Style de l'item créneau */
+.creneau-item {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.creneau-checkbox {
+    margin-right: 16px;
+}
+
+.creneau-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.creneau-horaire, .creneau-service {
+    display: flex;
+    align-items: center;
+    color: #4a5568;
+    font-size: 14px;
+}
+
+.creneau-horaire i, .creneau-service i {
+    margin-right: 8px;
+    color: #718096;
+}
+
+/* Styles des sections période */
+.periode-section {
+    margin-bottom: 24px;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.periode-header {
+    padding: 12px 16px;
+    background-color: #edf2f7;
+}
+
+.periode-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.periode-title {
+    font-size: 16px;
+}
+
+.creneaux-list {
+    padding: 16px;
+}
+
+/* Style des actions en haut de la liste */
+.creneaux-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 12px;
+    background-color: #f8fafc;
+    border-radius: 6px;
+}
+
+.select-all {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.select-all input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}

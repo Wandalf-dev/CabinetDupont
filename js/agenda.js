@@ -112,8 +112,24 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             currentDate.setDate(currentDate.getDate() + direction);
         }
+        // Réinitialiser les créneaux indisponibles avant de mettre à jour la vue
+        if (window.resetUnavailableSlots) {
+            window.resetUnavailableSlots();
+        }
         updateView();
         updateNavigation();
+        
+        // Recharger les créneaux indisponibles pour la nouvelle période
+        if (window.loadUnavailableSlots) {
+            const startDate = currentView === 'week' ? 
+                formatDateISO(getMonday(currentDate)) : 
+                formatDateISO(currentDate);
+            const endDate = new Date(startDate);
+            if (currentView === 'week') {
+                endDate.setDate(endDate.getDate() + 6);
+            }
+            window.loadUnavailableSlots(startDate, formatDateISO(endDate));
+        }
     }
 
     // Mise à jour de l'affichage
@@ -133,6 +149,30 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         loadAppointments();
+        
+        // Déclencher l'événement de mise à jour du calendrier
+        const viewStartDate = currentView === 'week' ? getMonday(currentDate) : new Date(currentDate);
+        const viewEndDate = new Date(viewStartDate);
+        if (currentView === 'week') {
+            viewEndDate.setDate(viewEndDate.getDate() + 6);
+        }
+        
+        const startDateStr = formatDateISO(viewStartDate);
+        const endDateStr = formatDateISO(viewEndDate);
+        
+        console.log('[Agenda] Déclenchement de calendarViewUpdated:', {
+            startDate: startDateStr,
+            endDate: endDateStr,
+            view: currentView
+        });
+        
+        document.dispatchEvent(new CustomEvent('calendarViewUpdated', {
+            detail: {
+                startDate: startDateStr,
+                endDate: endDateStr,
+                view: currentView
+            }
+        }));
     }
 
     // Charger les rendez-vous
