@@ -99,18 +99,9 @@
     filter: brightness(1.1);
 }
 
-/* Animation d'apparition douce */
+/* Suppression de l'animation */
 .slot-cell.reserved {
-    animation: slideIn 0.2s ease-out;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    opacity: 1;
 }
 
 .appointment-time {
