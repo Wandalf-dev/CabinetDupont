@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../templates/header.php';
 require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/confirmation-popup.css">
 
 <main class="container">
     <div class="admin-form-container">

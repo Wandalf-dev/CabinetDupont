@@ -49,41 +49,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Gérer la suppression multiple
+
         deleteSelectedButton?.addEventListener('click', async function() {
             const selectedIds = [...periodeElement.querySelectorAll('.creneau-select:checked')]
                 .map(checkbox => checkbox.dataset.id);
 
             if (!selectedIds.length) return;
 
-            // Créer une boîte de dialogue de confirmation personnalisée
-            const confirmDialog = document.createElement('div');
-            confirmDialog.classList.add('alert-popup');
-                const pluriel = selectedIds.length > 1 ? 'créneaux' : 'créneau';
-                confirmDialog.innerHTML = `
-                <i class="fas fa-question-circle"></i>
-                <span class="message">Êtes-vous sûr de vouloir supprimer ${selectedIds.length} ${pluriel} ?</span>
-                <div class="alert-actions">
-                    <button class="btn-confirm">Confirmer</button>
-                    <button class="btn-cancel">Annuler</button>
-                </div>
-            `;
-            document.body.appendChild(confirmDialog);
-
-            // Gérer la confirmation
-            const proceed = await new Promise(resolve => {
-                const btnConfirm = confirmDialog.querySelector('.btn-confirm');
-                const btnCancel = confirmDialog.querySelector('.btn-cancel');
-
-                btnConfirm.addEventListener('click', () => {
-                    confirmDialog.remove();
-                    resolve(true);
-                });
-
-                btnCancel.addEventListener('click', () => {
-                    confirmDialog.remove();
-                    resolve(false);
-                });
-            });
+            // Utilise la popup universelle
+            const proceed = await window.showConfirmationPopup({ action: 'delete', count: selectedIds.length });
 
             if (proceed) {
                 try {
@@ -142,14 +116,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Afficher un message de succès personnalisé
                         const successAlert = document.createElement('div');
-                        successAlert.classList.add('alert-popup', 'success');
-                        successAlert.innerHTML = `
-                            <i class="fas fa-check-circle"></i>
-                            <span class="message">Les créneaux sélectionnés ont été supprimés avec succès.</span>
-                        `;
+                        successAlert.className = 'flash-message success';
+                        successAlert.innerHTML = `<span class="message">Les créneaux sélectionnés ont été supprimés avec succès.</span>`;
                         document.body.appendChild(successAlert);
-                        
-                        // Auto-supprimer l'alerte après 5 secondes
                         setTimeout(() => {
                             if (successAlert && successAlert.parentElement) {
                                 successAlert.parentElement.removeChild(successAlert);
@@ -159,20 +128,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         const data = await response.json();
                         if (data.errors) {
                             const errorAlert = document.createElement('div');
-                            errorAlert.classList.add('alert-popup', 'error');
-                            errorAlert.innerHTML = `
-                                <i class="fas fa-exclamation-circle"></i>
-                                <span class="message">Erreurs lors de la suppression :<br>${data.errors.join('<br>')}</span>
-                            `;
+                            errorAlert.className = 'flash-message error';
+                            errorAlert.innerHTML = `<span class="message">Erreurs lors de la suppression :<br>${data.errors.join('<br>')}</span>`;
                             document.body.appendChild(errorAlert);
                             setTimeout(() => errorAlert.remove(), 5000);
                         } else if (!data.success) {
                             const errorAlert = document.createElement('div');
-                            errorAlert.classList.add('alert-popup', 'error');
-                            errorAlert.innerHTML = `
-                                <i class="fas fa-exclamation-circle"></i>
-                                <span class="message">${data.message || 'Erreur lors de la suppression'}</span>
-                            `;
+                            errorAlert.className = 'flash-message error';
+                            errorAlert.innerHTML = `<span class="message">${data.message || 'Erreur lors de la suppression'}</span>`;
                             document.body.appendChild(errorAlert);
                             setTimeout(() => errorAlert.remove(), 5000);
                         }
@@ -180,11 +143,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 } catch (error) {
                     console.error('Erreur détaillée:', error);
                     const errorAlert = document.createElement('div');
-                    errorAlert.classList.add('alert-popup', 'error');
-                    errorAlert.innerHTML = `
-                        <i class="fas fa-exclamation-circle"></i>
-                        <span class="message">Une erreur est survenue lors de la suppression des créneaux.</span>
-                    `;
+                    errorAlert.className = 'flash-message error';
+                    errorAlert.innerHTML = `<span class="message">Une erreur est survenue lors de la suppression des créneaux.</span>`;
                     document.body.appendChild(errorAlert);
                     setTimeout(() => errorAlert.remove(), 5000);
                 }

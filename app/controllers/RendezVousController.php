@@ -365,7 +365,7 @@ class RendezVousController extends Controller {
                 http_response_code(500);
                 echo json_encode(['success' => false, 'message' => 'Erreur lors de la modification du rendez-vous']);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             error_log("Erreur lors de la modification du rendez-vous : " . $e->getMessage());
             http_response_code(500);
             echo json_encode(['success' => false, 'message' => 'Erreur lors de la modification du rendez-vous']);

@@ -91,6 +91,7 @@ class AgendaController extends Controller {
             }
         }
 
+        $data['heure_max'] = 20;
         $this->view('agenda/planning', $data); // Retour à l'ancienne vue
     }
 

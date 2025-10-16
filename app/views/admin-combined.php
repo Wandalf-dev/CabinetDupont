@@ -53,11 +53,11 @@ include __DIR__ . '/templates/flash-messages.php';
                                 <td class="status-cell" data-status="<?= htmlspecialchars($service['statut']) ?>"><?= htmlspecialchars($service['statut']) ?></td>
                                 <td class="actions-cell">
                                     <!-- Bouton pour modifier le service -->
-                                    <a href="index.php?page=services&action=edit&id=<?= $service['id'] ?>" class="btn-admin edit">
+                                    <a href="index.php?page=services&action=edit&id=<?= htmlspecialchars($service['id']) ?>" class="btn-admin edit">
                                         <i class="fas fa-edit"></i>&nbsp;Modifier
                                     </a>
                                     <!-- Bouton pour supprimer le service -->
-                                    <button onclick="deleteService(<?= $service['id'] ?>)" class="btn-admin delete">
+                                    <button onclick="deleteService(<?= (int)$service['id'] ?>)" class="btn-admin delete">
                                         <i class="fas fa-trash"></i>&nbsp;Supprimer
                                     </button>
                                 </td>
@@ -102,11 +102,11 @@ include __DIR__ . '/templates/flash-messages.php';
                                 <td class="status-cell" data-status="<?= htmlspecialchars($actu['statut']) ?>"><?= htmlspecialchars($actu['statut']) ?></td>
                                 <td class="actions-cell">
                                     <!-- Bouton pour modifier l'actualité -->
-                                    <a href="index.php?page=actus&action=edit&id=<?= $actu['id'] ?>" class="btn-admin edit">
+                                    <a href="index.php?page=actus&action=edit&id=<?= htmlspecialchars($actu['id']) ?>" class="btn-admin edit">
                                         <i class="fas fa-edit"></i>&nbsp;Modifier
                                     </a>
                                     <!-- Formulaire pour supprimer l'actualité avec protection CSRF -->
-                                    <form method="post" action="index.php?page=actus&action=delete&id=<?= $actu['id'] ?>" style="display:inline;">
+                                    <form method="post" action="index.php?page=actus&action=delete&id=<?= htmlspecialchars($actu['id']) ?>" style="display:inline;">
                                         <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
                                         <button type="submit" class="btn-admin delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?');">
                                             <i class="fas fa-trash"></i>&nbsp;Supprimer
@@ -289,11 +289,11 @@ include __DIR__ . '/templates/flash-messages.php';
                                 </td>
                                 <td class="actions-cell">
                                     <!-- Bouton pour modifier le patient -->
-                                    <a href="index.php?page=admin&action=editPatient&id=<?= $patient['id'] ?>" class="btn-admin edit">
+                                    <a href="index.php?page=admin&action=editPatient&id=<?= htmlspecialchars($patient['id']) ?>" class="btn-admin edit">
                                         <i class="fas fa-edit"></i>&nbsp;Modifier
                                     </a>
                                     <!-- Bouton pour supprimer le patient -->
-                                    <button onclick="deletePatient(<?= $patient['id'] ?>)" class="btn-admin delete">
+                                    <button onclick="deletePatient(<?= (int)$patient['id'] ?>)" class="btn-admin delete">
                                         <i class="fas fa-trash"></i>&nbsp;Supprimer
                                     </button>
                                 </td>
@@ -305,7 +305,7 @@ include __DIR__ . '/templates/flash-messages.php';
             </div>
         </div>
 
-<!-- Onglet "Créneaux" : gestion des créneaux de consultation -->
+        <!-- Onglet "Créneaux" : gestion des créneaux de consultation -->
         <div class="tab-content" id="tab-creneaux" style="background: transparent !important;">
             <div class="mb-4" style="display: flex; justify-content: flex-end;">
                 <a href="index.php?page=creneaux&action=generer" class="btn-admin add" style="width: auto;">
@@ -315,144 +315,147 @@ include __DIR__ . '/templates/flash-messages.php';
 
             <!-- Section pour afficher les créneaux existants -->
             <div class="creneaux-accordion" style="background: transparent !important;">
-                    <?php 
-                    if (!empty($creneaux)) {
-                        // Organiser les créneaux par jour et période
-                        $creneauxParJour = [];
-                        foreach ($creneaux as $creneau) {
-                            $date = date('Y-m-d', strtotime($creneau['debut']));
-                            $heure = (int)date('H', strtotime($creneau['debut']));
-                            $periode = ($heure < 12) ? 'matin' : 'apres-midi';
-                            
-                            if (!isset($creneauxParJour[$date])) {
-                                $creneauxParJour[$date] = [
-                                    'matin' => [],
-                                    'apres-midi' => []
-                                ];
-                            }
-                            $creneauxParJour[$date][$periode][] = $creneau;
+                <?php 
+                if (!empty($creneaux)) {
+                    // Organiser les créneaux par jour et période
+                    $creneauxParJour = [];
+                    foreach ($creneaux as $creneau) {
+                        $date = date('Y-m-d', strtotime($creneau['debut']));
+                        $heure = (int)date('H', strtotime($creneau['debut']));
+                        $periode = ($heure < 12) ? 'matin' : 'apres-midi';
+                        
+                        if (!isset($creneauxParJour[$date])) {
+                            $creneauxParJour[$date] = [
+                                'matin' => [],
+                                'apres-midi' => []
+                            ];
                         }
-                        
-                        // Trier les dates
-                        ksort($creneauxParJour);
-                        
-                        foreach ($creneauxParJour as $date => $periodes): 
-                            $dateFormattee = date('d/m/Y', strtotime($date));
-                            $accordionId = "accordion-" . str_replace('/', '-', $dateFormattee);
-                    ?>
-                            <div class="accordion-date">
-                                <div class="accordion-header" id="header-<?= $accordionId ?>">
-                                    <button class="accordion-button collapsed" type="button" aria-expanded="false">
-                                        <?= $dateFormattee ?>
-                                        <span class="badge bg-primary ms-2">
-                                            <?= count($periodes['matin']) + count($periodes['apres-midi']) ?> créneaux
-                                        </span>
-                                    </button>
-                                </div>
-                                
-                                <div id="collapse-<?= $accordionId ?>" class="accordion-collapse collapse" aria-labelledby="header-<?= $accordionId ?>">
-                                        <?php foreach (['matin' => 'Matin', 'apres-midi' => 'Après-midi'] as $periode => $labelPeriode): ?>
-                                            <?php if (!empty($periodes[$periode])): ?>
-                                                <div class="periode-section <?= $periode ?>">
-                                                    <div class="periode-header">
-                                                        <button class="periode-button collapsed" type="button">
-                                                            <span class="periode-title"><?= $labelPeriode ?></span>
-                                                            <span class="badge bg-secondary ms-2">
-                                                                <?= count($periodes[$periode]) ?> créneaux
-                                                            </span>
-                                                        </button>
-                                                    </div>
-                                                    <div id="collapse-<?= $accordionId ?>-<?= $periode ?>" 
-                                                         class="periode-collapse collapse" 
-                                                         aria-labelledby="header-<?= $accordionId ?>-<?= $periode ?>">
-                                                        <div class="creneaux-list">
-                                                            <div class="creneaux-actions">
-                                                                <label class="select-all">
-                                                                    <input type="checkbox" class="select-all-checkbox">
-                                                                    <span>Tout sélectionner</span>
-                                                                </label>
-                                                                <div class="actions-group">
-                                                                    <button type="button" class="btn-admin warning mark-unavailable-selected" disabled>
-                                                                        <i class="fas fa-ban"></i>&nbsp;Marquer indisponible
-                                                                    </button>
-                                                                    <button type="button" class="btn-admin delete delete-selected" disabled>
-                                                                        <i class="fas fa-trash"></i>&nbsp;Supprimer la sélection
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <?php foreach ($periodes[$periode] as $creneau): ?>
-                                                                <div class="creneau-item">
-                                                                    <?php if (!$creneau['est_reserve']): ?>
-                                                                        <div class="creneau-checkbox">
-                                                                            <input type="checkbox" class="creneau-select" data-id="<?= $creneau['id'] ?>">
-                                                                        </div>
-                                                                    <?php endif; ?>
-                                                                    <div class="creneau-info">
-                                                                        <div class="creneau-horaire">
-                                                                            <i class="far fa-clock"></i>
-                                                                            <?= date('H:i', strtotime($creneau['debut'])) ?> - <?= date('H:i', strtotime($creneau['fin'])) ?>
-                                                                        </div>
-                                                                        <div class="creneau-service">
-                                                                            <i class="far fa-calendar-check"></i>
-                                                                            <?= htmlspecialchars($creneau['service_titre'] ?? 'Non spécifié') ?>
-                                                                        </div>
-                                                                        <div class="creneau-statut <?= $creneau['est_reserve'] ? 'reserve' : ($creneau['statut'] === 'indisponible' ? 'indisponible' : 'disponible') ?>">
-                                                                            <i class="fas <?= $creneau['est_reserve'] ? 'fa-lock' : ($creneau['statut'] === 'indisponible' ? 'fa-ban' : 'fa-lock-open') ?>"></i>
-                                                                            <?= $creneau['est_reserve'] ? 'Réservé' : ($creneau['statut'] === 'indisponible' ? 'Indisponible' : 'Disponible') ?>
-                                                                        </div>
-                                                                    </div>
-                                                                    <?php if (!$creneau['est_reserve']): ?>
-                                                                        <div class="creneau-actions">
-                                                                            <button type="button" 
-                                                                                    class="btn <?php echo $creneau['statut'] === 'indisponible' ? 'btn-success' : 'btn-warning'; ?> btn-toggle-dispo" 
-                                                                                    data-creneau-id="<?php echo $creneau['id']; ?>"
-                                                                                    style="margin-right: 10px;">
-                                                                                <?php echo $creneau['statut'] === 'indisponible' ? 'Rendre disponible' : 'Marquer indisponible'; ?>
-                                                                            </button>
-                                                                            <button type="button" class="btn-admin delete btn-delete-creneau" data-id="<?= $creneau['id'] ?>">
-                                                                                <i class="fas fa-trash"></i>&nbsp;Supprimer
-                                                                            </button>
-                                                                        </div>
-                                                                    <?php endif; ?>
-                                                                </div>
-                                                            <?php endforeach; ?>
+                        $creneauxParJour[$date][$periode][] = $creneau;
+                    }
+                    
+                    // Trier les dates
+                    ksort($creneauxParJour);
+                    
+                    foreach ($creneauxParJour as $date => $periodes): 
+                        $dateFormattee = date('d/m/Y', strtotime($date));
+                        $accordionId = "accordion-" . str_replace('/', '-', $dateFormattee);
+                ?>
+                        <div class="accordion-date">
+                            <div class="accordion-header" id="header-<?= $accordionId ?>">
+                                <button class="accordion-button collapsed" type="button" aria-expanded="false">
+                                    <?= $dateFormattee ?>
+                                    <span class="badge bg-primary ms-2">
+                                        <?= count($periodes['matin']) + count($periodes['apres-midi']) ?> créneaux
+                                    </span>
+                                </button>
+                            </div>
+                            
+                            <div id="collapse-<?= $accordionId ?>" class="accordion-collapse collapse" aria-labelledby="header-<?= $accordionId ?>">
+                                <?php foreach (['matin' => 'Matin', 'apres-midi' => 'Après-midi'] as $periode => $labelPeriode): ?>
+                                    <?php if (!empty($periodes[$periode])): ?>
+                                        <div class="periode-section <?= $periode ?>">
+                                            <div class="periode-header">
+                                                <button class="periode-button collapsed" type="button">
+                                                    <span class="periode-title"><?= $labelPeriode ?></span>
+                                                    <span class="badge bg-secondary ms-2">
+                                                        <?= count($periodes[$periode]) ?> créneaux
+                                                    </span>
+                                                </button>
+                                            </div>
+                                            <div id="collapse-<?= $accordionId ?>-<?= $periode ?>" 
+                                                 class="periode-collapse collapse" 
+                                                 aria-labelledby="header-<?= $accordionId ?>-<?= $periode ?>">
+                                                <div class="creneaux-list">
+                                                    <div class="creneaux-actions">
+                                                        <label class="select-all">
+                                                            <input type="checkbox" class="select-all-checkbox">
+                                                            <span>Tout sélectionner</span>
+                                                        </label>
+                                                        <div class="actions-group">
+                                                            <button type="button" class="btn-admin warning mark-unavailable-selected" disabled>
+                                                                <i class="fas fa-ban"></i>&nbsp;Marquer indisponible
+                                                            </button>
+                                                            <button type="button" class="btn-admin delete delete-selected" disabled>
+                                                                <i class="fas fa-trash"></i>&nbsp;Supprimer la sélection
+                                                            </button>
                                                         </div>
                                                     </div>
+                                                    <?php foreach ($periodes[$periode] as $creneau): ?>
+                                                        <div class="creneau-item">
+                                                            <?php if (!$creneau['est_reserve']): ?>
+                                                                <div class="creneau-checkbox">
+                                                                    <input type="checkbox" class="creneau-select" data-id="<?= htmlspecialchars($creneau['id']) ?>">
+                                                                </div>
+                                                            <?php endif; ?>
+                                                            <div class="creneau-info">
+                                                                <div class="creneau-horaire">
+                                                                    <i class="far fa-clock"></i>
+                                                                    <?= date('H:i', strtotime($creneau['debut'])) ?> - <?= date('H:i', strtotime($creneau['fin'])) ?>
+                                                                </div>
+                                                                <div class="creneau-service">
+                                                                    <i class="far fa-calendar-check"></i>
+                                                                    <?= htmlspecialchars($creneau['service_titre'] ?? 'Non spécifié') ?>
+                                                                </div>
+                                                                <div class="creneau-statut <?= $creneau['est_reserve'] ? 'reserve' : ($creneau['statut'] === 'indisponible' ? 'indisponible' : 'disponible') ?>">
+                                                                    <i class="fas <?= $creneau['est_reserve'] ? 'fa-lock' : ($creneau['statut'] === 'indisponible' ? 'fa-ban' : 'fa-lock-open') ?>"></i>
+                                                                    <?= $creneau['est_reserve'] ? 'Réservé' : ($creneau['statut'] === 'indisponible' ? 'Indisponible' : 'Disponible') ?>
+                                                                </div>
+                                                            </div>
+                                                            <?php if (!$creneau['est_reserve']): ?>
+                                                                <div class="creneau-actions">
+                                                                    <button type="button" 
+                                                                            class="btn <?php echo $creneau['statut'] === 'indisponible' ? 'btn-success' : 'btn-warning'; ?> btn-toggle-dispo" 
+                                                                            data-creneau-id="<?php echo htmlspecialchars($creneau['id']); ?>"
+                                                                            style="margin-right: 10px;">
+                                                                        <?php echo $creneau['statut'] === 'indisponible' ? 'Rendre disponible' : 'Marquer indisponible'; ?>
+                                                                    </button>
+                                                                    <button type="button" class="btn-admin delete btn-delete-creneau" data-id="<?= htmlspecialchars($creneau['id']) ?>">
+                                                                        <i class="fas fa-trash"></i>&nbsp;Supprimer
+                                                                    </button>
+                                                                </div>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    <?php endforeach; ?>
                                                 </div>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
                             </div>
-                    <?php 
-                        endforeach;
-                    } else { 
-                    ?>
-                        <p>Aucun créneau n'est disponible pour le moment.</p>
-                    <?php } ?>
-                </div>
+                        </div>
+                <?php 
+                    endforeach;
+                } else { 
+                ?>
+                    <p>Aucun créneau n'est disponible pour le moment.</p>
+                <?php } ?>
+            </div>
         </div>
 
-<!-- Styles pour l'interface admin -->
-<link rel="stylesheet" href="css/admin.css">
-<link rel="stylesheet" href="css/drag-drop.css">
-<link rel="stylesheet" href="css/tabs.css">
-<link rel="stylesheet" href="css/table-actions.css">
-<link rel="stylesheet" href="css/creneaux-accordion.css">
-<link rel="stylesheet" href="css/patient.css">
-<link rel="stylesheet" href="css/periodes.css">
-<link rel="stylesheet" href="css/components/status-buttons.css">
-<link rel="stylesheet" href="css/components/button-group.css">
-<link rel="stylesheet" href="css/components/creneau-indisponible.css">
+        <!-- Styles pour l'interface admin -->
+        <link rel="stylesheet" href="css/admin.css">
+        <link rel="stylesheet" href="css/drag-drop.css">
+        <link rel="stylesheet" href="css/tabs.css">
+        <link rel="stylesheet" href="css/table-actions.css">
+        <link rel="stylesheet" href="css/creneaux-accordion.css">
+        <link rel="stylesheet" href="css/patient.css">
+        <link rel="stylesheet" href="css/periodes.css">
+        <link rel="stylesheet" href="css/components/status-buttons.css">
+        <link rel="stylesheet" href="css/components/button-group.css">
+        <link rel="stylesheet" href="css/components/creneau-indisponible.css">
+        <link rel="stylesheet" href="css/confirmation-popup.css">
+        <link rel="stylesheet" href="css/creneaux-alerts.css">
 
-<!-- Scripts pour la gestion des onglets, du drag & drop et des filtres -->
-<script src="js/tabs.js"></script>
-<script src="js/service-order.js"></script>
-<script src="js/creneaux-accordion.js"></script>
-<script src="js/creneaux-selection.js"></script>
-<script src="js/admin-tables.js"></script>
-<script src="js/creneaux-alerts.js"></script>
-<script src="js/creneaux-delete.js"></script>
-<script src="js/creneaux-indisponibilite.js"></script>
+        <!-- Scripts pour la gestion des onglets, du drag & drop et des filtres -->
+    <script src="js/confirmation-popup.js"></script>
+    <script src="js/tabs.js"></script>
+    <script src="js/service-order.js"></script>
+    <script src="js/creneaux-accordion.js"></script>
+    <script src="js/creneaux-selection.js"></script>
+    <script src="js/admin-tables.js"></script>
+    <script src="js/creneaux-alerts.js"></script>
+    <script src="js/creneaux-delete.js"></script>
+    <script src="js/creneaux-indisponibilite.js"></script>
 
     </div> <!-- Fermeture de tabs-container -->
 </main>

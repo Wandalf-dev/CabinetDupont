@@ -146,12 +146,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         // Afficher le message de succès
                         const successAlert = document.createElement('div');
-                        successAlert.classList.add('alert-popup', 'success');
+                        successAlert.className = 'flash-message success';
                         const statusMessage = willBeIndisponible ? 'marqué indisponible' : 'rendu disponible';
-                        successAlert.innerHTML = `
-                            <i class="fas fa-check-circle"></i>
-                            <span class="message">Le créneau a été ${statusMessage} avec succès.</span>
-                        `;
+                        successAlert.innerHTML = `<span class="message">Le créneau a été ${statusMessage} avec succès.</span>`;
                         document.body.appendChild(successAlert);
                         setTimeout(() => {
                             if (successAlert && successAlert.parentElement) {
@@ -162,11 +159,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 } catch (error) {
                     console.error('Erreur:', error);
                     const errorAlert = document.createElement('div');
-                    errorAlert.classList.add('alert-popup', 'error');
-                    errorAlert.innerHTML = `
-                        <i class="fas fa-exclamation-circle"></i>
-                        <span class="message">Une erreur est survenue lors de la modification du créneau.</span>
-                    `;
+                    errorAlert.className = 'flash-message error';
+                    errorAlert.innerHTML = `<span class="message">Une erreur est survenue lors de la modification du créneau.</span>`;
                     document.body.appendChild(errorAlert);
                     setTimeout(() => errorAlert.remove(), 5000);
                 }
@@ -187,38 +181,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 return creneauItem.querySelector('.creneau-statut.indisponible') !== null;
             });
 
-            // Créer une boîte de dialogue de confirmation
-            const confirmDialog = document.createElement('div');
-            confirmDialog.classList.add('alert-popup');
-            const pluriel = selectedIds.length > 1 ? 'créneaux' : 'créneau';
-            const action = allIndisponible ? 'rendre' : 'marquer';
-            const statut = allIndisponible ? 'disponibles' : 'indisponibles';
-            
-            confirmDialog.innerHTML = `
-                <i class="fas fa-question-circle"></i>
-                <span class="message">Êtes-vous sûr de vouloir ${action} ${selectedIds.length} ${pluriel} comme ${statut} ?</span>
-                <div class="alert-actions">
-                    <button class="btn-confirm">Confirmer</button>
-                    <button class="btn-cancel">Annuler</button>
-                </div>
-            `;
-            document.body.appendChild(confirmDialog);
+            // Créer l'overlay et la boîte de dialogue de confirmation
 
-            // Gérer la confirmation
-            const proceed = await new Promise(resolve => {
-                const btnConfirm = confirmDialog.querySelector('.btn-confirm');
-                const btnCancel = confirmDialog.querySelector('.btn-cancel');
-
-                btnConfirm.addEventListener('click', () => {
-                    confirmDialog.remove();
-                    resolve(true);
-                });
-
-                btnCancel.addEventListener('click', () => {
-                    confirmDialog.remove();
-                    resolve(false);
-                });
-            });
+            // Utilise la popup universelle
+            const type = allIndisponible ? 'disponible' : 'indisponible';
+            const proceed = await window.showConfirmationPopup({ action: 'statut', count: selectedIds.length, type });
 
             if (proceed) {
                 try {
@@ -295,14 +262,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     // Afficher le message de succès/erreur
                     const successAlert = document.createElement('div');
-                    successAlert.classList.add('alert-popup', 'success');
+                    successAlert.className = 'flash-message success';
                     const statusMessage = allIndisponible ? 'rendu disponible' : 'marqué indisponible';
-                    successAlert.innerHTML = `
-                        <i class="fas fa-check-circle"></i>
-                        <span class="message">${successes} ${pluriel} ${statusMessage}${selectedIds.length > 1 ? 's' : ''}.${
-                            errors ? `<br>${errors} échec${errors > 1 ? 's' : ''}.` : ''
-                        }</span>
-                    `;
+                    successAlert.innerHTML = `<span class="message">${successes} ${pluriel} ${statusMessage}${selectedIds.length > 1 ? 's' : ''}.${errors ? `<br>${errors} échec${errors > 1 ? 's' : ''}.` : ''}</span>`;
                     document.body.appendChild(successAlert);
                     setTimeout(() => {
                         if (successAlert && successAlert.parentElement) {
@@ -313,11 +275,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 } catch (error) {
                     console.error('Erreur:', error);
                     const errorAlert = document.createElement('div');
-                    errorAlert.classList.add('alert-popup', 'error');
-                    errorAlert.innerHTML = `
-                        <i class="fas fa-exclamation-circle"></i>
-                        <span class="message">Une erreur est survenue lors de la modification des créneaux.</span>
-                    `;
+                    errorAlert.className = 'flash-message error';
+                    errorAlert.innerHTML = `<span class="message">Une erreur est survenue lors de la modification des créneaux.</span>`;
                     document.body.appendChild(errorAlert);
                     setTimeout(() => errorAlert.remove(), 5000);
                 }

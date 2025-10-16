@@ -6,6 +6,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 <!-- Inclusion des styles CSS spécifiques -->
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/creneaux.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/calendar-compact.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/confirmation-popup.css">
 
 <main class="container">
     <section class="admin-section">

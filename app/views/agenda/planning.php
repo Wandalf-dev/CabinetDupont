@@ -63,7 +63,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                             echo '<div class="half-hour-cell">' . sprintf('%02d:30', $hour) . '</div>';
                             echo '</div>';
                         }
-                        // Dernière heure (sans demi-heure)
+                        // Dernière ligne uniquement pour 20:00
                         echo '<div class="time-row">';
                         echo '<div class="hour-cell">' . sprintf('%02d:00', $heure_max) . '</div>';
                         echo '</div>';
@@ -162,22 +162,6 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                     </div>
                 </div>
             </div>
-
-    <!-- Légende des rendez-vous -->
-    <div class="agenda-legend">
-        <div class="legend-item">
-            <span class="legend-color" style="background-color: #4CAF50;"></span>
-            <span>Rendez-vous confirmé</span>
-        </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background-color: #FFC107;"></span>
-            <span>En attente de confirmation</span>
-        </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background-color: #f44336;"></span>
-            <span>Urgence</span>
-        </div>
-    </div>
 </main>
 
 <!-- Modal détail rendez-vous -->

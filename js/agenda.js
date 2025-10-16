@@ -535,6 +535,71 @@ document.addEventListener('DOMContentLoaded', function() {
         // Ici vous pouvez ajouter la logique pour ouvrir la modal ou gérer le clic
     }
 
+    // Fonction utilitaire pour récupérer les horaires du cabinet
+    let horairesCabinet = null;
+    function fetchHorairesCabinet() {
+        return fetch('app/controllers/api/cabinet-horaires.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    horairesCabinet = data.horaires;
+                }
+            });
+    }
+
+    // Fonction pour griser les créneaux hors plages horaires
+    function markOutOfHoursSlots() {
+        if (!horairesCabinet) return;
+        // Pour chaque colonne de jour
+        document.querySelectorAll('.day-column').forEach(dayCol => {
+            const dateStr = dayCol.getAttribute('data-date');
+            const dateObj = new Date(dateStr);
+            const jsDay = dateObj.getDay(); // 0=dimanche, 1=lundi, ...
+            const jours = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+            const jour = jours[jsDay];
+            // Chercher les horaires pour ce jour
+            const horaires = horairesCabinet.find(h => h.jour === jour);
+            if (!horaires) return;
+            // Plages horaires
+            const matinStart = horaires.ouverture_matin;
+            const matinEnd = horaires.fermeture_matin;
+            const apremStart = horaires.ouverture_apresmidi;
+            const apremEnd = horaires.fermeture_apresmidi;
+            // Pour chaque créneau
+            dayCol.querySelectorAll('.slot-cell').forEach(slot => {
+                const hourStr = slot.getAttribute('data-hour');
+                if (!hourStr) return;
+                // Si le créneau est déjà indisponible, on ne touche pas
+                if (slot.classList.contains('unavailable-slot')) return;
+                // Vérifier si dans une plage horaire
+                let inPlage = false;
+                if (matinStart && matinEnd && hourStr >= matinStart.substr(0,5) && hourStr < matinEnd.substr(0,5)) inPlage = true;
+                if (apremStart && apremEnd && hourStr >= apremStart.substr(0,5) && hourStr < apremEnd.substr(0,5)) inPlage = true;
+                if (!inPlage) {
+                    slot.classList.add('out-of-hours-slot');
+                } else {
+                    slot.classList.remove('out-of-hours-slot');
+                }
+                // Exception : ne pas griser après 20h
+                const hourNum = parseInt(hourStr.split(':')[0], 10);
+                if (hourNum >= 20) {
+                    slot.classList.remove('out-of-hours-slot');
+                    return;
+                }
+            });
+        });
+    }
+
+    // Charger les horaires cabinet au démarrage
+    fetchHorairesCabinet().then(() => {
+        markOutOfHoursSlots();
+    });
+
+    // Re-marquer à chaque mise à jour de la vue
+    document.addEventListener('calendarViewUpdated', () => {
+        markOutOfHoursSlots();
+    });
+
     // Démarrage de l'application
     init();
 });

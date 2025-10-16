@@ -168,3 +168,9 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     z-index: 20;
 }
+
+.out-of-hours-slot {
+    background-color: #e0e0e0 !important;
+    opacity: 0.7;
+    pointer-events: none;
+}

@@ -3,11 +3,11 @@
 if (isset($_SESSION['success']) || isset($_SESSION['error'])) {
     echo '<div id="flash-messages" class="flash-message">';
     if (isset($_SESSION['success'])) {
-        echo '<div class="alert alert-success">' . $_SESSION['success'] . '</div>';
+        echo '<div class="flash-message success"><span class="message">' . $_SESSION['success'] . '</span></div>';
         unset($_SESSION['success']); // Supprime le message après affichage
     }
     if (isset($_SESSION['error'])) {
-        echo '<div class="alert alert-error">' . $_SESSION['error'] . '</div>';
+        echo '<div class="flash-message error"><span class="message">' . $_SESSION['error'] . '</span></div>';
         unset($_SESSION['error']); // Supprime le message après affichage
     }
     echo '</div>';

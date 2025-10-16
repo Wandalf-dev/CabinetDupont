@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../../models/database.php';
 require_once __DIR__ . '/../../models/RendezVousModel.php';
 
+use App\Models\RendezVousModel;
+
 // Autoriser les requêtes AJAX
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -32,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestData['action'])) {
                             'message' => 'Impossible d\'annuler le rendez-vous.'
                         ]);
                     }
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     error_log("Erreur lors de l'annulation du rendez-vous: " . $e->getMessage());
                     echo json_encode([
                         'success' => false,

@@ -1,44 +1,24 @@
+// Import universel
+// Assure-toi que confirmation-popup.js est chargé dans la page
 function showConfirmDialog(message) {
-    return new Promise((resolve) => {
-        const confirmDialog = document.createElement('div');
-        confirmDialog.classList.add('alert-popup');
-        confirmDialog.innerHTML = `
-            <i class="fas fa-question-circle"></i>
-            <span class="message">${message}</span>
-            <div class="alert-actions">
-                <button class="btn-confirm">Confirmer</button>
-                <button class="btn-cancel">Annuler</button>
-            </div>
-        `;
-        document.body.appendChild(confirmDialog);
-
-        const btnConfirm = confirmDialog.querySelector('.btn-confirm');
-        const btnCancel = confirmDialog.querySelector('.btn-cancel');
-
-        btnConfirm.addEventListener('click', () => {
-            confirmDialog.remove();
-            resolve(true);
-        });
-
-        btnCancel.addEventListener('click', () => {
-            confirmDialog.remove();
-            resolve(false);
-        });
-    });
+    return window.showConfirmationPopup ? window.showConfirmationPopup({ action: 'delete', count: 1 }) : Promise.resolve(false);
 }
 
 function showAlert(message, type = 'success') {
     const alert = document.createElement('div');
-    alert.classList.add('alert-popup', type);
+    alert.className = `flash-message ${type}`;
+    
     alert.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle"></i>
         <span class="message">${message}</span>
     `;
     document.body.appendChild(alert);
 
     setTimeout(() => {
-        if (alert && alert.parentElement) {
-            alert.parentElement.removeChild(alert);
-        }
+        alert.classList.add('leaving');
+        setTimeout(() => {
+            if (alert.parentElement) {
+                alert.parentElement.removeChild(alert);
+            }
+        }, 300);
     }, 5000);
 }
