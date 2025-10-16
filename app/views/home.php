@@ -187,8 +187,8 @@ include __DIR__ . '/templates/header.php'; ?>
 <?php include __DIR__ . '/templates/footer.php'; ?>
 
 <!-- ================= SCRIPTS ================= -->
-<script src="<?php echo BASE_URL; ?>/js/scroll.js"></script>
-<script src="<?php echo BASE_URL; ?>/js/home.js"></script>
-<script src="<?php echo BASE_URL; ?>/js/services-carousel.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/utils/scroll.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/pages/home.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/service/services-carousel.js"></script>
 </body>
 </html>

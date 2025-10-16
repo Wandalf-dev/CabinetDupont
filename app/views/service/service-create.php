@@ -3,8 +3,8 @@
 require_once __DIR__ . '/../templates/header.php';
 require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
-<link rel="stylesheet" href="/cabinetdupont/css/service-create.css">
-<link rel="stylesheet" href="/cabinetdupont/css/color-picker.css">
+<link rel="stylesheet" href="/CabinetDupont/css/modules/service/service-create.css">
+<link rel="stylesheet" href="/CabinetDupont/css/components/color-picker.css">
 <style>
 /* Style pour limiter la largeur du formulaire */
 .actu-create-section {
@@ -72,7 +72,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
     </form>
 </section>
 
-<script src="/cabinetdupont/js/color-picker.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/service/color-picker.js"></script>
 <script>
 // Fonction pour afficher un aperçu de l'image sélectionnée
 function previewServiceImage(event) {

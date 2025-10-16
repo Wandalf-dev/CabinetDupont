@@ -50,8 +50,15 @@
 
 .alert-popup i {
     font-size: 32px;
-    color: #3b82f6;
     margin-bottom: 8px;
+}
+
+.alert-popup.success i {
+    color: #fff;
+}
+
+.alert-popup:not(.success):not(.error) i {
+    color: #3b82f6;
 }
 
 .alert-popup .message {

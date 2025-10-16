@@ -64,6 +64,6 @@ include __DIR__ . '/../templates/flash-messages.php';
   </section>
 </main>
 <!-- Scripts pour la gestion du drag & drop et de l'ordre des services -->
-<script src="<?php echo BASE_URL; ?>/js/service-posts.js"></script>
-<script src="/cabinetdupont/js/service-order.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/service/service-posts.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/service/service-order.js"></script>
 <?php include __DIR__ . '/../templates/footer.php'; ?>

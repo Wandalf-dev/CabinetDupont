@@ -99,8 +99,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Supprimer la notification après 5 secondes
                 setTimeout(() => {
                     if (alertDiv && alertDiv.parentElement) {
-                        alertDiv.style.animation = 'slideOut 0.5s ease-in';
-                        setTimeout(() => alertDiv.parentElement.removeChild(alertDiv), 500);
+                        alertDiv.classList.add('leaving');
+                        setTimeout(() => {
+                            alertDiv.parentElement.removeChild(alertDiv);
+                        }, 300);
                     }
                 }, 5000);
                 

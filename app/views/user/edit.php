@@ -1,5 +1,5 @@
 <?php include __DIR__ . '/../templates/header.php'; ?>
-<link rel="stylesheet" href="css/edit-profile.css">
+<link rel="stylesheet" href="/CabinetDupont/css/pages/edit-profile.css">
 <!-- Font Awesome pour les icônes -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <!-- Flatpickr CSS -->
@@ -220,8 +220,8 @@ flatpickr(".flatpickr", {
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
-<script src="js/password-toggle.js"></script>
-<script src="js/phone-formatter.js"></script>
+<script src="/CabinetDupont/js/components/password-toggle.js"></script>
+<script src="/CabinetDupont/js/utils/phone-formatter.js"></script>
 
 <script>
 // Forcer la saisie du NOM en majuscules + première lettre du prénom en majuscule

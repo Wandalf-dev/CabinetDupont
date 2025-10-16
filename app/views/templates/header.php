@@ -19,26 +19,26 @@ if (session_status() === PHP_SESSION_NONE) {
     <!-- Importation des polices et des feuilles de style du projet -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/style.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/header.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/footer.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/horaires.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/login.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/register.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/actu.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/admin.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/actu-create.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/actu-posts.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/table-sort.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/tabs.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/profil.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/alerts.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/horaires-admin.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/about.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/creneaux.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/agenda.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/table-actions.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/confirmation-rdv.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/base/style.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/layouts/header.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/layouts/footer.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/horaires/horaires.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/login.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/register.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/actu/actu.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/admin.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/actu/actu-create.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/actu/actu-posts.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/table-sort.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/tabs.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/profil.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/alerts.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/horaires/horaires-admin.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/about.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneaux.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/agenda/agenda.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/table-actions.css" />
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/rendez-vous/confirmation-rdv.css" />
     <!-- Animation Lottie pour des illustrations animées -->
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
 </head>

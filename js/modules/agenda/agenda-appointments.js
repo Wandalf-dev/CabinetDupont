@@ -56,15 +56,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fonction pour calculer les colonnes des rendez-vous qui se chevauchent
     function calculateAppointmentColumns(appointments) {
-        appointments.sort((a, b) => {
+        // Filtrer les rendez-vous qui ont une startTime valide
+        const validAppointments = appointments.filter(appt => appt && appt.startTime);
+        
+        validAppointments.sort((a, b) => {
             return a.startTime.localeCompare(b.startTime);
         });
 
         let columns = [];
         let maxColumn = 0;
 
-        for (let i = 0; i < appointments.length; i++) {
-            let currentAppt = appointments[i];
+        for (let i = 0; i < validAppointments.length; i++) {
+            let currentAppt = validAppointments[i];
             let column = 0;
             
             while (columns.some(appt => {
@@ -91,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Fonction pour positionner les rendez-vous dans la grille
-    function positionAppointments(appointments) {
+    window.positionAppointments = function(appointments) {
         // Regroupe les rendez-vous par jour
         const appointmentsByDay = {};
         appointments.forEach(appt => {
@@ -110,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
         Object.values(appointmentsByDay).forEach(dayAppointments => {
             calculateAppointmentColumns(dayAppointments);
         });
-    }
+    };
 
     // Fonction d'initialisation des rendez-vous
     function initializeAppointments() {

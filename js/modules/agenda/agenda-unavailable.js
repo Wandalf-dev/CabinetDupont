@@ -161,17 +161,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Fonction pour obtenir la date de début de la semaine affichée
+    function getDisplayedWeekStart() {
+        const weekView = document.querySelector('.week-view');
+        if (!weekView) return null;
+        
+        // Trouver la première colonne de jour
+        const firstDayColumn = weekView.querySelector('.day-column');
+        if (!firstDayColumn) return null;
+        
+        // Récupérer la date de cette colonne
+        return firstDayColumn.getAttribute('data-date');
+    }
+
     // Appel initial pour charger les créneaux indisponibles
-    const startDate = new Date();
-    const endDate = new Date();
-    endDate.setDate(startDate.getDate() + 6); // Une semaine plus tard
-
-    // Formater les dates au format YYYY-MM-DD
-    const startDateString = startDate.toISOString().split('T')[0];
-    const endDateString = endDate.toISOString().split('T')[0];
-
-    // Chargement initial des créneaux indisponibles
-    loadUnavailableSlots(startDateString, endDateString);
+    const startDateString = getDisplayedWeekStart();
+    if (startDateString) {
+        const endDate = new Date(startDateString);
+        endDate.setDate(endDate.getDate() + 6); // Une semaine plus tard
+        const endDateString = endDate.toISOString().split('T')[0];
+        
+        // Chargement initial des créneaux indisponibles
+        loadUnavailableSlots(startDateString, endDateString);
+    }
 
     // Répéter le chargement toutes les 10 minutes (600000 ms)
     setInterval(() => {

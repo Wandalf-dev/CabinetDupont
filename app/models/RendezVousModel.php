@@ -30,13 +30,21 @@ class RendezVousModel extends Model {
     
     public function getRendezVousById($id) {
         try {
-            $query = "SELECT r.*, r.patient_id as patient_user_id 
+            $query = "SELECT r.*, r.patient_id as patient_user_id,
+                            c.debut, c.fin
                      FROM rendezvous r 
+                     JOIN creneau c ON r.creneau_id = c.id
                      WHERE r.id = :id";
             $stmt = $this->db->prepare($query);
             $stmt->execute([':id' => $id]);
             
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                error_log("Données du rendez-vous récupérées: " . print_r($result, true));
+            } else {
+                error_log("Aucun rendez-vous trouvé avec l'ID: " . $id);
+            }
+            return $result;
         } catch (PDOException $e) {
             error_log("Erreur lors de la récupération du rendez-vous : " . $e->getMessage());
             throw $e;
@@ -67,8 +75,8 @@ class RendezVousModel extends Model {
                 throw new \Exception("Créneau introuvable");
             }
 
-            // 3. Libérer le créneau en le marquant comme non réservé
-            $sql = "UPDATE creneau SET est_reserve = 0, service_id = NULL WHERE id = ?";
+            // 3. Libérer le créneau en le marquant comme disponible et non réservé
+            $sql = "UPDATE creneau SET est_reserve = 0, service_id = NULL, statut = 'disponible' WHERE id = ?";
             $stmt = $this->db->prepare($sql);
             $success = $stmt->execute([$creneau['creneau_id']]);
 

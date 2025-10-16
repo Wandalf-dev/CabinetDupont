@@ -2,19 +2,19 @@
 require_once __DIR__ . '/../templates/header.php';
 require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
-<link rel="stylesheet" href="/CabinetDupont/css/services-legend.css">
-<link rel="stylesheet" href="/CabinetDupont/css/agenda.css">
-<link rel="stylesheet" href="/CabinetDupont/css/agenda-appointments.css">
-<link rel="stylesheet" href="/CabinetDupont/css/agenda-unavailable.css">
-<link rel="stylesheet" href="/CabinetDupont/css/tooltip.css">
-<link rel="stylesheet" href="/CabinetDupont/css/agenda-grid.css">
-<link rel="stylesheet" href="/CabinetDupont/css/agenda-slots.css">
-<link rel="stylesheet" href="/CabinetDupont/css/agenda-day-view.css">
-<link rel="stylesheet" href="/CabinetDupont/css/components/unavailable-slots.css">
-<link rel="stylesheet" href="/CabinetDupont/css/context-menu.css">
-<link rel="stylesheet" href="/CabinetDupont/css/confirmation-dialog.css">
-<link rel="stylesheet" href="/CabinetDupont/css/notifications.css">
-<link rel="stylesheet" href="/CabinetDupont/css/edit-appointment.css">
+<link rel="stylesheet" href="/CabinetDupont/css/modules/service/services-legend.css">
+<link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/agenda.css">
+<link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/agenda-appointments.css">
+<link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/agenda-unavailable.css">
+<link rel="stylesheet" href="/CabinetDupont/css/components/tooltip.css">
+<link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/agenda-grid.css">
+<link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/agenda-slots.css">
+<link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/agenda-day-view.css">
+<link rel="stylesheet" href="/CabinetDupont/css/modules/creneaux/unavailable-slots.css">
+<link rel="stylesheet" href="/CabinetDupont/css/components/context-menu.css">
+<link rel="stylesheet" href="/CabinetDupont/css/components/confirmation-popup.css">
+<link rel="stylesheet" href="/CabinetDupont/css/modules/creneaux/creneaux-alerts.css">
+<link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/edit-appointment.css">
 
 <main class="calendar-container">
     <div class="calendar-header">
@@ -214,11 +214,11 @@ require_once __DIR__ . '/../templates/flash-messages.php';
     </div>
 </div>
 
-<script src="<?php echo BASE_URL; ?>/js/notifications.js"></script>
-<script src="<?php echo BASE_URL; ?>/js/agenda.js"></script>
-<script src="<?php echo BASE_URL; ?>/js/agenda-appointments.js"></script>
-<script src="<?php echo BASE_URL; ?>/js/agenda-unavailable.js"></script>
-<script src="<?php echo BASE_URL; ?>/js/context-menu.js"></script>
-<script src="<?php echo BASE_URL; ?>/js/appointment-actions.js"></script>
-<script src="<?php echo BASE_URL; ?>/js/edit-appointment.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/modules/agenda/notifications.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/modules/agenda/agenda-unavailable.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/modules/agenda/agenda.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/modules/agenda/agenda-appointments.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/modules/agenda/context-menu.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/modules/agenda/appointment-actions.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/modules/agenda/edit-appointment.js"></script>
 <?php require_once __DIR__ . '/../templates/footer.php'; ?>

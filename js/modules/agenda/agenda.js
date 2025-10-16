@@ -61,6 +61,13 @@ document.addEventListener('DOMContentLoaded', function() {
         attachEventListeners();
         updateView();
         updateNavigation();
+        // Déclencher le chargement des indisponibilités après l'initialisation
+        const startDate = formatDateISO(getMonday(currentDate));
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 6);
+        if (window.loadUnavailableSlots) {
+            window.loadUnavailableSlots(startDate, formatDateISO(endDate));
+        }
     }
 
     // Gestionnaires d'événements

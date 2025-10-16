@@ -353,8 +353,25 @@ class CreneauModel extends Model {
         error_log("Date demandée : " . $date);
         error_log("Service ID demandé : " . $serviceId);
 
-        error_log("Date demandée : " . $date);
-        error_log("Service ID demandé : " . $serviceId);
+        // Vérifier d'abord tous les créneaux pour cette date
+        $checkSql = "SELECT id, debut, fin, statut, est_reserve, service_id 
+                    FROM creneau 
+                    WHERE DATE(debut) = :date 
+                    ORDER BY debut";
+        $checkStmt = $this->db->prepare($checkSql);
+        $checkStmt->execute([':date' => $date]);
+        $allSlots = $checkStmt->fetchAll();
+        error_log("Tous les créneaux pour cette date: " . print_r($allSlots, true));
+
+        // Vérifier les rendez-vous existants
+        $checkRdvSql = "SELECT r.*, c.debut, c.fin 
+                       FROM rendezvous r 
+                       JOIN creneau c ON r.creneau_id = c.id 
+                       WHERE DATE(c.debut) = :date";
+        $checkRdvStmt = $this->db->prepare($checkRdvSql);
+        $checkRdvStmt->execute([':date' => $date]);
+        $allRdv = $checkRdvStmt->fetchAll();
+        error_log("Tous les rendez-vous pour cette date: " . print_r($allRdv, true));
 
         // Récupérer la durée du service demandé
         $sql = "SELECT duree FROM service WHERE id = :service_id";
@@ -369,13 +386,13 @@ class CreneauModel extends Model {
         $sql = "SELECT c.id, c.debut, c.fin
                 FROM creneau c
                 WHERE DATE(c.debut) = :date
-                AND c.statut != 'indisponible'  /* Exclure les créneaux marqués comme indisponibles */
+                AND (c.statut = 'disponible' OR c.est_reserve = 0)  /* Prendre les créneaux disponibles ou non réservés */
                 AND NOT EXISTS (
                     SELECT 1 
                     FROM rendezvous r2
                     JOIN creneau c2 ON r2.creneau_id = c2.id
-                    WHERE DATE(c2.debut) = DATE(c.debut)
-                    AND c2.service_id IS NOT NULL
+                    WHERE c2.id = c.id  /* Vérifie le même créneau exactement */
+                    AND r2.statut NOT IN ('ANNULE')  /* Ignorer les rendez-vous annulés */
                     AND (
                         /* Vérifie si le nouveau créneau chevauche un rdv existant */
                         (c.debut < DATE_ADD(c2.debut, INTERVAL 
@@ -409,7 +426,12 @@ class CreneauModel extends Model {
         ]);
 
         $slots = $stmt->fetchAll();
-        error_log("Créneaux trouvés : " . print_r($slots, true));
+        error_log("=== RÉSULTAT FINAL ===");
+        error_log("Créneaux disponibles trouvés : " . print_r($slots, true));
+        error_log("Paramètres de la requête:");
+        error_log("Date: " . $date);
+        error_log("Service ID: " . $serviceId);
+        error_log("Durée du service: " . $dureeService);
         return $slots;
     }
 

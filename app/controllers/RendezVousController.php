@@ -389,8 +389,13 @@ class RendezVousController extends Controller {
     public function annuler() {
         header('Content-Type: application/json');
         
+        error_log("=== Début annulation rendez-vous (PHP) ===");
+        error_log("POST data: " . print_r($_POST, true));
+        error_log("Session data: " . print_r($_SESSION, true));
+        
         try {
             if (!isset($_SESSION['user_id'])) {
+                error_log("Erreur: Utilisateur non connecté");
                 http_response_code(401);
                 echo json_encode(['success' => false, 'message' => 'Vous devez être connecté pour effectuer cette action']);
                 return;
@@ -407,11 +412,15 @@ class RendezVousController extends Controller {
         // Vérifier que le rendez-vous existe et que l'utilisateur a les droits
         try {
             $rdv = $this->rendezVousModel->getRendezVousById($rdvId);
-            error_log("RDV trouvé : " . print_r($rdv, true));
+            error_log("=== Détails du rendez-vous ===");
+            error_log("RDV complet : " . print_r($rdv, true));
+            error_log("ID du rendez-vous : " . $rdvId);
             error_log("Session user_id : " . $_SESSION['user_id']);
+            error_log("Date et heure de début : " . ($rdv ? $rdv['debut'] : 'non trouvée'));
+            error_log("Date et heure de fin : " . ($rdv ? $rdv['fin'] : 'non trouvée'));
             
             if (!$rdv) {
-                error_log("Rendez-vous non trouvé pour l'ID: " . $rdvId);
+                error_log("ERREUR: Rendez-vous non trouvé pour l'ID: " . $rdvId);
                 http_response_code(404);
                 echo json_encode(['success' => false, 'message' => 'Rendez-vous non trouvé']);
                 return;

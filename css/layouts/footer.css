@@ -105,6 +105,8 @@
   background-color: var(--footer-bg);
   padding-top: 48px;
   padding-bottom: 28px;
+  position: relative;
+  z-index: 1;
 }
 
 /* Footer utilise sa propre largeur si tu veux un peu plus serré */

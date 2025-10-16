@@ -4,9 +4,12 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
 
 <!-- Inclusion des styles CSS spécifiques -->
-<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/creneaux.css">
-<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/calendar-compact.css">
-<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/confirmation-popup.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneaux.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneaux-accordion.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/calendar-compact.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/confirmation-popup.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneaux-alerts.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/button-group.css">
 
 <main class="container">
     <section class="admin-section">
@@ -143,5 +146,13 @@ require_once __DIR__ . '/../templates/flash-messages.php';
     background-color: #28a745;
 }
 </style>
+
+<!-- Scripts JS -->
+<script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux-accordion.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux-alerts.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux-selection.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux-bulk-actions.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux-delete.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux.js"></script>
 
 <?php require_once __DIR__ . '/../templates/footer.php'; ?>
