@@ -70,6 +70,6 @@ require_once __DIR__ . '/../templates/flash-messages.php';
     </div>
 </main>
 
-<script src="<?php echo BASE_URL; ?>/js/creneaux/creneaux.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux.js"></script>
 
 <?php require_once __DIR__ . '/../templates/footer.php'; ?>

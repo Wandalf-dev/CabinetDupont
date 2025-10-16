@@ -105,4 +105,4 @@ $equipe = [
 </main>
 
 <?php include __DIR__ . '/templates/footer.php'; ?>
-<script src="<?php echo BASE_URL; ?>/js/about-animations.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/pages/about-animations.js"></script>

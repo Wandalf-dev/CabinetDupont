@@ -18,7 +18,11 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                     <p class="no-slots">Aucun créneau disponible pour cette date. Veuillez choisir une autre date.</p>
                 <?php else: ?>
                     <div class="time-slots">
-                        <?php foreach ($availableSlots as $slot): ?>
+                        <?php 
+                        error_log("Affichage des créneaux disponibles dans la vue:");
+                        foreach ($availableSlots as $slot): 
+                            error_log("Créneau: ID=" . $slot['id'] . ", début=" . $slot['debut'] . ", fin=" . $slot['fin']);
+                        ?>
                             <a href="<?= BASE_URL ?>/index.php?page=rendezvous&action=confirmation&service_id=<?= htmlspecialchars($service['id']) ?>&creneau_id=<?= htmlspecialchars($slot['id']) ?>" 
                                class="time-slot"
                                data-duration="<?= htmlspecialchars($service['duree']) ?>"

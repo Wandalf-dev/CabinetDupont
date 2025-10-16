@@ -52,11 +52,27 @@ class RendezVousModel extends Model {
     }
 
     public function annulerRendezVous($rdvId) {
-        // Commencer une transaction
+        error_log("=== Début annulation du rendez-vous ===");
         $this->db->beginTransaction();
         
         try {
-            // 1. Mettre à jour le statut du rendez-vous
+            // 1. Récupérer les informations du rendez-vous et du créneau
+            $sql = "SELECT r.id, c.debut, s.duree 
+                   FROM rendezvous r 
+                   JOIN creneau c ON r.creneau_id = c.id 
+                   JOIN service s ON c.service_id = s.id 
+                   WHERE r.id = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$rdvId]);
+            $rdv = $stmt->fetch();
+            
+            if (!$rdv) {
+                throw new \Exception("Rendez-vous introuvable");
+            }
+
+            error_log("Rendez-vous trouvé : " . print_r($rdv, true));
+
+            // 2. Marquer le rendez-vous comme annulé
             $sql = "UPDATE rendezvous SET statut = 'ANNULE' WHERE id = ?";
             $stmt = $this->db->prepare($sql);
             $success = $stmt->execute([$rdvId]);
@@ -65,24 +81,24 @@ class RendezVousModel extends Model {
                 throw new \Exception("Erreur lors de l'annulation du rendez-vous");
             }
 
-            // 2. Récupérer le créneau_id associé
-            $sql = "SELECT creneau_id FROM rendezvous WHERE id = ?";
+            // 3. Libérer tous les créneaux associés
+            $sql = "UPDATE creneau 
+                   SET est_reserve = 0, 
+                       service_id = NULL, 
+                       statut = 'disponible' 
+                   WHERE DATE(debut) = DATE(?) 
+                   AND TIME(debut) >= TIME(?) 
+                   AND TIME(debut) < TIMESTAMPADD(MINUTE, ?, ?)";
+
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([$rdvId]);
-            $creneau = $stmt->fetch();
+            $success = $stmt->execute([
+                $rdv['debut'],
+                $rdv['debut'],
+                $rdv['duree'],
+                $rdv['debut']
+            ]);
 
-            if (!$creneau) {
-                throw new \Exception("Créneau introuvable");
-            }
-
-            // 3. Libérer le créneau en le marquant comme disponible et non réservé
-            $sql = "UPDATE creneau SET est_reserve = 0, service_id = NULL, statut = 'disponible' WHERE id = ?";
-            $stmt = $this->db->prepare($sql);
-            $success = $stmt->execute([$creneau['creneau_id']]);
-
-            if (!$success) {
-                throw new \Exception("Erreur lors de la libération du créneau");
-            }
+            error_log("Mise à jour des créneaux - Succès: " . ($success ? 'true' : 'false'));
 
             // Valider la transaction
             $this->db->commit();

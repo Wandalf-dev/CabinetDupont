@@ -13,10 +13,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Réinitialiser tous les créneaux normaux
-        document.querySelectorAll(`${activeView} .unavailable-slot`).forEach(slot => {
+        document.querySelectorAll(`${activeView} .unavailable-slot, ${activeView} .slot-cell[style*="visibility"]`).forEach(slot => {
             slot.classList.remove('unavailable-slot');
             slot.removeAttribute('data-unavailable-text');
             slot.style.visibility = '';
+            slot.style.backgroundColor = '';
+            slot.style.opacity = '';
         });
     }
 
@@ -84,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (slotCell) {
                             console.log('[Agenda] Marquage du créneau comme indisponible');
                             slotCell.classList.add('unavailable-slot');
-                            slotCell.style.visibility = 'hidden';
                             slotCell.setAttribute('data-unavailable-text', 'Indisponibilité');
                         }
                     }

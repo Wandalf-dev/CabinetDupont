@@ -134,18 +134,37 @@ async function cancelAppointment(appointmentId) {
         console.log('Mise à jour de l\'interface pour le rendez-vous:', appointmentId);
 
         // Si on arrive ici, c'est que l'annulation a réussi
-            // Au lieu de nettoyer l'élément, on le supprime complètement
+            // Supprimer l'élément du rendez-vous
             appointment.remove();
             
-            // Mettre à jour uniquement les rendez-vous restants
-            const remainingAppointments = document.querySelectorAll('.appointment:not(.available)');
-            if (remainingAppointments.length > 0) {
-                positionAppointments(Array.from(remainingAppointments));
-            }        // Réinitialiser l'affichage des rendez-vous restants
-        const allAppointments = document.querySelectorAll('.slot-cell.reserved');
-        if (allAppointments.length > 0) {
-            positionAppointments(Array.from(allAppointments));
-        }
+            // Nettoyer immédiatement tous les créneaux indisponibles
+            if (window.resetUnavailableSlots) {
+                window.resetUnavailableSlots();
+            }
+
+            // Attendre un court instant pour permettre au DOM de se mettre à jour
+            setTimeout(() => {
+                // Déclencher une mise à jour complète du calendrier
+                document.dispatchEvent(new CustomEvent('appointmentUpdated', {
+                    detail: {
+                        type: 'cancel',
+                        appointmentId: appointmentId
+                    }
+                }));
+                
+                // Forcer un rechargement des créneaux disponibles
+                const viewStartDate = document.querySelector('.week-view.active, .day-view.active')
+                    .querySelector('.day-column').getAttribute('data-date');
+                const viewEndDate = new Date(viewStartDate);
+                viewEndDate.setDate(viewEndDate.getDate() + 6);
+                
+                if (window.loadUnavailableSlots) {
+                    window.loadUnavailableSlots(
+                        viewStartDate,
+                        viewEndDate.toISOString().split('T')[0]
+                    );
+                }
+            }, 100);
         
         // Créer et afficher la notification de succès
         const alertDiv = document.createElement('div');

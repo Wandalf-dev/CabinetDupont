@@ -1,5 +1,5 @@
 <?php require_once 'app/views/templates/header.php'; ?>
-<link rel="stylesheet" href="css/success-rdv.css">
+<link rel="stylesheet" href="<?= BASE_URL ?>/css/modules/rendez-vous/success-rdv.css">
 
 <main>
     <div class="success-container">

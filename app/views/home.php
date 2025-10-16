@@ -189,6 +189,6 @@ include __DIR__ . '/templates/header.php'; ?>
 <!-- ================= SCRIPTS ================= -->
 <script src="<?php echo BASE_URL; ?>/js/utils/scroll.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/pages/home.js"></script>
-<script src="<?php echo BASE_URL; ?>/js/service/services-carousel.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/modules/service/services-carousel.js"></script>
 </body>
 </html>
