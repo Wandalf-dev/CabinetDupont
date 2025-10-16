@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function() {
     const initCreneauxSelection = (periodeElement) => {
         const selectAllCheckbox = periodeElement.querySelector('.select-all-checkbox');

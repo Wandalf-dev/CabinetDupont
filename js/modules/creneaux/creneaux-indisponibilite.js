@@ -99,6 +99,53 @@ document.addEventListener('DOMContentLoaded', function() {
                 const creneauId = creneauItem.querySelector('.creneau-select').dataset.id;
                 
                 try {
+                    const response = await fetch('index.php?page=creneaux&action=toggleIndisponible', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ id: creneauId })
+                    });
+
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Erreur serveur');
+                    }
+
+                    if (data.success) {
+                        // Mise à jour visuelle
+                        const statutElement = creneauItem.querySelector('.creneau-statut');
+                        if (statutElement) {
+                            const isNowIndisponible = !statutElement.classList.contains('indisponible');
+                            statutElement.className = `creneau-statut ${isNowIndisponible ? 'indisponible' : 'disponible'}`;
+                            statutElement.innerHTML = `
+                                <i class="fas ${isNowIndisponible ? 'fa-ban' : 'fa-lock-open'}"></i>
+                                ${isNowIndisponible ? 'Indisponible' : 'Disponible'}
+                            `;
+                            
+                            // Mise à jour du bouton
+                            button.textContent = isNowIndisponible ? 'Rendre disponible' : 'Marquer indisponible';
+                            button.className = `btn ${isNowIndisponible ? 'btn-success' : 'btn-warning'} btn-toggle-dispo`;
+                        }
+                    } else {
+                        throw new Error(data.error || 'Échec de la modification');
+                    }
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    const errorMessage = document.createElement('div');
+                    errorMessage.className = 'alert-popup error';
+                    errorMessage.innerHTML = `
+                        <div class="message">
+                            <i class="fas fa-exclamation-circle"></i>
+                            Une erreur est survenue : ${error.message}
+                        </div>
+                    `;
+                    document.body.appendChild(errorMessage);
+                    setTimeout(() => errorMessage.remove(), 5000);
+                }
+                
+                try {
                     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
                     
                     const response = await fetch('index.php?page=creneaux&action=toggleIndisponible', {
@@ -264,7 +311,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     const successAlert = document.createElement('div');
                     successAlert.className = 'flash-message success';
                     const statusMessage = allIndisponible ? 'rendu disponible' : 'marqué indisponible';
-                    successAlert.innerHTML = `<span class="message">${successes} ${pluriel} ${statusMessage}${selectedIds.length > 1 ? 's' : ''}.${errors ? `<br>${errors} échec${errors > 1 ? 's' : ''}.` : ''}</span>`;
+                    const plurielType = successes > 1 ? 'créneaux' : 'créneau';
+                    successAlert.innerHTML = `<span class="message">${successes} ${plurielType} ${statusMessage}${selectedIds.length > 1 ? 's' : ''}.${errors ? `<br>${errors} échec${errors > 1 ? 's' : ''}.` : ''}</span>`;
                     document.body.appendChild(successAlert);
                     setTimeout(() => {
                         if (successAlert && successAlert.parentElement) {

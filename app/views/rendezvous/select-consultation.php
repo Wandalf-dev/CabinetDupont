@@ -100,10 +100,14 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 .select-service-btn {
     position: absolute;
     bottom: 1rem;
-    left: 1rem;
-    right: 1rem;
-    margin-top: auto;
-    width: calc(100% - 3rem);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    transition: none !important;
+}
+
+.select-service-btn:hover {
+    transform: translateX(-50%) !important;
 }
 </style>
 

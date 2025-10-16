@@ -16,6 +16,7 @@ include __DIR__ . '/templates/flash-messages.php';
             <button class="tab-button" data-tab="tab-creneaux">Créneaux</button>
         </div>
 
+
         <!-- Onglet "Services" : gestion des services du cabinet -->
         <div class="tab-content" id="tab-services">
             <div class="admin-section p-4">
@@ -434,6 +435,10 @@ include __DIR__ . '/templates/flash-messages.php';
 
 <!-- Styles pour l'interface admin -->
 <link rel="stylesheet" href="/CabinetDupont/css/pages/admin.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/confirmation-popup.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/agenda/notifications.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneaux-alerts.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/alerts.css">
 <link rel="stylesheet" href="/CabinetDupont/css/utils/drag-drop.css">
 <link rel="stylesheet" href="/CabinetDupont/css/components/tabs.css">
 <link rel="stylesheet" href="/CabinetDupont/css/components/table-actions.css">
@@ -444,7 +449,9 @@ include __DIR__ . '/templates/flash-messages.php';
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/button-group.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneau-indisponible.css">
 
+
 <!-- Scripts pour la gestion des onglets, du drag & drop et des filtres -->
+ <script src="<?php echo BASE_URL; ?>/js/components/confirmation-popup.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/components/tabs.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/modules/service/service-order.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux-accordion.js"></script>
