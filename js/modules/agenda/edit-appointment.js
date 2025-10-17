@@ -84,39 +84,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Fermer le formulaire
                 editOverlay.style.display = 'none';
                 
-                // Créer et afficher la notification
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert-popup success';
-                alertDiv.innerHTML = `
-                    <i class="fas fa-check-circle"></i>
-                    <div>
-                        <strong>Succès!</strong>
-                        <p>Le rendez-vous a été modifié avec succès.</p>
-                    </div>
-                `;
-                document.body.appendChild(alertDiv);
-
-                // Supprimer la notification après 5 secondes
-                setTimeout(() => {
-                    if (alertDiv && alertDiv.parentElement) {
-                        alertDiv.classList.add('leaving');
-                        setTimeout(() => {
-                            alertDiv.parentElement.removeChild(alertDiv);
-                        }, 300);
-                    }
-                }, 5000);
+                // Afficher l'alerte de succès
+                AlertManager.show('Le rendez-vous a bien été modifié', 'success');
                 
                 // Émettre un événement pour notifier que les rendez-vous doivent être rechargés
                 document.dispatchEvent(new CustomEvent('appointmentUpdated', {
                     detail: { appointmentId: appointmentId }
                 }));
             } else {
-                showNotification('Erreur', data.message, 'error');
+                AlertManager.show(data.message || 'Erreur lors de la modification du rendez-vous', 'error');
             }
         })
         .catch(error => {
             console.error('Erreur:', error);
-            showNotification('Erreur', 'Une erreur est survenue lors de la modification du rendez-vous', 'error');
+            AlertManager.show('Une erreur est survenue lors de la modification du rendez-vous', 'error');
         });
     });
     

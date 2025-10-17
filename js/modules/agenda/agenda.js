@@ -5,9 +5,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Écouter l'événement de mise à jour des rendez-vous
     document.addEventListener('appointmentUpdated', function(event) {
+        // Réinitialiser les créneaux indisponibles avant de recharger
+        if (window.resetUnavailableSlots) {
+            window.resetUnavailableSlots();
+        }
+        
         // Recharger la vue et les rendez-vous
         updateView();
         loadAppointments();
+        
+        // Recharger les créneaux indisponibles
+        const viewStartDate = currentView === 'week' ? getMonday(currentDate) : new Date(currentDate);
+        const viewEndDate = new Date(viewStartDate);
+        if (currentView === 'week') {
+            viewEndDate.setDate(viewEndDate.getDate() + 6);
+        }
+        const startDate = formatDateISO(viewStartDate);
+        const endDate = formatDateISO(viewEndDate);
+        
+        if (window.loadUnavailableSlots) {
+            window.loadUnavailableSlots(startDate, endDate);
+        }
     });
 
     // Configuration locale

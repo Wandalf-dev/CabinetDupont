@@ -75,6 +75,7 @@ class RendezVousController extends Controller {
         // Récupération des dates disponibles (tous services confondus)
         $datesDisponibles = $this->creneauModel->getDatesDisponibles();
         error_log("Dates disponibles trouvées : " . print_r($datesDisponibles, true));
+        error_log("Nombre de dates disponibles : " . count($datesDisponibles));
 
         if (empty($datesDisponibles)) {
             $_SESSION['error'] = "Aucun créneau disponible actuellement.";
@@ -370,13 +371,15 @@ class RendezVousController extends Controller {
             // Mettre à jour l'heure du rendez-vous
             error_log("Tentative de modification du rendez-vous - ID: {$rdvId}, Date: {$nouvelleDate}, Heure: {$nouvelleHeure}");
             
-            if ($this->rendezVousModel->modifierHeure($rdvId, $nouvelleDate, $nouvelleHeure)) {
-                error_log("Modification réussie");
-                echo json_encode(['success' => true, 'message' => 'Le rendez-vous a été modifié avec succès']);
-            } else {
-                error_log("Échec de la modification");
-                http_response_code(500);
-                echo json_encode(['success' => false, 'message' => 'Erreur lors de la modification du rendez-vous']);
+            try {
+                if ($this->rendezVousModel->modifierHeure($rdvId, $nouvelleDate, $nouvelleHeure)) {
+                    error_log("Modification réussie");
+                    echo json_encode(['success' => true, 'message' => 'Le rendez-vous a été modifié avec succès']);
+                }
+            } catch (\Exception $e) {
+                error_log("Erreur de modification: " . $e->getMessage());
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => $e->getMessage()]);
             }
         } catch (\Exception $e) {
             error_log("Erreur lors de la modification du rendez-vous : " . $e->getMessage());

@@ -256,11 +256,14 @@ class CreneauModel extends Model
         $this->logDebug("=== Début getDatesDisponibles ===");
         $sql = "SELECT DISTINCT DATE(c.debut) AS date
                 FROM creneau c
-                LEFT JOIN rendezvous r ON c.id = r.creneau_id AND r.statut != :annule
-                WHERE c.debut >= CURRENT_DATE()
-                  AND c.debut <= DATE_ADD(CURRENT_DATE(), INTERVAL 14 DAY)
-                  AND r.id IS NULL
+                WHERE DATE(c.debut) >= CURRENT_DATE()
+                  AND DATE(c.debut) <= DATE_ADD(CURRENT_DATE(), INTERVAL 14 DAY)
+                  AND c.est_reserve = 0
                   AND c.statut != :indispo
+                  AND NOT EXISTS (
+                      SELECT 1 FROM rendezvous r
+                      WHERE r.creneau_id = c.id AND r.statut != :annule
+                  )
                 ORDER BY date ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
@@ -305,6 +308,7 @@ class CreneauModel extends Model
                 FROM creneau c
                 WHERE DATE(c.debut) = :d
                   AND c.est_reserve = 0
+                  AND c.statut != :indispo
                   AND NOT EXISTS (
                       SELECT 1 FROM rendezvous r
                       WHERE r.creneau_id = c.id AND r.statut != :annule
@@ -325,6 +329,7 @@ class CreneauModel extends Model
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             ':d'       => $date,
+            ':indispo' => self::STATUT_INDISPONIBLE,
             ':annule'  => self::STATUT_ANNULE,
             ':annule2' => self::STATUT_ANNULE,
             ':d1'      => $duree,
@@ -344,9 +349,16 @@ class CreneauModel extends Model
                            AND c2.debut >= (SELECT debut FROM creneau WHERE id = :id1)
                            AND c2.debut <  DATE_ADD((SELECT debut FROM creneau WHERE id = :id2), INTERVAL :d MINUTE)
                            AND c2.est_reserve = 0
+                           AND c2.statut != :indispo
                          ORDER BY c2.debut ASC";
             $stmtRange = $this->db->prepare($sqlRange);
-            $stmtRange->execute([':id0' => $slot['id'], ':id1' => $slot['id'], ':id2' => $slot['id'], ':d' => $duree]);
+            $stmtRange->execute([
+                ':id0' => $slot['id'], 
+                ':id1' => $slot['id'], 
+                ':id2' => $slot['id'], 
+                ':d' => $duree,
+                ':indispo' => self::STATUT_INDISPONIBLE
+            ]);
             $range = $stmtRange->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
             if (count($range) >= $needCount) {
@@ -361,12 +373,13 @@ class CreneauModel extends Model
     /** RDV d'un utilisateur (futurs) */
     public function getUserRendezVous(int $userId): array
     {
-        $sql = "SELECT c.*, r.id AS rdv_id, s.titre AS service_titre
+        $sql = "SELECT c.*, r.id AS rdv_id, r.statut AS rdv_statut, s.titre AS service_titre
                 FROM rendezvous r
                 JOIN creneau c ON r.creneau_id = c.id
-                JOIN service s ON c.service_id = s.id
-                JOIN utilisateur u ON r.patient_id = u.id
-                WHERE u.id = ? AND c.debut >= NOW()
+                LEFT JOIN service s ON c.service_id = s.id
+                WHERE r.patient_id = ? 
+                AND r.statut != 'ANNULE'
+                AND c.debut >= NOW()
                 ORDER BY c.debut ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$userId]);

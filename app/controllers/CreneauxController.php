@@ -86,9 +86,90 @@ class CreneauxController {
         }
     }
 
+    public function markUnavailableBulk() {
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'MEDECIN') {
+            $this->jsonResponse(['success' => false, 'error' => 'Accès non autorisé'], 403);
+        }
+
+        // CSRF check
+        $headers = function_exists('getallheaders') ? getallheaders() : [];
+        $token = $headers['X-CSRF-TOKEN'] ?? '';
+        if (empty($token) || !\App\Core\Csrf::checkToken($token)) {
+            $this->jsonResponse(['success' => false, 'error' => 'Token CSRF invalide ou manquant'], 403);
+        }
+
+        $data = $this->jsonInput();
+        if (!isset($data['ids']) || !is_array($data['ids'])) {
+            $this->jsonResponse(['success' => false, 'error' => 'Données invalides'], 400);
+        }
+
+        $creneauxIds = array_map('intval', $data['ids']);
+        if (empty($creneauxIds)) {
+            $this->jsonResponse(['success' => false, 'error' => 'Aucun créneau sélectionné'], 400);
+        }
+
+        $modifies = 0;
+        $erreurs = [];
+
+        foreach ($creneauxIds as $id) {
+            try {
+                $creneau = $this->creneauModel->getCreneauById($id);
+                if (!$creneau) {
+                    $erreurs[] = "Créneau $id introuvable";
+                    continue;
+                }
+                if (!empty($creneau['est_reserve'])) {
+                    $erreurs[] = "Créneau $id est déjà réservé";
+                    continue;
+                }
+                
+                // Vérifier si le créneau est déjà indisponible
+                $isIndisponible = ($creneau['statut'] ?? '') === 'indisponible';
+                
+                // Si déjà indisponible, on compte quand même comme succès
+                if ($isIndisponible) {
+                    $modifies++;
+                } else {
+                    // Sinon, le basculer vers indisponible
+                    $result = $this->creneauModel->toggleIndisponible($id);
+                    if ($result === true) { // true signifie maintenant indisponible
+                        $modifies++;
+                    } else {
+                        $erreurs[] = "Erreur lors de la modification du créneau $id";
+                    }
+                }
+            } catch (\Exception $e) {
+                $erreurs[] = "Erreur créneau $id: " . $e->getMessage();
+            }
+        }
+
+        $response = [
+            'success' => $modifies > 0,
+            'message' => $modifies > 0 ? "$modifies créneau(x) marqué(s) comme indisponible(s)" : "Aucun créneau n'a pu être modifié",
+            'modifiedCount' => $modifies
+        ];
+        if (!empty($erreurs)) {
+            $response['errors'] = $erreurs;
+        }
+
+        $this->jsonResponse($response, 200);
+    }
+
+    public function deleteCreneauxBulk() {
+        // Alias pour deleteMultiple() pour compatibilité avec le JavaScript
+        $this->deleteMultiple();
+    }
+
     public function deleteMultiple() {
         if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'MEDECIN') {
             $this->jsonResponse(['error' => 'Accès non autorisé'], 403);
+        }
+
+        // CSRF check
+        $headers = function_exists('getallheaders') ? getallheaders() : [];
+        $token = $headers['X-CSRF-TOKEN'] ?? '';
+        if (empty($token) || !\App\Core\Csrf::checkToken($token)) {
+            $this->jsonResponse(['success' => false, 'error' => 'Token CSRF invalide ou manquant'], 403);
         }
 
         $data = $this->jsonInput();
@@ -225,6 +306,75 @@ class CreneauxController {
         }
 
         require_once 'app/views/creneaux/generer.php';
+    }
+
+    public function genererCreneaux() {
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'MEDECIN') {
+            $this->jsonResponse(['success' => false, 'error' => 'Accès non autorisé'], 403);
+        }
+
+        // CSRF check
+        $headers = function_exists('getallheaders') ? getallheaders() : [];
+        $token = $headers['X-CSRF-TOKEN'] ?? '';
+        if (empty($token) || !\App\Core\Csrf::checkToken($token)) {
+            $this->jsonResponse(['success' => false, 'error' => 'Token CSRF invalide ou manquant'], 403);
+        }
+
+        $agenda = $this->agendaModel->getAgendaByUtilisateur($_SESSION['user_id']);
+        if (!$agenda) {
+            $this->jsonResponse(['success' => false, 'error' => 'Aucun agenda trouvé'], 404);
+        }
+
+        $data = $this->jsonInput();
+        $dateDebut = $data['date_debut'] ?? '';
+        $dateFin = $data['date_fin'] ?? '';
+
+        if (empty($dateDebut) || empty($dateFin)) {
+            $this->jsonResponse(['success' => false, 'error' => 'Les dates sont obligatoires'], 400);
+        }
+
+        // Vérifier que les dates sont valides
+        $dateDebutObj = \DateTime::createFromFormat('Y-m-d', $dateDebut);
+        $dateFinObj = \DateTime::createFromFormat('Y-m-d', $dateFin);
+        
+        if (!$dateDebutObj || !$dateFinObj) {
+            $this->jsonResponse(['success' => false, 'error' => 'Format de date invalide'], 400);
+        }
+
+        if ($dateDebutObj > $dateFinObj) {
+            $this->jsonResponse(['success' => false, 'error' => 'La date de début doit être antérieure à la date de fin'], 400);
+        }
+
+        // Vérifier s'il existe déjà des créneaux pour cette période
+        $creneauxExistants = $this->creneauModel->getCreneauxPourPeriode($dateDebut, $dateFin, $agenda['id']);
+        if (!empty($creneauxExistants)) {
+            $this->jsonResponse([
+                'success' => false, 
+                'error' => 'Des créneaux existent déjà pour cette période. Veuillez d\'abord les supprimer ou choisir une autre période.'
+            ], 400);
+        }
+
+        try {
+            $success = $this->creneauModel->genererCreneaux($agenda['id'], $dateDebut, $dateFin);
+            
+            if ($success) {
+                $this->jsonResponse([
+                    'success' => true,
+                    'message' => 'Les créneaux ont été générés avec succès'
+                ], 200);
+            } else {
+                $this->jsonResponse([
+                    'success' => false,
+                    'error' => 'Une erreur est survenue lors de la génération des créneaux'
+                ], 500);
+            }
+        } catch (\Exception $e) {
+            error_log("Exception lors de la génération des créneaux : " . $e->getMessage());
+            $this->jsonResponse([
+                'success' => false,
+                'error' => 'Une erreur inattendue est survenue : ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function index() {

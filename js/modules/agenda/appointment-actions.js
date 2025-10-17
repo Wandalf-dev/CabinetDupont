@@ -166,52 +166,18 @@ async function cancelAppointment(appointmentId) {
                 }
             }, 100);
         
-        // Créer et afficher la notification de succès
-        const alertDiv = document.createElement('div');
-        alertDiv.className = 'alert-popup success';
-        alertDiv.innerHTML = `
-            <i class="fas fa-check-circle"></i>
-            <div>
-                <strong>Succès!</strong>
-                <p>Le rendez-vous a été annulé avec succès.</p>
-            </div>
-        `;
-        document.body.appendChild(alertDiv);
-
-            // Supprimer la notification après 5 secondes
-        setTimeout(() => {
-            if (alertDiv && alertDiv.parentElement) {
-                alertDiv.classList.add('leaving');
-                setTimeout(() => {
-                    alertDiv.parentElement.removeChild(alertDiv);
-                }, 300);
-            }
-        }, 5000);
+        // Afficher l'alerte de succès
+        if (window.AlertManager) {
+            AlertManager.show('Le rendez-vous a été annulé avec succès', 'success');
+        }
 
     } catch (error) {
         console.error('Erreur complète:', error);
         console.error('Message d\'erreur:', error.message);
         
-        // Afficher notification d'erreur
-        const alertDiv = document.createElement('div');
-        alertDiv.className = 'alert-popup error';
-        alertDiv.innerHTML = `
-            <i class="fas fa-exclamation-circle"></i>
-            <div>
-                <strong>Erreur!</strong>
-                <p>Une erreur est survenue lors de l'annulation du rendez-vous.</p>
-            </div>
-        `;
-        document.body.appendChild(alertDiv);
-
-        // Supprimer la notification après 5 secondes
-        setTimeout(() => {
-            if (alertDiv && alertDiv.parentElement) {
-                alertDiv.classList.add('leaving');
-                setTimeout(() => {
-                    alertDiv.parentElement.removeChild(alertDiv);
-                }, 300);
-            }
-        }, 5000);
+        // Afficher l'alerte d'erreur
+        if (window.AlertManager) {
+            AlertManager.show(error.message || 'Erreur lors de l\'annulation du rendez-vous', 'error');
+        }
     }
 }

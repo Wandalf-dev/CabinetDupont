@@ -1,7 +1,7 @@
 .flash-message {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: 75px; /* 70px (hauteur header) + 20px (marge) */
+    right: 10px;
     z-index: 100000;
     display: flex;
     align-items: center;
@@ -9,12 +9,13 @@
     padding: 16px 24px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 280px;
+    width: 400px;
+    max-width: calc(100% - 40px);
     
     /* État initial */
     opacity: 1;
     transform: translateX(0);
-    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
 }
 
 .flash-message.success {

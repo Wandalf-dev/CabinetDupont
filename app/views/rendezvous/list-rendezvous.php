@@ -65,7 +65,7 @@
                                 <tr>
                                     <td><?php echo $groupe['date']; ?></td>
                                     <td><?php echo $plage; ?></td>
-                                    <td><?php echo htmlspecialchars($groupe['service_titre']); ?></td>
+                                    <td><?php echo htmlspecialchars($groupe['service_titre'] ?? 'Non spécifié'); ?></td>
                                     <td>
                                         <button type="button"
                                            class="btn btn-outline-danger btn-sm btn-cancel"

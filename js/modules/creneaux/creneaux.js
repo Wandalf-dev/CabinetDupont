@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
             this.statusFilter  = document.getElementById('filter-status');
             this.periodFilter  = document.getElementById('filter-period');
             this.selectedCount = document.querySelector('.selected-count');
+            this.btnSelectAll  = document.getElementById('btn-select-all');
 
             this.bulkActions = {
                 markUnavailable: document.getElementById('btn-mark-unavailable'),
@@ -72,6 +73,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (this.searchInput)  this.searchInput.addEventListener('input',  () => this.applyFilters());
             if (this.statusFilter) this.statusFilter.addEventListener('change', () => this.applyFilters());
             if (this.periodFilter) this.periodFilter.addEventListener('change', () => this.applyFilters());
+
+            // Événement pour le bouton "Tout sélectionner"
+            if (this.btnSelectAll) {
+                this.btnSelectAll.addEventListener('click', () => this.toggleSelectAll());
+            }
 
             // Événements des actions en masse
             if (this.bulkActions.markUnavailable) {
@@ -118,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!this.viewButtons || this.viewButtons.length === 0 || !this.creneauxView) return;
             
             // Charger la préférence depuis sessionStorage
-            const savedView = sessionStorage.getItem('creneaux-view') || 'grid';
+            const savedView = sessionStorage.getItem('creneaux-view') || 'list';
             this.setView(savedView);
 
             // Gérer les clics sur les boutons de vue
@@ -233,6 +239,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Réinitialiser la sélection après rechargement
                     this.selectedCreneaux.clear();
                     this.updateSelectionUI();
+                    // Réattacher les événements du bouton générer (dans l'empty state)
+                    this.reattachGenerateButton();
                 } else {
                     throw new Error('Structure HTML invalide dans la réponse');
                 }
@@ -299,6 +307,49 @@ document.addEventListener('DOMContentLoaded', function () {
             const hasSelection = count > 0;
             if (this.bulkActions.markUnavailable) this.bulkActions.markUnavailable.disabled = !hasSelection;
             if (this.bulkActions.delete)          this.bulkActions.delete.disabled          = !hasSelection;
+
+            // Mettre à jour le texte et l'icône du bouton "Tout sélectionner"
+            if (this.btnSelectAll) {
+                const checkboxes = this.getSelectableCheckboxes();
+                const allSelected = checkboxes.length > 0 && this.selectedCreneaux.size === checkboxes.length;
+                
+                if (allSelected) {
+                    this.btnSelectAll.innerHTML = '<i class="fas fa-square"></i> Tout désélectionner';
+                } else {
+                    this.btnSelectAll.innerHTML = '<i class="fas fa-check-square"></i> Tout sélectionner';
+                }
+            }
+        },
+
+        getSelectableCheckboxes() {
+            if (!this.creneauxView) return [];
+            // Récupérer toutes les cases à cocher visibles et non désactivées
+            const checkboxes = Array.from(this.creneauxView.querySelectorAll('.creneau-select'));
+            return checkboxes.filter(cb => {
+                const card = cb.closest('.creneau-card');
+                return !cb.disabled && card && card.style.display !== 'none';
+            });
+        },
+
+        toggleSelectAll() {
+            const checkboxes = this.getSelectableCheckboxes();
+            if (checkboxes.length === 0) return;
+
+            // Vérifier si tous sont déjà sélectionnés
+            const allSelected = checkboxes.every(cb => cb.checked);
+
+            // Inverser la sélection
+            checkboxes.forEach(cb => {
+                cb.checked = !allSelected;
+                const id = cb.dataset.id;
+                if (cb.checked) {
+                    this.selectedCreneaux.add(id);
+                } else {
+                    this.selectedCreneaux.delete(id);
+                }
+            });
+
+            this.updateSelectionUI();
         },
 
         async toggleDisponibilite(id) {
@@ -521,6 +572,14 @@ document.addEventListener('DOMContentLoaded', function () {
         initializeTooltips() {
             if (window.initTooltips) {
                 window.initTooltips();
+            }
+        },
+
+        reattachGenerateButton() {
+            // Réattacher l'événement au bouton "Générer des créneaux" dans l'empty state
+            const btnGenererEmpty = document.getElementById('btn-generer-empty');
+            if (btnGenererEmpty) {
+                btnGenererEmpty.addEventListener('click', () => this.openGenerationModal());
             }
         }
     };

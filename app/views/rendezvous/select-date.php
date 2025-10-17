@@ -231,7 +231,12 @@ class Calendar {
 
     isDateDisabled(date) {
         // Désactiver les dates passées
-        if (date < new Date().setHours(0,0,0,0)) return true;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const dateToCheck = new Date(date);
+        dateToCheck.setHours(0, 0, 0, 0);
+        
+        if (dateToCheck < today) return true;
         
         // Désactiver uniquement les dimanches
         if (date.getDay() === 0) return true;
@@ -239,13 +244,15 @@ class Calendar {
         // Désactiver les dates au-delà de 2 semaines
         const twoWeeksFromNow = new Date();
         twoWeeksFromNow.setDate(twoWeeksFromNow.getDate() + 14);
-        if (date > twoWeeksFromNow) return true;
+        twoWeeksFromNow.setHours(23, 59, 59, 999);
+        if (dateToCheck > twoWeeksFromNow) return true;
         
         // Vérifier si la date est dans la liste des dates disponibles
         const formattedDate = this.formatDate(date);
-        console.log('Vérification de la date:', formattedDate);
-        console.log('Dates disponibles:', datesDisponibles);
-        return !datesDisponibles.includes(formattedDate);
+        const isAvailable = datesDisponibles.includes(formattedDate);
+        console.log('Vérification de la date:', formattedDate, '- Disponible:', isAvailable);
+        console.log('Liste complète des dates disponibles:', datesDisponibles);
+        return !isAvailable;
     }
 
     formatDate(date) {

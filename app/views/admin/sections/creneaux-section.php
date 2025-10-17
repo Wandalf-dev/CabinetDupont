@@ -28,10 +28,10 @@ $csrf_token = \App\Core\Csrf::generateToken();
         </div>
         <div class="toolbar-right">
             <div class="view-toggle" role="group" aria-label="Changer de vue">
-                <button class="btn-icon active" data-view="grid" type="button" title="Grille">
+                <button class="btn-icon" data-view="grid" type="button" title="Grille">
                     <i class="fas fa-th"></i>
                 </button>
-                <button class="btn-icon" data-view="list" type="button" title="Liste">
+                <button class="btn-icon active" data-view="list" type="button" title="Liste">
                     <i class="fas fa-list"></i>
                 </button>
             </div>
@@ -85,7 +85,7 @@ $csrf_token = \App\Core\Csrf::generateToken();
     </div>
 
     <!-- Vue principale des créneaux -->
-    <div class="creneaux-view" data-view="grid">
+    <div class="creneaux-view" data-view="list">
         <?php if (isset($creneaux) && !empty($creneaux)): ?>
             <!-- Stats de la journée -->
             <div class="day-stats">
