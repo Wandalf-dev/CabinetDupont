@@ -162,9 +162,32 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Fonction pour nettoyer complètement la vue semaine
+    function resetWeekView() {
+        const weekView = document.querySelector('.week-view');
+        if (!weekView) return;
+        
+        // Supprimer tous les rendez-vous
+        weekView.querySelectorAll('.appointment').forEach(el => el.remove());
+        
+        // Supprimer tous les marqueurs indisponibles
+        weekView.querySelectorAll('.unavailable-marker').forEach(el => el.remove());
+        
+        // Nettoyer tous les slots
+        const slots = weekView.querySelectorAll('.slot-cell');
+        slots.forEach(slot => {
+            slot.classList.remove('reserved', 'unavailable');
+            slot.innerHTML = '';
+            slot.style.backgroundColor = '';
+            slot.removeAttribute('title');
+        });
+    }
+
     // Mise à jour de l'affichage
-    function updateView() {
+    async function updateView() {
+        // Nettoyer complètement la vue avant de recharger
         if (currentView === 'week') {
+            resetWeekView();
             updateWeekView();
         } else {
             updateDayView();
@@ -178,9 +201,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 dayColumn.querySelector('.day-date').textContent = formattedDate;
             }
         }
-        loadAppointments();
         
-        // Déclencher l'événement de mise à jour du calendrier
+        // Charger les rendez-vous en premier
+        await loadAppointments();
+        
+        // Attendre que le DOM soit mis à jour
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        
+        // Calculer la période à afficher
         const viewStartDate = currentView === 'week' ? getMonday(currentDate) : new Date(currentDate);
         const viewEndDate = new Date(viewStartDate);
         if (currentView === 'week') {
@@ -189,6 +217,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const startDateStr = formatDateISO(viewStartDate);
         const endDateStr = formatDateISO(viewEndDate);
+        
+        // Ensuite charger les créneaux indisponibles (qui ne doivent pas écraser les rendez-vous)
+        if (window.loadUnavailableSlots) {
+            await window.loadUnavailableSlots(startDateStr, endDateStr);
+        }
         
         console.log('[Agenda] Déclenchement de calendarViewUpdated:', {
             startDate: startDateStr,
@@ -206,10 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Charger les rendez-vous
-    function loadAppointments() {
-        // Nettoyer les rendez-vous existants
-        document.querySelectorAll('.slot-cell.reserved').forEach(el => el.remove());
-
+    async function loadAppointments() {
         const viewStartDate = currentView === 'week' ? getMonday(currentDate) : new Date(currentDate);
         const viewEndDate = new Date(viewStartDate);
         if (currentView === 'week') {
@@ -219,25 +249,27 @@ document.addEventListener('DOMContentLoaded', function() {
         const start = formatDateISO(viewStartDate);
         const end = formatDateISO(viewEndDate);
 
-        // Réinitialiser les créneaux de la vue active
+        // Réinitialiser les créneaux de la vue active (sans supprimer les éléments)
         const activeView = currentView === 'week' ? '.week-view' : '.day-view';
         const slots = document.querySelectorAll(`${activeView} .slot-cell`);
         slots.forEach(slot => {
+            // Supprimer les rendez-vous existants
+            slot.querySelectorAll('.appointment').forEach(apt => apt.remove());
             slot.classList.remove('reserved');
             slot.removeAttribute('title');
-            slot.style.backgroundColor = ''; // Réinitialiser la couleur
+            slot.style.backgroundColor = '';
         });
 
-        console.log('Chargement des rendez-vous pour la période:', { 
+        console.log('[Agenda] Chargement des rendez-vous pour la période:', { 
             start, 
             end, 
             view: currentView,
             activeView: activeView
         });
 
-        fetch(`index.php?page=agenda&action=getAppointments&start=${start}&end=${end}`)
-            .then(response => response.json())
-            .then(events => {
+        try {
+            const response = await fetch(`index.php?page=agenda&action=getAppointments&start=${start}&end=${end}`);
+            const events = await response.json();
                 console.log('Rendez-vous reçus (données brutes):', events);
                 events.forEach(event => {
                     // Vérification des dates brutes
@@ -321,6 +353,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             id: event.id,
                             patient: event.patient.prenom + ' ' + event.patient.nom,
                             service: event.service.titre,
+                            duration: event.service.duree || durationMinutes,
                             date: formatDateISO(startTime),
                             time: startTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
                             status: event.status
@@ -408,8 +441,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         dayColumn.querySelector('.day-content').appendChild(appointmentElement);
                     }
                 });
-            })
-            .catch(error => console.error('Erreur lors du chargement des rendez-vous:', error));
+        } catch (error) {
+            console.error('Erreur lors du chargement des rendez-vous:', error);
+        }
     }
 
     function updateWeekView() {

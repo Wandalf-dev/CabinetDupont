@@ -443,7 +443,8 @@ document.addEventListener('DOMContentLoaded', function () {
         },
 
         async markSelectedUnavailable() {
-            const ok = await this.confirm('Êtes-vous sûr de vouloir marquer ces créneaux comme indisponibles ?');
+            const count = this.selectedCreneaux.size;
+            const ok = await this.confirm({ action: 'statut', count, type: 'indisponible' });
             if (!ok) return;
 
             try {
@@ -469,7 +470,8 @@ document.addEventListener('DOMContentLoaded', function () {
         },
 
         async deleteSelected() {
-            const ok = await this.confirm('Êtes-vous sûr de vouloir supprimer ces créneaux ?');
+            const count = this.selectedCreneaux.size;
+            const ok = await this.confirm({ action: 'delete', count });
             if (!ok) return;
 
             try {
@@ -548,25 +550,31 @@ document.addEventListener('DOMContentLoaded', function () {
         },
 
         showSuccess(message) {
-            if (window.showAlert) {
-                window.showAlert('success', message);
+            if (window.AlertManager) {
+                AlertManager.show(message, 'success');
             } else {
                 alert(message);
             }
         },
 
         showError(message) {
-            if (window.showAlert) {
-                window.showAlert('error', message);
+            if (window.AlertManager) {
+                AlertManager.show(message, 'error');
             } else {
                 alert(message);
             }
         },
 
-        async confirm(message) {
-            return window.showConfirmDialog
-                ? await window.showConfirmDialog(message)
-                : confirm(message);
+        async confirm(options) {
+            // Si showConfirmationPopup existe, l'utiliser
+            if (window.showConfirmationPopup) {
+                return await window.showConfirmationPopup(options);
+            }
+            // Sinon, fallback sur confirm() natif
+            const message = typeof options === 'string' ? options : 
+                options.action === 'delete' ? `Êtes-vous sûr de vouloir supprimer ${options.count} créneau(x) ?` :
+                `Êtes-vous sûr de vouloir effectuer cette action ?`;
+            return confirm(message);
         },
 
         initializeTooltips() {

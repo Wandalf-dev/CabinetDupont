@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Réinitialiser tous les créneaux normaux
-        document.querySelectorAll(`${activeView} .unavailable-slot, ${activeView} .slot-cell[style*="visibility"]`).forEach(slot => {
-            slot.classList.remove('unavailable-slot');
+        document.querySelectorAll(`${activeView} .unavailable-slot, ${activeView} .slot-cell.unavailable`).forEach(slot => {
+            slot.classList.remove('unavailable-slot', 'unavailable');
             slot.removeAttribute('data-unavailable-text');
             slot.style.visibility = '';
             slot.style.backgroundColor = '';
@@ -51,49 +51,64 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Fonction pour charger et afficher les créneaux indisponibles
-    window.loadUnavailableSlots = function(startDate, endDate) {
+    window.loadUnavailableSlots = async function(startDate, endDate) {
         console.log('[Agenda] Chargement des créneaux indisponibles...', startDate, endDate);
         
-        fetch(`index.php?page=agenda&action=getUnavailableSlots&start=${startDate}&end=${endDate}`)
-            .then(response => {
-                console.log('[Agenda] Réponse reçue:', response);
-                return response.json();
-            })
-            .then(slots => {
-                console.log('[Agenda] Créneaux indisponibles reçus:', slots);
-                slots.forEach(slot => {
-                    const slotDate = new Date(slot.start);
-                    console.log('[Agenda] Traitement du créneau indisponible:', slotDate);
+        try {
+            const response = await fetch(`index.php?page=agenda&action=getUnavailableSlots&start=${startDate}&end=${endDate}`);
+            console.log('[Agenda] Réponse reçue:', response);
+            const slots = await response.json();
+            console.log('[Agenda] Créneaux indisponibles reçus:', slots);
+            
+            slots.forEach(slot => {
+                const slotDate = new Date(slot.start);
+                console.log('[Agenda] Traitement du créneau indisponible:', slotDate);
+                
+                // Formatage de la date pour correspondre à l'attribut data-date
+                const dateStr = slotDate.toISOString().split('T')[0];
+                console.log('[Agenda] Recherche de la colonne pour la date:', dateStr);
+                
+                // Rechercher dans la vue active (semaine ou jour)
+                const activeView = document.querySelector('.week-view.active') ? '.week-view' : '.day-view';
+                const dayColumn = document.querySelector(`${activeView} .day-column[data-date="${dateStr}"]`);
+                console.log('[Agenda] Colonne trouvée dans', activeView, ':', dayColumn);
+                
+                if (dayColumn) {
+                    const hour = slotDate.getHours();
+                    const minutes = slotDate.getMinutes();
+                    const timeStr = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                    console.log('[Agenda] Recherche du créneau horaire:', timeStr);
                     
-                    // Formatage de la date pour correspondre à l'attribut data-date
-                    const dateStr = slotDate.toISOString().split('T')[0];
-                    console.log('[Agenda] Recherche de la colonne pour la date:', dateStr);
+                    const slotCell = dayColumn.querySelector(`.slot-cell[data-hour="${timeStr}"]`);
+                    console.log('[Agenda] Cellule trouvée:', slotCell);
                     
-                    // Rechercher dans la vue active (semaine ou jour)
-                    const activeView = document.querySelector('.week-view.active') ? '.week-view' : '.day-view';
-                    const dayColumn = document.querySelector(`${activeView} .day-column[data-date="${dateStr}"]`);
-                    console.log('[Agenda] Colonne trouvée dans', activeView, ':', dayColumn);
-                    
-                    if (dayColumn) {
-                        const hour = slotDate.getHours();
-                        const minutes = slotDate.getMinutes();
-                        const timeStr = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-                        console.log('[Agenda] Recherche du créneau horaire:', timeStr);
+                    if (slotCell) {
+                        // NE PAS marquer comme indisponible si le créneau a déjà un rendez-vous
+                        const hasAppointment = slotCell.classList.contains('reserved') || slotCell.querySelector('.appointment');
+                        console.log('[Agenda] État du créneau:', {
+                            time: timeStr,
+                            hasReservedClass: slotCell.classList.contains('reserved'),
+                            hasAppointmentElement: !!slotCell.querySelector('.appointment'),
+                            hasAppointment: hasAppointment,
+                            innerHTML: slotCell.innerHTML
+                        });
                         
-                        const slotCell = dayColumn.querySelector(`.slot-cell[data-hour="${timeStr}"]`);
-                        console.log('[Agenda] Cellule trouvée:', slotCell);
-                        
-                        if (slotCell) {
-                            console.log('[Agenda] Marquage du créneau comme indisponible');
-                            slotCell.classList.add('unavailable-slot');
-                            slotCell.setAttribute('data-unavailable-text', 'Indisponibilité');
+                        if (hasAppointment) {
+                            console.log('[Agenda] ⚠️ Créneau ignoré car il contient un rendez-vous');
+                            return;
                         }
+                        
+                        console.log('[Agenda] ✓ Marquage du créneau comme indisponible');
+                        slotCell.classList.add('unavailable-slot');
+                        slotCell.setAttribute('data-unavailable-text', 'Indisponibilité');
                     }
-                });
-                // Fusion immédiate des créneaux indisponibles
-                mergeUnavailableBlocks();
-            })
-            .catch(error => console.error('Erreur lors du chargement des créneaux indisponibles:', error));
+                }
+            });
+            // Fusion immédiate des créneaux indisponibles
+            mergeUnavailableBlocks();
+        } catch (error) {
+            console.error('Erreur lors du chargement des créneaux indisponibles:', error);
+        }
     }
 
     // Fonction pour fusionner les indisponibilités consécutives

@@ -4,94 +4,173 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     display: none;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    backdrop-filter: blur(2px);
 }
 
 .edit-appointment-form {
     background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
     width: 90%;
-    max-width: 400px;
+    max-width: 480px;
     position: relative;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .edit-appointment-form h3 {
-    margin: 0 0 20px 0;
-    color: var(--primary-color);
-    font-size: 1.2em;
+    margin: 0 0 24px 0;
+    color: #1f2937;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.edit-appointment-details {
+    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    border: 1px solid #e5e7eb;
+}
+
+.edit-appointment-details p {
+    margin: 10px 0;
+    color: #4b5563;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.edit-appointment-details p:first-child {
+    margin-top: 0;
+}
+
+.edit-appointment-details p:last-child {
+    margin-bottom: 0;
+}
+
+.edit-appointment-details strong {
+    color: #1f2937;
+    font-weight: 600;
+    min-width: 80px;
+    display: inline-block;
+}
+
+.edit-appointment-details span {
+    color: #1f2937;
+    font-weight: 500;
+}
+
+.edit-appointment-details .appointment-duration {
+    color: #1f2937;
+    font-weight: 600;
 }
 
 .edit-appointment-form .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .edit-appointment-form label {
     display: block;
-    margin-bottom: 5px;
-    color: #333;
-    font-weight: 500;
+    margin-bottom: 8px;
+    color: #374151;
+    font-weight: 600;
+    font-size: 14px;
 }
 
-.edit-appointment-form input[type="time"] {
+.edit-appointment-form input[type="date"],
+.edit-appointment-form input[type="time"],
+.edit-appointment-form select {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1em;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #1f2937;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.edit-appointment-form input[type="date"]:focus,
+.edit-appointment-form input[type="time"]:focus,
+.edit-appointment-form select:focus {
+    outline: none;
+    border-color: var(--primary-color, #3b82f6);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.edit-appointment-form select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 20px;
+    appearance: none;
+    padding-right: 40px;
 }
 
 .edit-appointment-form .buttons {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 12px;
+    margin-top: 28px;
 }
 
 .edit-appointment-form button {
-    padding: 8px 16px;
+    padding: 12px 24px;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.2s;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    min-width: 100px;
 }
 
 .edit-appointment-form button.confirm {
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color, #3b82f6) 0%, #2563eb 100%);
     color: white;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.edit-appointment-form button.confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
 .edit-appointment-form button.cancel {
     background-color: #f3f4f6;
     color: #374151;
+    border: 2px solid #e5e7eb;
 }
 
-.edit-appointment-form button:hover {
-    opacity: 0.9;
+.edit-appointment-form button.cancel:hover {
+    background-color: #e5e7eb;
+    border-color: #d1d5db;
 }
 
 .edit-appointment-form button:active {
-    transform: translateY(1px);
+    transform: translateY(0);
 }
 
-.edit-appointment-details {
-    background: #f9fafb;
-    padding: 15px;
-    border-radius: 4px;
-    margin-bottom: 20px;
-}
-
-.edit-appointment-details p {
-    margin: 5px 0;
-    color: #4b5563;
-}
-
-.edit-appointment-details strong {
-    color: #1f2937;
+.edit-appointment-form button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }

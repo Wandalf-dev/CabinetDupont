@@ -7,13 +7,7 @@ function showConfirmationPopup({ action, count, type }) {
     return new Promise((resolve) => {
         // Overlay sombre
         const overlay = document.createElement('div');
-        overlay.style.position = 'fixed';
-        overlay.style.top = '0';
-        overlay.style.left = '0';
-        overlay.style.width = '100vw';
-        overlay.style.height = '100vh';
-        overlay.style.zIndex = '9998';
-        overlay.style.background = 'rgba(0,0,0,0.35)';
+        overlay.className = 'modal-overlay';
         document.body.appendChild(overlay);
 
         // Texte dynamique
@@ -35,28 +29,22 @@ function showConfirmationPopup({ action, count, type }) {
 
         // Popup
         const confirmDialog = document.createElement('div');
-        confirmDialog.classList.add('alert-popup');
-    confirmDialog.style.position = 'fixed';
-    confirmDialog.style.top = '16px';
-    confirmDialog.style.right = '16px';
-    confirmDialog.style.width = '400px';
-    confirmDialog.style.zIndex = '9999';
+        confirmDialog.className = 'alert-popup';
         confirmDialog.innerHTML = `
             <div style="display: flex; align-items: center; gap: 12px; justify-content: center; margin-bottom: 12px;">
-                <i class=\"fas fa-question-circle\"></i>
-                <span class=\"message\">${message}</span>
+                <i class="fas fa-question-circle"></i>
+                <span class="message">${message}</span>
             </div>
-            <div class=\"alert-actions\" style=\"display: flex; gap: 12px; justify-content: center; margin-top: 18px;\">
-                <button class=\"btn-confirm\">Confirmer</button>
-                <button class=\"btn-cancel\">Annuler</button>
+            <div class="alert-actions">
+                <button class="btn-confirm">Confirmer</button>
+                <button class="btn-cancel">Annuler</button>
             </div>
         `;
-        document.body.appendChild(confirmDialog);
+        overlay.appendChild(confirmDialog);
 
         const closeDialog = (result) => {
-            confirmDialog.classList.add('leaving');
+            overlay.classList.add('leaving');
             setTimeout(() => {
-                confirmDialog.remove();
                 overlay.remove();
             }, 300);
             resolve(result);
@@ -67,9 +55,10 @@ function showConfirmationPopup({ action, count, type }) {
         btnConfirm.addEventListener('click', () => closeDialog(true));
         btnCancel.addEventListener('click', () => closeDialog(false));
         overlay.addEventListener('mousedown', (e) => {
-            if (!confirmDialog.contains(e.target)) {
-                closeDialog(false);
+            if (confirmDialog.contains(e.target)) {
+                return; // Ne pas fermer si on clique dans la popup
             }
+            closeDialog(false);
         });
     });
 }

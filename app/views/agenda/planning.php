@@ -192,7 +192,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
         <div class="edit-appointment-details">
             <p><strong>Patient :</strong> <span class="patient-name"></span></p>
             <p><strong>Service :</strong> <span class="service-name"></span></p>
-            <p><strong>Durée :</strong> <span class="appointment-duration"></span> minutes</p>
+            <p><strong>Durée :</strong> <span class="appointment-duration"></span>&nbsp;minutes</p>
         </div>
         <form id="edit-appointment-form">
             <input type="hidden" name="appointment_id" id="edit-appointment-id">

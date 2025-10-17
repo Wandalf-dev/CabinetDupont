@@ -395,7 +395,8 @@ class CreneauModel extends Model
                 LEFT JOIN rendezvous r ON c.id = r.creneau_id AND r.statut != :annule
                 WHERE c.agenda_id = :agenda
                   AND DATE(c.debut) BETWEEN :d1 AND :d2
-                  AND (c.statut = :indispo OR r.id IS NOT NULL)
+                  AND c.statut = :indispo
+                  AND r.id IS NULL
                 ORDER BY c.debut ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([

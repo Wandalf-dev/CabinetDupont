@@ -29,11 +29,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const form = overlay.querySelector('form');
         const appointmentData = JSON.parse(appointment.getAttribute('data-appointment'));
         console.log('Données du rendez-vous:', appointmentData);
+        console.log('Durée récupérée:', appointmentData.duration);
         
         // Remplir les détails du rendez-vous
-        overlay.querySelector('.patient-name').textContent = appointmentData.patient;
-        overlay.querySelector('.service-name').textContent = appointmentData.service;
-        overlay.querySelector('.appointment-duration').textContent = appointmentData.duration || 30;
+        overlay.querySelector('.patient-name').textContent = appointmentData.patient || 'Non défini';
+        overlay.querySelector('.service-name').textContent = appointmentData.service || 'Non défini';
+        
+        // Gérer la durée
+        const durationElement = overlay.querySelector('.appointment-duration');
+        const duration = appointmentData.duration || 30;
+        
+        if (durationElement) {
+            durationElement.textContent = duration;
+        }
         
         // Générer et remplir les options de temps
         generateTimeOptions();

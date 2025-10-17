@@ -119,7 +119,8 @@
     white-space: nowrap;
 }
 
-.appointment-duration {
+.day-view .appointment-duration,
+.week-view .appointment-duration {
     display: none;
 }
 
