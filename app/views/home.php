@@ -1,5 +1,6 @@
 <?php
-include __DIR__ . '/templates/header.php'; ?>
+include __DIR__ . '/templates/header.php';
+include __DIR__ . '/templates/flash-messages.php'; ?>
 
 <main>
 

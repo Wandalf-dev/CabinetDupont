@@ -106,6 +106,11 @@ document.addEventListener('DOMContentLoaded', function() {
         elements.weekView.classList.toggle('active', view === 'week');
         elements.dayView.classList.toggle('active', view === 'day');
 
+        // Reset à la date actuelle si on passe en vue jour
+        if (view === 'day') {
+            currentDate = new Date();
+        }
+
         updateView();
         updateNavigation();
     }

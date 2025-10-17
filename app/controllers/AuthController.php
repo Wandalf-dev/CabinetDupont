@@ -50,7 +50,7 @@ class AuthController {
                 $_SESSION['user_nom'] = $user['nom'];
                 $_SESSION['user_prenom'] = $user['prenom'];
                 $_SESSION['success'] = "Connexion réussie !";
-                header('Location: index.php?page=user&action=profile');
+                header('Location: index.php?page=home');
                 exit();
             } else {
                 $_SESSION['error'] = "Email ou mot de passe incorrect";

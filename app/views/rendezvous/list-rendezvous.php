@@ -297,6 +297,13 @@
         padding: 0.5rem 0.3rem;
     }
 }
+
+/* Centrage des boutons dans la popup de confirmation */
+.modal-footer {
+    justify-content: center !important;
+    display: flex !important;
+    gap: 18px;
+}
 </style>
 
 <!-- Modal de confirmation -->

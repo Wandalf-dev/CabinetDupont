@@ -3,7 +3,7 @@
 include __DIR__ . '/../templates/header.php';
 include __DIR__ . '/../templates/flash-messages.php';
 ?>
-<link rel="stylesheet" href="css/detail-actu.css?v=<?php echo time(); ?>">
+<link rel="stylesheet" href="css/modules/actu/detail-actu.css?v=<?php echo time(); ?>">
 <main>
   <section class="actu-section">
     <div class="actu-detail-container">

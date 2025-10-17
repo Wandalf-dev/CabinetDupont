@@ -1,10 +1,16 @@
 <?php
 // Affiche les messages flash de succès ou d'erreur stockés en session
+$page = $_GET['page'] ?? '';
+$action = $_GET['action'] ?? '';
 if (isset($_SESSION['success']) || isset($_SESSION['error'])) {
     echo '<div id="flash-messages" class="flash-message">';
-    if (isset($_SESSION['success'])) {
+    if (isset($_SESSION['success']) && $page === 'home') {
         echo '<div class="flash-message success"><span class="message">' . $_SESSION['success'] . '</span></div>';
         unset($_SESSION['success']); // Supprime le message après affichage
+    } elseif (isset($_SESSION['success']) && ($page !== 'user' || $action !== 'profile')) {
+        // Affiche le message de succès sur toutes les pages sauf profil utilisateur
+        echo '<div class="flash-message success"><span class="message">' . $_SESSION['success'] . '</span></div>';
+        unset($_SESSION['success']);
     }
     if (isset($_SESSION['error'])) {
         echo '<div class="flash-message error"><span class="message">' . $_SESSION['error'] . '</span></div>';
