@@ -1,0 +1,96 @@
+/* Styles pour les états vides et messages */
+.no-results,
+.no-slots {
+    text-align: center;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin: 2rem auto;
+    max-width: 600px;
+    color: #4a5056;
+}
+
+.no-results h3,
+.empty-state h3 {
+    font-size: 1.5rem;
+    color: #2f3437;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.no-results p,
+.empty-state p {
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.generate-slots-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.8rem 1.75rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #2f3437;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.generate-slots-btn:hover {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+}
+
+.generate-slots-btn i {
+    display: none;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(to bottom, #f8f9fa, #fff);
+    border-radius: 12px;
+    border: 1px dashed #dee2e6;
+}
+
+.empty-state .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.8rem 1.75rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #2f3437;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.empty-state .btn-primary:hover {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+}
+
+.empty-state .btn-primary i {
+    display: none;
+}
+
+/* Animation subtile pour attirer l'attention */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.empty-state {
+    animation: fadeIn 0.3s ease-out;
+}

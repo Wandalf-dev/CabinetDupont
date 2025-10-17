@@ -1,0 +1,293 @@
+/* Vue en grille des créneaux */
+.creneaux-view[data-view="grid"] .creneaux-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    width: 100%;
+}
+
+/* Style des cartes en vue grille */
+.creneaux-view[data-view="grid"] .creneau-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+    height: 100%;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.creneaux-view[data-view="grid"] .creneau-card:hover {
+    border-color: #8f959c;
+}
+
+/* Indicateurs de statut */
+.creneaux-view[data-view="grid"] .creneau-card.available {
+    border-top: 4px solid #28a745;
+    background: linear-gradient(180deg, rgba(40, 167, 69, 0.05) 0%, rgba(255, 255, 255, 1) 15%);
+}
+
+.creneaux-view[data-view="grid"] .creneau-card.reserved {
+    border-top: 4px solid #ffc107;
+    background: linear-gradient(180deg, rgba(255, 193, 7, 0.05) 0%, rgba(255, 255, 255, 1) 15%);
+}
+
+.creneaux-view[data-view="grid"] .creneau-card.unavailable {
+    border-top: 4px solid #dc3545;
+    background: linear-gradient(180deg, rgba(220, 53, 69, 0.05) 0%, rgba(255, 255, 255, 1) 15%);
+}
+
+/* Structure des sections */
+.creneaux-view[data-view="grid"] .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem;
+    background-color: transparent;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.creneaux-view[data-view="grid"] .card-body {
+    padding: 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.creneaux-view[data-view="grid"] .card-footer {
+    padding: 1.25rem;
+    background-color: #f8f9fa;
+    border-top: 1px solid #f0f2f5;
+    transition: background-color 0.3s ease;
+}
+
+/* Composants spécifiques */
+.creneaux-view[data-view="grid"] .checkbox-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.creneaux-view[data-view="grid"] .checkbox-wrapper input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    cursor: pointer;
+    border-radius: 4px;
+    border: 2px solid #adb5bd;
+}
+
+.creneaux-view[data-view="grid"] .checkbox-wrapper input[type="checkbox"]:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.creneaux-view[data-view="grid"] .checkbox-wrapper input[type="checkbox"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.creneaux-view[data-view="grid"] .time-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #f0f2f5;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2f3437;
+    transition: all 0.2s ease;
+}
+
+.creneaux-view[data-view="grid"] .time-badge:hover {
+    background: #e9ecef;
+    transform: translateY(-1px);
+}
+
+.creneaux-view[data-view="grid"] .status-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.creneaux-view[data-view="grid"] .reservation-info {
+    font-size: 0.95rem;
+    color: #4a5056;
+    line-height: 1.5;
+}
+
+.creneaux-view[data-view="grid"] .reservation-info > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.creneaux-view[data-view="grid"] .action-buttons {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.creneaux-view[data-view="grid"] .action-buttons button {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.creneaux-view[data-view="grid"] .action-buttons button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.creneaux-view[data-view="grid"] .btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.creneaux-view[data-view="grid"] .btn-success:hover {
+    background-color: #157347;
+}
+
+.creneaux-view[data-view="grid"] .btn-warning {
+    background-color: #ffc107;
+    color: #2f3437;
+}
+
+.creneaux-view[data-view="grid"] .btn-warning:hover {
+    background-color: #ffca2c;
+}
+
+.creneaux-view[data-view="grid"] .btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.creneaux-view[data-view="grid"] .btn-danger:hover {
+    background-color: #bb2d3b;
+}
+
+.creneaux-view[data-view="grid"] .btn-cancel {
+    background-color: #dc3545;
+    color: white;
+    font-weight: 600;
+}
+
+.creneaux-view[data-view="grid"] .btn-cancel:hover {
+    background-color: #bb2d3b;
+}
+
+/* Vue liste */
+.creneaux-view[data-view="list"] .creneaux-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+/* Style des cartes en vue liste */
+.creneaux-view[data-view="list"] .creneau-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px;
+    margin: 0;
+    border-radius: 4px;
+    gap: 16px;
+}
+
+/* Colonnes en vue liste */
+.creneaux-view[data-view="list"] .card-header {
+    width: 180px;
+    min-width: 180px;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.creneaux-view[data-view="list"] .card-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.creneaux-view[data-view="list"] .card-footer {
+    width: 200px;
+    min-width: 200px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+/* Indicateurs de statut */
+.creneaux-view[data-view="list"] .creneau-card.available .card-header {
+    border-left-color: #28a745;
+}
+
+.creneaux-view[data-view="list"] .creneau-card.reserved .card-header {
+    border-left-color: #ffc107;
+}
+
+.creneaux-view[data-view="list"] .creneau-card.unavailable .card-header {
+    border-left-color: #dc3545;
+}
+
+/* Style spécifique pour la vue liste */
+.creneaux-view[data-view="list"] .time-badge {
+    display: inline-flex;
+    margin-left: 8px;
+    background: transparent;
+    border: none;
+    font-weight: 500;
+}
+
+.creneaux-view[data-view="list"] .status-info {
+    margin: 0;
+    display: inline-flex;
+    min-width: 120px;
+}
+
+.creneaux-view[data-view="list"] .reservation-info {
+    display: inline-flex;
+    gap: 20px;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.creneaux-view[data-view="list"] .reservation-info > div {
+    margin: 0;
+}
+
+.creneaux-view[data-view="list"] .action-buttons {
+    justify-content: flex-end;
+}
+
+/* Style des boutons dans la vue liste */
+.creneaux-view[data-view="list"] .action-buttons button {
+    padding: 6px 12px;
+}

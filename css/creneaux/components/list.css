@@ -1,0 +1,316 @@
+/* Vue en liste des créneaux */
+.creneaux-view[data-view="list"] .creneaux-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1.25rem 0;
+    background: #ffffff;
+}
+
+/* En-tête de la liste */
+.creneaux-view[data-view="list"] .list-header {
+    display: flex;
+    align-items: center;
+    background-color: #f0f2f5;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    color: #2f3437;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.creneaux-view[data-view="list"] .list-header-row {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 1rem;
+}
+
+.creneaux-view[data-view="list"] .list-header-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.creneaux-view[data-view="list"] .list-header-cell:first-child {
+    width: 180px;
+    min-width: 180px;
+}
+
+.creneaux-view[data-view="list"] .list-header-cell:last-child {
+    width: 200px;
+    min-width: 200px;
+    justify-content: flex-end;
+}
+
+.creneaux-view[data-view="list"] .list-header-cell:not(:first-child):not(:last-child) {
+    flex: 1;
+}
+
+.creneaux-view[data-view="list"] .list-header i {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Style des cartes en vue liste */
+.creneaux-view[data-view="list"] .creneau-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 1.25rem;
+    margin: 0;
+    border-radius: 8px;
+    gap: 1.25rem;
+    background: #fff;
+    border: 1px solid #e1e4e8;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.creneaux-view[data-view="list"] .creneau-card:hover {
+    background-color: #f8f9fa;
+    border-color: #d0d7de;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Structure des colonnes */
+.creneaux-view[data-view="list"] .card-header {
+    width: 180px;
+    min-width: 180px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0;
+    background: none;
+    border: none;
+}
+
+.creneaux-view[data-view="list"] .card-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0;
+    background: none;
+    border: none;
+}
+
+.creneaux-view[data-view="list"] .card-footer {
+    width: 200px;
+    min-width: 200px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0;
+    background: none;
+    border: none;
+}
+
+/* Indicateurs de statut */
+.creneaux-view[data-view="list"] .creneau-card.available {
+    border-left: 4px solid #28a745;
+    background: linear-gradient(to right, rgba(40, 167, 69, 0.05) 0%, rgba(255, 255, 255, 1) 50%);
+}
+
+.creneaux-view[data-view="list"] .creneau-card.reserved {
+    border-left: 4px solid #ffc107;
+    background: linear-gradient(to right, rgba(255, 193, 7, 0.05) 0%, rgba(255, 255, 255, 1) 50%);
+}
+
+.creneaux-view[data-view="list"] .creneau-card.unavailable {
+    border-left: 4px solid #dc3545;
+    background: linear-gradient(to right, rgba(220, 53, 69, 0.05) 0%, rgba(255, 255, 255, 1) 50%);
+}
+
+/* Composants spécifiques */
+.creneaux-view[data-view="list"] .checkbox-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.creneaux-view[data-view="list"] .checkbox-wrapper input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    cursor: pointer;
+    border-radius: 4px;
+    border: 2px solid #adb5bd;
+}
+
+.creneaux-view[data-view="list"] .checkbox-wrapper input[type="checkbox"]:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.creneaux-view[data-view="list"] .checkbox-wrapper input[type="checkbox"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.creneaux-view[data-view="list"] .time-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    color: #2f3437;
+    font-size: 1rem;
+    padding: 0.35rem 0.75rem;
+    background-color: #f0f2f5;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.creneaux-view[data-view="list"] .time-badge:hover {
+    background-color: #e9ecef;
+}
+
+.creneaux-view[data-view="list"] .time-badge i {
+    color: #4a5056;
+    font-size: 0.9rem;
+}
+
+/* Statuts et informations */
+.creneaux-view[data-view="list"] .status-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    min-width: 130px;
+    font-weight: 500;
+}
+
+.creneaux-view[data-view="list"] .creneau-card.available .status-info {
+    color: #28a745;
+}
+
+.creneaux-view[data-view="list"] .creneau-card.reserved .status-info {
+    color: #ffc107;
+}
+
+.creneaux-view[data-view="list"] .creneau-card.unavailable .status-info {
+    color: #dc3545;
+}
+
+.creneaux-view[data-view="list"] .status-info i {
+    font-size: 0.9rem;
+}
+
+.creneaux-view[data-view="list"] .reservation-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    color: #495057;
+    font-size: 0.95rem;
+}
+
+.creneaux-view[data-view="list"] .reservation-info > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.creneaux-view[data-view="list"] .reservation-info i {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Boutons d'action */
+.creneaux-view[data-view="list"] .action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Place le bouton Annuler tout à droite, les autres juste avant */
+.creneaux-view[data-view="list"] .action-buttons .btn-cancel {
+    margin-left: auto;
+}
+
+.creneaux-view[data-view="list"] .action-buttons button {
+    min-width: 120px;
+    height: 40px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.creneaux-view[data-view="list"] .action-buttons .btn-warning,
+.creneaux-view[data-view="list"] .action-buttons .btn-danger,
+.creneaux-view[data-view="list"] .action-buttons .btn-success {
+    width: 52px !important;
+    min-width: 52px !important;
+    max-width: 120px !important;
+    padding: 0 !important;
+}
+
+.creneaux-view[data-view="list"] .action-buttons .btn-cancel {
+    width: 220px !important;
+    min-width: 220px !important;
+    max-width: 220px !important;
+    height: 40px;
+    padding: 0 !important;
+    font-size: 1.1rem;
+    box-sizing: border-box;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.creneaux-view[data-view="list"] .btn-warning {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.creneaux-view[data-view="list"] .btn-warning:hover {
+    background-color: #ffb300;
+}
+
+.creneaux-view[data-view="list"] .btn-success {
+    background-color: #198754;
+    color: #fff;
+}
+
+.creneaux-view[data-view="list"] .btn-success:hover {
+    background-color: #157347;
+}
+
+.creneaux-view[data-view="list"] .btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.creneaux-view[data-view="list"] .btn-danger:hover {
+    background-color: #bb2d3b;
+}
+
+/* État survolé des boutons */
+.creneaux-view[data-view="list"] .action-buttons button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* État désactivé des boutons */
+.creneaux-view[data-view="list"] .action-buttons button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}

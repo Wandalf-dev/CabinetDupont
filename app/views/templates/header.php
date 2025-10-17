@@ -28,7 +28,6 @@ if (session_status() === PHP_SESSION_NONE) {
         '/css/pages/login.css',
         '/css/pages/register.css',
         '/css/modules/actu/actu.css',
-        '/css/pages/admin.css',
         '/css/modules/actu/actu-create.css',
         '/css/modules/actu/actu-posts.css',
         '/css/components/table-sort.css',
@@ -37,7 +36,6 @@ if (session_status() === PHP_SESSION_NONE) {
         '/css/components/alerts.css',
         '/css/modules/horaires/horaires-admin.css',
         '/css/pages/about.css',
-        '/css/modules/creneaux/creneaux.css',
         '/css/modules/agenda/agenda.css',
         '/css/components/table-actions.css',
         '/css/modules/rendez-vous/confirmation-rdv.css'

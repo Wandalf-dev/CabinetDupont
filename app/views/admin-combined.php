@@ -307,154 +307,25 @@ include __DIR__ . '/templates/flash-messages.php';
         </div>
 
 <!-- Onglet "Créneaux" : gestion des créneaux de consultation -->
-        <div class="tab-content" id="tab-creneaux" style="background: transparent !important;">
-            <div class="mb-4" style="display: flex; justify-content: flex-end;">
-                <a href="index.php?page=creneaux&action=generer" class="btn-admin add" style="width: auto;">
-                    <i class="fas fa-calendar-plus"></i>&nbsp;Générer des créneaux
-                </a>
-            </div>
-
-            <!-- Section pour afficher les créneaux existants -->
-            <div class="creneaux-accordion" style="background: transparent !important;">
-                    <?php 
-                    if (!empty($creneaux)) {
-                        // Organiser les créneaux par jour et période
-                        $creneauxParJour = [];
-                        foreach ($creneaux as $creneau) {
-                            $date = date('Y-m-d', strtotime($creneau['debut']));
-                            $heure = (int)date('H', strtotime($creneau['debut']));
-                            $periode = ($heure < 12) ? 'matin' : 'apres-midi';
-                            
-                            if (!isset($creneauxParJour[$date])) {
-                                $creneauxParJour[$date] = [
-                                    'matin' => [],
-                                    'apres-midi' => []
-                                ];
-                            }
-                            $creneauxParJour[$date][$periode][] = $creneau;
-                        }
-                        
-                        // Trier les dates
-                        ksort($creneauxParJour);
-                        
-                        foreach ($creneauxParJour as $date => $periodes): 
-                            $dateFormattee = date('d/m/Y', strtotime($date));
-                            $accordionId = "accordion-" . str_replace('/', '-', $dateFormattee);
-                    ?>
-                            <div class="accordion-date">
-                                <div class="accordion-header" id="header-<?= $accordionId ?>">
-                                    <button class="accordion-button collapsed" type="button" aria-expanded="false">
-                                        <?= $dateFormattee ?>
-                                        <span class="badge bg-primary ms-2">
-                                            <?= count($periodes['matin']) + count($periodes['apres-midi']) ?> créneaux
-                                        </span>
-                                    </button>
-                                </div>
-                                
-                                <div id="collapse-<?= $accordionId ?>" class="accordion-collapse collapse" aria-labelledby="header-<?= $accordionId ?>">
-                                        <?php foreach (['matin' => 'Matin', 'apres-midi' => 'Après-midi'] as $periode => $labelPeriode): ?>
-                                            <?php if (!empty($periodes[$periode])): ?>
-                                                <div class="periode-section <?= $periode ?>">
-                                                    <div class="periode-header">
-                                                        <button class="periode-button collapsed" type="button">
-                                                            <span class="periode-title"><?= $labelPeriode ?></span>
-                                                            <span class="badge bg-secondary ms-2">
-                                                                <?= count($periodes[$periode]) ?> créneaux
-                                                            </span>
-                                                        </button>
-                                                    </div>
-                                                    <div id="collapse-<?= $accordionId ?>-<?= $periode ?>" 
-                                                         class="periode-collapse collapse" 
-                                                         aria-labelledby="header-<?= $accordionId ?>-<?= $periode ?>">
-                                                        <div class="creneaux-list">
-                                                            <div class="creneaux-actions">
-                                                                <label class="select-all">
-                                                                    <input type="checkbox" class="select-all-checkbox">
-                                                                    <span>Tout sélectionner</span>
-                                                                </label>
-                                                                <div class="actions-group">
-                                                                    <button type="button" class="btn-admin warning mark-unavailable-selected" disabled>
-                                                                        <i class="fas fa-ban"></i>&nbsp;Marquer indisponible
-                                                                    </button>
-                                                                    <button type="button" class="btn-admin delete delete-selected" disabled>
-                                                                        <i class="fas fa-trash"></i>&nbsp;Supprimer la sélection
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <?php foreach ($periodes[$periode] as $creneau): ?>
-                                                                <div class="creneau-item">
-                                                                    <?php if (!$creneau['est_reserve']): ?>
-                                                                        <div class="creneau-checkbox">
-                                                                            <input type="checkbox" class="creneau-select" data-id="<?= $creneau['id'] ?>">
-                                                                        </div>
-                                                                    <?php endif; ?>
-                                                                    <div class="creneau-info">
-                                                                        <div class="creneau-horaire">
-                                                                            <i class="far fa-clock"></i>
-                                                                            <?= date('H:i', strtotime($creneau['debut'])) ?> - <?= date('H:i', strtotime($creneau['fin'])) ?>
-                                                                        </div>
-                                                                        <div class="creneau-service">
-                                                                            <i class="far fa-calendar-check"></i>
-                                                                            <?= htmlspecialchars($creneau['service_titre'] ?? 'Non spécifié') ?>
-                                                                        </div>
-                                                                        <div class="creneau-statut <?= $creneau['est_reserve'] ? 'reserve' : ($creneau['statut'] === 'indisponible' ? 'indisponible' : 'disponible') ?>">
-                                                                            <i class="fas <?= $creneau['est_reserve'] ? 'fa-lock' : ($creneau['statut'] === 'indisponible' ? 'fa-ban' : 'fa-lock-open') ?>"></i>
-                                                                            <?= $creneau['est_reserve'] ? 'Réservé' : ($creneau['statut'] === 'indisponible' ? 'Indisponible' : 'Disponible') ?>
-                                                                        </div>
-                                                                    </div>
-                                                                    <?php if (!$creneau['est_reserve']): ?>
-                                                                        <div class="creneau-actions">
-                                                                            <button type="button" 
-                                                                                    class="btn-admin <?php echo $creneau['statut'] === 'indisponible' ? 'success' : 'warning'; ?> btn-toggle-dispo" 
-                                                                                    data-creneau-id="<?php echo $creneau['id']; ?>">
-                                                                                <i class="fas <?php echo $creneau['statut'] === 'indisponible' ? 'fa-check' : 'fa-ban'; ?>"></i>
-                                                                                <?php echo $creneau['statut'] === 'indisponible' ? 'Rendre disponible' : 'Marquer indisponible'; ?>
-                                                                            </button>
-                                                                            <button type="button" class="btn-admin delete btn-delete-creneau" data-id="<?= $creneau['id'] ?>">
-                                                                                <i class="fas fa-trash"></i>&nbsp;Supprimer
-                                                                            </button>
-                                                                        </div>
-                                                                    <?php endif; ?>
-                                                                </div>
-                                                            <?php endforeach; ?>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                </div>
-                            </div>
-                    <?php 
-                        endforeach;
-                    } else { 
-                    ?>
-                        <p>Aucun créneau n'est disponible pour le moment.</p>
-                    <?php } ?>
-                </div>
+        <div class="tab-content" id="tab-creneaux">
+            <?php require_once __DIR__ . '/admin/sections/creneaux-section.php'; ?>
         </div>
 
 <!-- Styles spécifiques pour l'interface admin -->
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/admin.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/confirmation-popup.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/agenda/notifications.css">
-<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneaux-alerts.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/utils/drag-drop.css">
-<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneaux-accordion.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/patient.css">
-<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/status-buttons.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/button-group.css">
-<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneau-indisponible.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/creneaux/creneaux.css">
 
 <!-- Scripts spécifiques pour l'interface admin -->
 <script src="<?php echo BASE_URL; ?>/js/components/confirmation-popup.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/components/tabs.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/modules/service/service-order.js"></script>
-<script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux-accordion.js"></script>
-<script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux-selection.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/pages/admin-tables.js"></script>
-<script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux-alerts.js"></script>
-<script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux-delete.js"></script>
-<script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux-indisponibilite.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux.js"></script>
 
     </div> <!-- Fermeture de tabs-container -->
 </main>

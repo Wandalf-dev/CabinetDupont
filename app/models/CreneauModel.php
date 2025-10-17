@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use App\Core\Model;
+;
 use PDO;
 
 class CreneauModel extends Model
@@ -10,37 +11,38 @@ class CreneauModel extends Model
     {
         try {
             $this->db->beginTransaction();
-            
+
             $sql = "UPDATE creneau 
                     SET est_reserve = 0, 
                         service_id = NULL, 
                         reservation_id = NULL 
                     WHERE statut = 'disponible' 
-                    AND (est_reserve = 1 OR service_id IS NOT NULL OR reservation_id IS NOT NULL)";
-            
-            $stmt = $this->db->prepare($sql);
+                      AND (est_reserve = 1 OR service_id IS NOT NULL OR reservation_id IS NOT NULL)";
+
+            $stmt   = $this->db->prepare($sql);
             $result = $stmt->execute();
-            
-            if($result) {
+
+            if ($result) {
                 $this->db->commit();
                 $this->logDebug("Nettoyage des créneaux incohérents effectué");
                 return true;
             }
-            
+
             $this->db->rollBack();
             return false;
-            
+
         } catch (\Exception $e) {
-            $this->db->rollBack();
+            if ($this->db->inTransaction()) $this->db->rollBack();
             $this->logDebug("Erreur lors du nettoyage des créneaux", $e->getMessage());
             return false;
         }
     }
-    // Normalisation des statuts (évite les fautes d'orthographe/casse)
-    private const STATUT_ANNULE = 'ANNULE';
-    private const STATUT_DEMANDE = 'DEMANDE';
-    private const STATUT_DISPONIBLE = 'disponible';
-    private const STATUT_INDISPONIBLE = 'indisponible';
+
+    // Normalisation des statuts
+    private const STATUT_ANNULE      = 'ANNULE';
+    private const STATUT_DEMANDE     = 'DEMANDE';
+    private const STATUT_DISPONIBLE  = 'disponible';
+    private const STATUT_INDISPONIBLE= 'indisponible';
 
     public function __construct()
     {
@@ -60,20 +62,35 @@ class CreneauModel extends Model
 
     /**
      * Marque un créneau comme indisponible ou disponible
+     * @return bool true si devient INDISPONIBLE, false si devient DISPONIBLE
      */
     public function toggleIndisponible(int $id): bool
     {
+        $this->db->beginTransaction();
         try {
-            $sql = "SELECT est_reserve, statut FROM creneau WHERE id = ?";
+            $sql = "SELECT c.*, 
+                           EXISTS(SELECT 1 FROM rendezvous r 
+                                  WHERE r.creneau_id = c.id 
+                                    AND r.statut != :annule) as has_active_rdv
+                    FROM creneau c 
+                    WHERE c.id = :id";
+
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([$id]);
+            $stmt->execute([
+                ':annule' => self::STATUT_ANNULE,
+                ':id'     => $id
+            ]);
             $creneau = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$creneau) {
+                $this->db->rollBack();
+                error_log("Créneau $id non trouvé");
                 return false;
             }
-            if (!empty($creneau['est_reserve'])) {
-                // Si réservé, on ne permet pas de basculer le statut
+
+            if ($creneau['has_active_rdv']) {
+                $this->db->rollBack();
+                error_log("Créneau $id a un rendez-vous actif");
                 return false;
             }
 
@@ -81,17 +98,32 @@ class CreneauModel extends Model
                 ? self::STATUT_DISPONIBLE
                 : self::STATUT_INDISPONIBLE;
 
-            $sql = "UPDATE creneau SET statut = ? WHERE id = ?";
-            $stmt = $this->db->prepare($sql);
-            $success = $stmt->execute([$nouveauStatut, $id]);
 
-            // Retourner la nouvelle valeur du statut uniquement si la mise à jour a réussi
+            $sql = "UPDATE creneau 
+                    SET statut = :statut,
+                        est_reserve = 0,
+                        service_id = CASE WHEN :to_indispo = 1 THEN NULL ELSE service_id END
+                    WHERE id = :id";
+
+            $toIndispo = ($nouveauStatut === self::STATUT_INDISPONIBLE) ? 1 : 0;
+
+            $stmt = $this->db->prepare($sql);
+            $success = $stmt->execute([
+                ':statut'      => $nouveauStatut,
+                ':to_indispo'  => $toIndispo,
+                ':id'          => $id
+            ]);
+
             if ($success) {
+                $this->db->commit();
                 error_log("Statut du créneau $id changé de {$creneau['statut']} à $nouveauStatut");
                 return $nouveauStatut === self::STATUT_INDISPONIBLE;
             }
+
+            $this->db->rollBack();
             return false;
         } catch (\Exception $e) {
+            if ($this->db->inTransaction()) $this->db->rollBack();
             error_log("Erreur toggleIndisponible: " . $e->getMessage());
             return false;
         }
@@ -106,19 +138,12 @@ class CreneauModel extends Model
         return (int)$stmt->fetchColumn() > 0;
     }
 
-    /**
-     * Récupère tous les créneaux pour l'administration (futurs)
-     */
+    /** Récupère tous les créneaux (futurs) */
     public function getAllCreneaux(): array
     {
         try {
             $this->logDebug("=== Début getAllCreneaux ===");
 
-            if (!$this->db) {
-                throw new \Exception("Pas de connexion DB");
-            }
-
-            // Vérification tables (rapide)
             foreach (['creneau', 'service', 'rendezvous'] as $table) {
                 $stmt = $this->db->prepare("SELECT 1 FROM {$table} LIMIT 1");
                 $stmt->execute();
@@ -142,13 +167,11 @@ class CreneauModel extends Model
             return $creneaux ?: [];
         } catch (\Exception $e) {
             error_log("ERREUR getAllCreneaux: " . $e->getMessage());
-            throw $e; // Laisse le contrôleur décider
+            throw $e;
         }
     }
 
-    /**
-     * Récupère les créneaux existants pour une période donnée
-     */
+    /** Créneaux existants sur une période */
     public function getCreneauxPourPeriode(string $dateDebut, string $dateFin, int $agendaId): array
     {
         $sql = "SELECT * FROM creneau WHERE agenda_id = ? AND DATE(debut) BETWEEN ? AND ?";
@@ -157,39 +180,44 @@ class CreneauModel extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
-    /**
-     * Récupère tous les créneaux pour une date donnée
-     */
+    /** Créneaux pour une date */
     public function getCreneauxPourDate(int $agendaId, string $date): array
     {
         $sql = "SELECT c.*,
                        s.titre AS service_titre,
-                       CASE WHEN EXISTS (
-                           SELECT 1 
-                           FROM rendezvous r2
-                           JOIN creneau c2 ON r2.creneau_id = c2.id
-                           WHERE DATE(c2.debut) = DATE(c.debut)
-                             AND c2.debut < c.fin
-                             AND c2.fin > c.debut
-                             AND r2.statut != :annule
-                       ) THEN 1 ELSE 0 END AS est_reserve,
-                       c.statut
+                       CASE 
+                           WHEN c.statut = 'indisponible' THEN true
+                           WHEN EXISTS (
+                               SELECT 1 
+                               FROM rendezvous r2
+                               JOIN creneau c2 ON r2.creneau_id = c2.id
+                               WHERE DATE(c2.debut) = DATE(c.debut)
+                                 AND c2.debut < c.fin
+                                 AND c2.fin > c.debut
+                                 AND r2.statut != :annule
+                           ) THEN true 
+                           ELSE false 
+                       END AS est_reserve,
+                       c.statut,
+                       GROUP_CONCAT(DISTINCT r.id) AS reservations
                 FROM creneau c
                 LEFT JOIN service s ON c.service_id = s.id
+                LEFT JOIN rendezvous r ON c.id = r.creneau_id AND r.statut != :annule2
                 WHERE c.agenda_id = :agendaId
                   AND DATE(c.debut) = :date
+                GROUP BY c.id
                 ORDER BY c.debut ASC";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             ':annule'    => self::STATUT_ANNULE,
+            ':annule2'   => self::STATUT_ANNULE,
             ':agendaId'  => $agendaId,
             ':date'      => $date,
         ]);
 
         $creneaux = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
-        // Debug local optionnel (vérifier droits d'écriture si activé)
         $logFile = __DIR__ . '/../../debug_creneaux.log';
         @file_put_contents($logFile, "=== Créneaux pour le {$date} ===\n", FILE_APPEND);
         foreach ($creneaux as $cr) {
@@ -217,17 +245,12 @@ class CreneauModel extends Model
         $stmt->execute([':annule' => self::STATUT_ANNULE, ':id' => $id]);
         $cr = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($cr) {
-            // Un créneau est considéré comme réservé si :
-            // 1. Il a un rendez-vous non annulé (reservation_id non null)
-            // 2. OU si est_reserve = 1 dans la table creneau
             $cr['est_reserve'] = !is_null($cr['reservation_id']) || $cr['est_reserve'] == 1;
         }
         return $cr ?: false;
     }
 
-    /**
-     * Dates (prochaines 2 semaines) avec au moins un créneau disponible
-     */
+    /** Dates disponibles (14 jours) */
     public function getDatesDisponibles(): array
     {
         $this->logDebug("=== Début getDatesDisponibles ===");
@@ -249,7 +272,7 @@ class CreneauModel extends Model
         return $dates;
     }
 
-    /** Supprime un créneau (s'il n'est référencé par aucun RDV) */
+    /** Supprime un créneau (si non référencé) */
     public function deleteCreneau(int $id): bool
     {
         $sql = "DELETE FROM creneau WHERE id = ? AND id NOT IN (SELECT creneau_id FROM rendezvous)";
@@ -258,20 +281,16 @@ class CreneauModel extends Model
         return $stmt->rowCount() > 0;
     }
 
-    /**
-     * Créneaux disponibles pour une date et un service (respecte la durée)
-     */
+    /** Slots disponibles pour un service (respecte durée) */
     public function getAvailableSlots(string $date, int $serviceId): array
     {
         $this->logDebug("=== Début getAvailableSlots ===", compact('date', 'serviceId'));
 
-        // Durée du service
         $stmt = $this->db->prepare("SELECT duree FROM service WHERE id = :sid");
         $stmt->execute([':sid' => $serviceId]);
         $service = $stmt->fetch(PDO::FETCH_ASSOC);
         $duree = (int)($service['duree'] ?? 30);
 
-        // Log RDV (diagnostic)
         $stmtVerif = $this->db->prepare(
             "SELECT r.id, r.statut, r.creneau_id, c.debut
              FROM rendezvous r
@@ -282,28 +301,26 @@ class CreneauModel extends Model
         $stmtVerif->execute([':date' => $date]);
         $this->logDebug('RDV du jour', $stmtVerif->fetchAll(PDO::FETCH_ASSOC));
 
-        // Créneaux de départ potentiels : pas de RDV actif sur eux ni chevauchement
-                $sql = "SELECT DISTINCT c.id, c.debut, c.fin, c.statut, c.service_id
-                                FROM creneau c
-                                WHERE DATE(c.debut) = :d
-                                    AND c.est_reserve = 0
-                                    AND NOT EXISTS (
-                                            SELECT 1 FROM rendezvous r
-                                            WHERE r.creneau_id = c.id AND r.statut != :annule
-                                    )
-                                    AND NOT EXISTS (
-                                            SELECT 1
-                                            FROM rendezvous r2
-                                            JOIN creneau c2 ON r2.creneau_id = c2.id
-                                            WHERE r2.statut != :annule2
-                                                AND DATE(c2.debut) = DATE(c.debut)
-                                                AND (
-                                                        (c2.debut >= c.debut AND c2.debut < DATE_ADD(c.debut, INTERVAL :d1 MINUTE))
-                                                        OR
-                                                        (c2.debut < c.debut AND DATE_ADD(c2.debut, INTERVAL :d2 MINUTE) > c.debut)
-                                                )
-                                    )
-                                ORDER BY c.debut ASC";
+        $sql = "SELECT DISTINCT c.id, c.debut, c.fin, c.statut, c.service_id
+                FROM creneau c
+                WHERE DATE(c.debut) = :d
+                  AND c.est_reserve = 0
+                  AND NOT EXISTS (
+                      SELECT 1 FROM rendezvous r
+                      WHERE r.creneau_id = c.id AND r.statut != :annule
+                  )
+                  AND NOT EXISTS (
+                      SELECT 1
+                      FROM rendezvous r2
+                      JOIN creneau c2 ON r2.creneau_id = c2.id
+                      WHERE r2.statut != :annule2
+                        AND DATE(c2.debut) = DATE(c.debut)
+                        AND (
+                             (c2.debut >= c.debut AND c2.debut < DATE_ADD(c.debut, INTERVAL :d1 MINUTE))
+                          OR (c2.debut < c.debut AND DATE_ADD(c2.debut, INTERVAL :d2 MINUTE) > c.debut)
+                        )
+                  )
+                ORDER BY c.debut ASC";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
@@ -317,11 +334,10 @@ class CreneauModel extends Model
 
         $this->logDebug('Créneaux candidats (départ)', count($departSlots));
 
-        // Filtrer pour s'assurer qu'on dispose de toute la plage nécessaire (par pas de 30 min)
-        $result = [];
+        $result    = [];
         $needCount = max(1, (int)ceil($duree / 30));
+
         foreach ($departSlots as $slot) {
-            // Récupère tous les créneaux consécutifs dans la fenêtre [debut, debut + duree)
             $sqlRange = "SELECT c2.id, c2.debut
                          FROM creneau c2
                          WHERE c2.agenda_id = (SELECT agenda_id FROM creneau WHERE id = :id0)
@@ -357,9 +373,7 @@ class CreneauModel extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
-    /**
-     * Créneaux indisponibles (ou occupés) sur une période
-     */
+    /** Indisponibles/occupés sur période */
     public function getCreneauxIndisponiblesByPeriod(string $dateDebut, string $dateFin, int $agendaId): array
     {
         $this->logDebug('=== getCreneauxIndisponiblesByPeriod ===', compact('dateDebut', 'dateFin', 'agendaId'));
@@ -381,16 +395,13 @@ class CreneauModel extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
-    /**
-     * Annule un rendez-vous (ne supprime pas), puis libère les créneaux si possible
-     */
+    /** Annule un rendez-vous et libère créneaux si possible */
     public function cancelRendezVous(int $rdvId, int $userId): bool
     {
         $this->logDebug("=== Début cancelRendezVous ===", compact('rdvId', 'userId'));
         try {
             $this->db->beginTransaction();
 
-            // RDV + infos creneau/service
             $sqlInfo = "SELECT r.*, c.id AS creneau_id, c.debut AS creneau_debut, c.agenda_id,
                                s.duree AS service_duree
                         FROM rendezvous r
@@ -406,7 +417,6 @@ class CreneauModel extends Model
                 return false;
             }
 
-            // 1) D'abord marquer le RDV comme annulé
             $sql = "UPDATE rendezvous SET statut = :annule WHERE id = :id";
             $stmt = $this->db->prepare($sql);
             if (!$stmt->execute([':annule' => self::STATUT_ANNULE, ':id' => $rdvId])) {
@@ -418,12 +428,6 @@ class CreneauModel extends Model
             $duree = (int)($rdv['service_duree'] ?? 30);
             $debut = $rdv['creneau_debut'];
 
-            // 1) Marquer ANNULE (ne pas DELETE)
-            $sql = "UPDATE rendezvous SET statut = :annule WHERE id = :id";
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute([':annule' => self::STATUT_ANNULE, ':id' => $rdvId]);
-
-            // 2) Libérer les créneaux couverts si plus aucun RDV actif ne les occupe
             $sqlCreneaux = "SELECT id FROM creneau
                             WHERE agenda_id = :agenda
                               AND DATE(debut) = DATE(:debut)
@@ -440,15 +444,12 @@ class CreneauModel extends Model
             $creneaux = $stmtC->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
             foreach ($creneaux as $cr) {
-                // Vérifier tous les RDV liés à ce créneau
                 $stmtAll = $this->db->prepare("SELECT id, statut FROM rendezvous WHERE creneau_id = ?");
                 $stmtAll->execute([$cr['id']]);
                 $rdvs = $stmtAll->fetchAll(PDO::FETCH_ASSOC);
                 $nbActifs = 0;
                 foreach ($rdvs as $rdvTest) {
-                    if ($rdvTest['statut'] !== self::STATUT_ANNULE) {
-                        $nbActifs++;
-                    }
+                    if ($rdvTest['statut'] !== self::STATUT_ANNULE) $nbActifs++;
                 }
                 $this->logDebug('[DEBUG CANCEL] Créneau ' . $cr['id'] . ' - RDV liés :', $rdvs);
                 if ($nbActifs === 0) {
@@ -465,36 +466,25 @@ class CreneauModel extends Model
             $this->db->commit();
             return true;
         } catch (\Exception $e) {
-            if ($this->db->inTransaction()) {
-                $this->db->rollBack();
-            }
+            if ($this->db->inTransaction()) $this->db->rollBack();
             error_log("Erreur cancelRendezVous: " . $e->getMessage());
             return false;
         }
     }
 
-    /**
-     * Crée un nouveau rendez-vous (réserve les créneaux nécessaires)
-     */
+    /** Crée un RDV (réserve les créneaux nécessaires) */
     public function createRendezVous(int $creneauId, int $serviceId, int $patientId): bool
     {
         $this->logDebug("=== Début createRendezVous ===", compact('creneauId', 'serviceId', 'patientId'));
         try {
             $this->db->beginTransaction();
-            // Log tous les rendez-vous liés à ce créneau avant toute vérification bloquante
-            $stmtLog = $this->db->prepare("SELECT id, statut FROM rendezvous WHERE creneau_id = ?");
-            $stmtLog->execute([$creneauId]);
-            $rdvsLog = $stmtLog->fetchAll(PDO::FETCH_ASSOC);
-            error_log('[DEBUG RDV] Liste des rendez-vous liés au créneau ' . $creneauId . ' : ' . print_r($rdvsLog, true));
 
-            // Patient existe & est bien PATIENT
             $stmt = $this->db->prepare("SELECT id FROM utilisateur WHERE id = ? AND role = 'PATIENT'");
             $stmt->execute([$patientId]);
             if (!$stmt->fetch(PDO::FETCH_ASSOC)) {
                 throw new \Exception('Patient introuvable');
             }
 
-            // Service existe + durée
             $stmt = $this->db->prepare("SELECT id, duree FROM service WHERE id = ?");
             $stmt->execute([$serviceId]);
             $service = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -503,14 +493,7 @@ class CreneauModel extends Model
             }
             $duree = (int)$service['duree'];
 
-            // Médecin (prend le premier, à adapter si besoin)
             $stmt = $this->db->prepare("SELECT id FROM utilisateur WHERE role = 'MEDECIN' LIMIT 1");
-            $stmt->execute();
-            $medecin = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!$medecin) {
-                throw new \Exception('Aucun médecin trouvé dans le système');
-            }
-            $medecinId = $medecin['id'];
             $stmt->execute();
             $medecin = $stmt->fetch(PDO::FETCH_ASSOC);
             if (!$medecin) {
@@ -518,7 +501,6 @@ class CreneauModel extends Model
             }
             $medecinId = (int)$medecin['id'];
 
-            // Détails du créneau de départ
             $stmt = $this->db->prepare("SELECT id, debut, agenda_id, est_reserve, statut FROM creneau WHERE id = ?");
             $stmt->execute([$creneauId]);
             $start = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -526,7 +508,6 @@ class CreneauModel extends Model
                 throw new \Exception("Créneau de départ introuvable");
             }
 
-            // Vérifier chevauchements (RDV actifs sur la fenêtre)
             $sqlChev = "SELECT COUNT(*)
                         FROM rendezvous r
                         JOIN creneau c ON r.creneau_id = c.id
@@ -534,8 +515,8 @@ class CreneauModel extends Model
                           AND c.agenda_id = :agenda
                           AND DATE(c.debut) = DATE(:debut)
                           AND (
-                               (c.debut >= :debut AND c.debut < DATE_ADD(:debut2, INTERVAL :duree MINUTE))
-                            OR (c.debut < :debut3 AND DATE_ADD(c.debut, INTERVAL :duree2 MINUTE) > :debut4)
+                              (c.debut >= :debut AND c.debut < DATE_ADD(:debut2, INTERVAL :duree MINUTE))
+                           OR (c.debut < :debut3 AND DATE_ADD(c.debut, INTERVAL :duree2 MINUTE) > :debut4)
                           )";
             $stmtChev = $this->db->prepare($sqlChev);
             $stmtChev->execute([
@@ -554,7 +535,6 @@ class CreneauModel extends Model
                 throw new \Exception("Chevauchement détecté : créneau indisponible");
             }
 
-            // Récupérer les créneaux nécessaires (par pas de 30 min) dans la fenêtre
             $sqlRange = "SELECT id
                          FROM creneau
                          WHERE agenda_id = :agenda
@@ -573,52 +553,38 @@ class CreneauModel extends Model
 
             $needCount = max(1, (int)ceil($duree / 30));
             if (count($range) < $needCount) {
-                error_log("[REFUS RDV] Pas assez de créneaux consécutifs : creneauId=$creneauId, besoin=$needCount, dispo=" . count($range));
+                error_log("[REFUS RDV] Pas assez de créneaux consécutifs : besoin=$needCount, dispo=" . count($range));
                 throw new \Exception("Pas assez de créneaux consécutifs disponibles");
             }
 
-            // Vérifier s'il existe déjà un RDV annulé pour ce créneau
-            $stmtCheck = $this->db->prepare(
-                "SELECT id FROM rendezvous WHERE creneau_id = ? AND statut = 'ANNULE'"
-            );
+            $stmtCheck = $this->db->prepare("SELECT id FROM rendezvous WHERE creneau_id = ? AND statut = 'ANNULE'");
             $stmtCheck->execute([$creneauId]);
             $existingRdv = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
             if ($existingRdv) {
-                // Mettre à jour le RDV existant
-                $stmtUpd = $this->db->prepare(
-                    "UPDATE rendezvous SET patient_id = ?, medecin_id = ?, statut = ? WHERE id = ?"
-                );
+                $stmtUpd = $this->db->prepare("UPDATE rendezvous SET patient_id = ?, medecin_id = ?, statut = ? WHERE id = ?");
                 $stmtUpd->execute([$patientId, $medecinId, self::STATUT_DEMANDE, $existingRdv['id']]);
             } else {
-                // Créer un nouveau RDV
-                $stmtIns = $this->db->prepare(
-                    "INSERT INTO rendezvous (creneau_id, patient_id, medecin_id, statut) VALUES (?, ?, ?, ?)"
-                );
+                $stmtIns = $this->db->prepare("INSERT INTO rendezvous (creneau_id, patient_id, medecin_id, statut) VALUES (?, ?, ?, ?)");
                 $stmtIns->execute([$creneauId, $patientId, $medecinId, self::STATUT_DEMANDE]);
             }
 
-            // Marquer tous les créneaux de la plage comme réservés pour ce service
             $inIds = implode(',', array_fill(0, count($range), '?'));
             $sqlUpd = "UPDATE creneau SET service_id = ?, est_reserve = 1 WHERE id IN ({$inIds})";
             $stmtUpd = $this->db->prepare($sqlUpd);
-            $params = array_merge([$serviceId], $range);
+            $params  = array_merge([$serviceId], $range);
             $stmtUpd->execute($params);
 
             $this->db->commit();
             return true;
         } catch (\Exception $e) {
-            if ($this->db->inTransaction()) {
-                $this->db->rollBack();
-            }
+            if ($this->db->inTransaction()) $this->db->rollBack();
             error_log('Erreur createRendezVous: ' . $e->getMessage());
             return false;
         }
     }
 
-    /**
-     * Génère les créneaux sur une période selon les horaires du cabinet
-     */
+    /** Génère des créneaux sur une période d’après les horaires */
     public function genererCreneaux(int $agendaId, string $dateDebut, string $dateFin): bool
     {
         try {
@@ -630,7 +596,6 @@ class CreneauModel extends Model
                 return false;
             }
 
-            // Horaires du cabinet (à adapter si multi-cabinets)
             $stmt = $this->db->prepare("SELECT * FROM horaire_cabinet WHERE cabinet_id = 1");
             $stmt->execute();
             $horaires = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
@@ -649,24 +614,13 @@ class CreneauModel extends Model
 
             while ($dStart <= $dEnd) {
                 $jour = str_replace($joursEN, $joursFR, strtolower($dStart->format('l')));
-                // Trouver l'entrée du jour
                 foreach ($horaires as $h) {
                     if ($h['jour'] === $jour) {
                         if ($h['ouverture_matin'] !== '00:00:00') {
-                            $this->creerCreneauxPourPeriode(
-                                $agendaId,
-                                $dStart->format('Y-m-d'),
-                                $h['ouverture_matin'],
-                                $h['fermeture_matin']
-                            );
+                            $this->creerCreneauxPourPeriode($agendaId, $dStart->format('Y-m-d'), $h['ouverture_matin'], $h['fermeture_matin']);
                         }
                         if ($h['ouverture_apresmidi'] !== '00:00:00') {
-                            $this->creerCreneauxPourPeriode(
-                                $agendaId,
-                                $dStart->format('Y-m-d'),
-                                $h['ouverture_apresmidi'],
-                                $h['fermeture_apresmidi']
-                            );
+                            $this->creerCreneauxPourPeriode($agendaId, $dStart->format('Y-m-d'), $h['ouverture_apresmidi'], $h['fermeture_apresmidi']);
                         }
                         break;
                     }
@@ -677,20 +631,15 @@ class CreneauModel extends Model
             $this->db->commit();
             return true;
         } catch (\Exception $e) {
-            if ($this->db->inTransaction()) {
-                $this->db->rollBack();
-            }
+            if ($this->db->inTransaction()) $this->db->rollBack();
             error_log('Erreur genererCreneaux: ' . $e->getMessage());
             return false;
         }
     }
 
-    /**
-     * Crée les créneaux d'une plage (pas de 30 minutes)
-     */
+    /** Crée les créneaux d'une plage (pas 30 min) */
     private function creerCreneauxPourPeriode(int $agendaId, string $date, string $heureDebut, string $heureFin): void
     {
-        // Vérifie si déjà existant pour éviter doublons
         $sql = "SELECT COUNT(*) FROM creneau WHERE agenda_id = ? AND DATE(debut) = ? AND TIME(debut) BETWEEN ? AND ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$agendaId, $date, $heureDebut, $heureFin]);
@@ -699,8 +648,8 @@ class CreneauModel extends Model
             return;
         }
 
-        $debut = new \DateTime($date . ' ' . $heureDebut);
-        $fin   = new \DateTime($date . ' ' . $heureFin);
+        $debut    = new \DateTime($date . ' ' . $heureDebut);
+        $fin      = new \DateTime($date . ' ' . $heureFin);
         $interval = new \DateInterval('PT30M');
 
         while ($debut < $fin) {
@@ -723,9 +672,7 @@ class CreneauModel extends Model
         }
     }
 
-    /**
-     * Récupère les créneaux (tous) pour un agenda et une période
-     */
+    /** Récupère les créneaux (tous) pour une période */
     public function getCreneauxDisponibles(int $agendaId, string $dateDebut, string $dateFin): array
     {
         $this->logDebug('=== getCreneauxDisponibles ===', compact('agendaId', 'dateDebut', 'dateFin'));

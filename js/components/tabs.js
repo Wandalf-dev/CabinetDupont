@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initialisation des onglets...');
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
+    
+    console.log('Nombre de boutons trouvés:', tabButtons.length);
+    console.log('Nombre de contenus trouvés:', tabContents.length);
 
     function switchTab(tabId) {
         // Retire la classe active de tous les boutons et contenus
@@ -25,7 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Ajouter les écouteurs d'événements aux boutons
     tabButtons.forEach(button => {
+        console.log('Ajout du listener sur le bouton:', button.dataset.tab);
         button.addEventListener('click', (e) => {
+            console.log('Clic sur le bouton:', button.dataset.tab);
             e.preventDefault();
             switchTab(button.dataset.tab);
         });

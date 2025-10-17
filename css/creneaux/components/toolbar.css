@@ -1,0 +1,152 @@
+/* Toolbar Container */
+.creneaux-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    margin-bottom: 1rem;
+}
+
+/* Section de gauche avec le titre */
+.toolbar-left {
+    display: none;
+}
+
+/* Section centrale avec la navigation */
+.toolbar-center {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.date-navigation {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.btn-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: #4a5568;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-nav:hover {
+    background: #f8f9fa;
+    border-color: #cbd5e0;
+}
+
+.current-date {
+    position: relative;
+}
+
+.current-date input[type="date"] {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.95rem;
+    color: #2f3437;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    width: 140px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.current-date input[type="date"]:hover {
+    border-color: #cbd5e0;
+}
+
+.current-date input[type="date"]:focus {
+    outline: none;
+    border-color: #cbd5e0;
+}
+
+/* Section de droite avec les actions */
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Toggle de vue */
+.view-toggle {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background: white;
+}
+
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    background: transparent;
+    color: #6e7681;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-icon.active {
+    background: #f0f2f5;
+    color: #2f3437;
+}
+
+.btn-icon:hover:not(.active) {
+    background: #f8f9fa;
+    color: #2f3437;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .creneaux-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .toolbar-center {
+        order: 3;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .date-navigation {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .creneaux-toolbar {
+        gap: 1rem;
+    }
+
+    .toolbar-right {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 0.75rem;
+    }
+
+    .view-toggle {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .current-date input[type="date"] {
+        width: 100%;
+    }
+}

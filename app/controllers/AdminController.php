@@ -28,6 +28,33 @@ class AdminController extends \App\Core\Controller {
         $this->creneauModel = new CreneauModel();
     }
 
+    // === Helpers internes ===
+    private function jsonInput(): array {
+        $raw = file_get_contents('php://input');
+        if ($raw) {
+            $data = json_decode($raw, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($data)) {
+                return $data;
+            }
+        }
+        return $_POST ?? [];
+    }
+
+    private function jsonResponse(array $payload, int $status = 200): void {
+        http_response_code($status);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($payload);
+        exit();
+    }
+
+    private function checkAdminRights(): bool {
+        if (!isset($_SESSION['user_role']) || ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')) {
+            $this->jsonResponse(['success' => false, 'error' => 'Accès non autorisé'], 403);
+            return false; // unreachable, mais clair
+        }
+        return true;
+    }
+
     // Méthode principale pour afficher le panneau d'administration
     public function index() {
         // Debug
@@ -39,50 +66,48 @@ class AdminController extends \App\Core\Controller {
         // Vérifie que l'utilisateur est bien un administrateur (médecin ou secrétaire)
         if (!isset($_SESSION['user_role']) || ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')) {
             error_log("Accès refusé - Role: " . ($_SESSION['user_role'] ?? 'non défini'));
-            // Si ce n'est pas le cas, redirige vers la page d'accueil
             header('Location: index.php?page=home');
             exit();
         }
 
-        // Récupère toutes les actualités pour l'administration
-        $actusAdmin = $this->actuModel->getAllActusAdmin();
-        // Récupère tous les services pour l'administration
+        // Récupérations
+        $actusAdmin    = $this->actuModel->getAllActusAdmin();
         $servicesAdmin = $this->serviceModel->getAllServicesAdmin();
-        // Récupère les horaires du cabinet
-        $horaires = $this->horaireModel->getHoraires();
-        // Récupère tous les patients pour l'administration
+        $horaires      = $this->horaireModel->getHoraires();
         $patientsAdmin = $this->patientModel->getAllPatientsAdmin();
 
-        // Récupère tous les créneaux pour l'administration
-        $creneaux = $this->creneauModel->getAllCreneaux();
+        // Créneaux du jour
+        $date = date('Y-m-d');
+        $creneaux = $this->creneauModel->getCreneauxPourDate(1, $date);
 
-        // Génère le token CSRF une seule fois par session
+        // Formatage
+        foreach ($creneaux as &$creneau) {
+            $creneau['debut'] = date('H:i', strtotime($creneau['debut']));
+            $creneau['est_reserve'] = (bool)$creneau['est_reserve'] || ($creneau['statut'] === 'indisponible');
+            $creneau['est_indisponible'] = $creneau['statut'] === 'indisponible';
+        }
+
+        // Token CSRF
         if (!isset($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = \App\Core\Csrf::generateToken();
         }
 
-        // Charge la vue combinée de l'administration (onglets actu, services, horaires)
         require_once 'app/views/admin-combined.php';
     }
 
-    // Méthodes pour la gestion des patients
+    // Méthodes Patients (inchangé sauf style)
     public function addPatient() {
-        // Vérification des droits
         if (!isset($_SESSION['user_role']) || ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')) {
             header('Location: index.php?page=home');
             exit();
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Validation des données
             $data = $this->validatePatientData($_POST);
-            
             if (empty($data['errors'])) {
-                // Vérifie si l'email existe déjà
                 if ($this->patientModel->emailExists($data['email'])) {
                     $_SESSION['error'] = "Cette adresse email est déjà utilisée.";
                 } else {
-                    // Crée le patient
                     if ($this->patientModel->createPatient($data)) {
                         $_SESSION['success'] = "Le patient a été ajouté avec succès.";
                         header('Location: index.php?page=admin');
@@ -95,12 +120,10 @@ class AdminController extends \App\Core\Controller {
                 $_SESSION['error'] = implode("<br>", $data['errors']);
             }
         }
-        
         require_once 'app/views/patient/patient-create.php';
     }
 
     public function editPatient() {
-        // Vérification des droits
         if (!isset($_SESSION['user_role']) || ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')) {
             header('Location: index.php?page=home');
             exit();
@@ -116,15 +139,11 @@ class AdminController extends \App\Core\Controller {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Validation des données
             $data = $this->validatePatientData($_POST, true);
-            
             if (empty($data['errors'])) {
-                // Vérifie si l'email existe déjà (en excluant le patient actuel)
                 if ($this->patientModel->emailExists($data['email'], $id)) {
                     $_SESSION['error'] = "Cette adresse email est déjà utilisée.";
                 } else {
-                    // Met à jour le patient
                     if ($this->patientModel->updatePatient($id, $data)) {
                         $_SESSION['success'] = "Les informations du patient ont été mises à jour.";
                         header('Location: index.php?page=admin');
@@ -137,48 +156,234 @@ class AdminController extends \App\Core\Controller {
                 $_SESSION['error'] = implode("<br>", $data['errors']);
             }
         }
-        
+
         require_once 'app/views/patient/patient-update.php';
     }
 
     public function deletePatient() {
-        // Vérification des droits
         if (!isset($_SESSION['user_role']) || ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')) {
             header('Location: index.php?page=home');
             exit();
         }
 
         $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-        
+
         if ($this->patientModel->deletePatient($id)) {
             $_SESSION['success'] = "Le patient a été supprimé avec succès.";
         } else {
             $_SESSION['error'] = "Une erreur est survenue lors de la suppression.";
         }
-        
+
         header('Location: index.php?page=admin');
         exit();
+    }
+
+    // =======================
+    //       CRÉNEAUX
+    // =======================
+
+    public function getAllCreneaux() {
+        if (!$this->checkAdminRights()) return;
+
+        try {
+            $creneaux = $this->creneauModel->getAllCreneaux();
+            foreach ($creneaux as &$creneau) {
+                $creneau['debut_format'] = date('d/m/Y H:i', strtotime($creneau['debut']));
+                $creneau['fin_format']   = date('H:i', strtotime($creneau['fin']));
+                $creneau['est_indisponible'] = $creneau['statut'] === 'indisponible';
+            }
+            $this->jsonResponse(['success' => true, 'creneaux' => $creneaux], 200);
+        } catch (\Exception $e) {
+            error_log("Erreur getAllCreneaux: " . $e->getMessage());
+            $this->jsonResponse(['success' => false, 'error' => 'Erreur lors de la récupération des créneaux'], 500);
+        }
+    }
+
+    public function loadCreneaux() {
+        if (!$this->checkAdminRights()) return;
+
+        $date = $_GET['date'] ?? date('Y-m-d');
+        try {
+            $creneaux = $this->creneauModel->getCreneauxPourDate(1, $date);
+            require_once 'app/views/admin/sections/creneaux-section.php';
+            // (vue partielle HTML retournée)
+        } catch (\Exception $e) {
+            $this->jsonResponse(['error' => 'Erreur lors du chargement des créneaux'], 500);
+        }
+    }
+
+    public function toggleIndisponible() {
+        if (!$this->checkAdminRights()) return;
+
+        // Lecture JSON ou POST
+        $data = $this->jsonInput();
+        $id   = isset($data['id']) ? (int)$data['id'] : 0;
+
+        if ($id <= 0) {
+            $this->jsonResponse(['success' => false, 'error' => 'ID de créneau invalide'], 400);
+        }
+
+        try {
+            $result  = $this->creneauModel->toggleIndisponible($id);
+            $creneau = $this->creneauModel->getCreneauById($id);
+
+            $this->jsonResponse([
+                'success'         => $result !== false,
+                'estIndisponible' => isset($creneau['statut']) && $creneau['statut'] === 'indisponible',
+                'message'         => $result ? 'Statut mis à jour' : 'Erreur lors de la mise à jour'
+            ], $result !== false ? 200 : 400);
+        } catch (\Exception $e) {
+            error_log("Erreur toggleIndisponible: " . $e->getMessage());
+            $this->jsonResponse(['success' => false, 'error' => 'Erreur lors de la mise à jour du statut'], 500);
+        }
+    }
+
+    public function genererCreneaux() {
+        if (!$this->checkAdminRights()) return;
+
+        // Le front envoie { date_debut, date_fin } (snake_case)
+        $data      = $this->jsonInput();
+        $dateDebut = $data['date_debut'] ?? ($_POST['date_debut'] ?? null);
+        $dateFin   = $data['date_fin']   ?? ($_POST['date_fin']   ?? null);
+        $agendaId  = isset($data['agendaId']) ? (int)$data['agendaId'] : 1;
+
+        if (empty($dateDebut) || empty($dateFin)) {
+            $this->jsonResponse(['success' => false, 'error' => 'Dates invalides'], 400);
+        }
+
+        try {
+            $result = $this->creneauModel->genererCreneaux($agendaId, $dateDebut, $dateFin);
+            $this->jsonResponse([
+                'success' => (bool)$result,
+                'message' => $result ? 'Créneaux générés avec succès' : 'Erreur lors de la génération'
+            ], $result ? 200 : 500);
+        } catch (\Exception $e) {
+            error_log("Erreur genererCreneaux: " . $e->getMessage());
+            $this->jsonResponse(['success' => false, 'error' => 'Erreur lors de la génération des créneaux'], 500);
+        }
+    }
+
+    public function getCreneauxPourDate() {
+        if (!$this->checkAdminRights()) return;
+
+        $date     = $_GET['date'] ?? date('Y-m-d');
+        $agendaId = isset($_GET['agendaId']) ? (int)$_GET['agendaId'] : 1;
+
+        try {
+            $creneaux = $this->creneauModel->getCreneauxPourDate($agendaId, $date);
+            foreach ($creneaux as &$creneau) {
+                $creneau['debut_format'] = date('H:i', strtotime($creneau['debut']));
+                $creneau['fin_format']   = date('H:i', strtotime($creneau['fin']));
+                $creneau['est_indisponible'] = $creneau['statut'] === 'indisponible';
+            }
+            $this->jsonResponse(['success' => true, 'creneaux' => $creneaux], 200);
+        } catch (\Exception $e) {
+            error_log("Erreur getCreneauxPourDate: " . $e->getMessage());
+            $this->jsonResponse(['success' => false, 'error' => 'Erreur lors de la récupération des créneaux'], 500);
+        }
+    }
+
+    public function cleanupInconsistentSlots() {
+        if (!$this->checkAdminRights()) return;
+
+        try {
+            $result = $this->creneauModel->cleanupInconsistentSlots();
+            $this->jsonResponse([
+                'success' => (bool)$result,
+                'message' => $result ? 'Nettoyage effectué avec succès' : 'Erreur lors du nettoyage'
+            ], $result ? 200 : 500);
+        } catch (\Exception $e) {
+            error_log("Erreur cleanupInconsistentSlots: " . $e->getMessage());
+            $this->jsonResponse(['success' => false, 'error' => 'Erreur lors du nettoyage des créneaux'], 500);
+        }
+    }
+
+    public function deleteCreneau() {
+        if (!$this->checkAdminRights()) return;
+
+        $data = $this->jsonInput();
+        $id   = isset($data['id']) ? (int)$data['id'] : 0;
+
+        if ($id <= 0) {
+            $this->jsonResponse(['success' => false, 'error' => 'ID de créneau invalide'], 400);
+        }
+
+        try {
+            $result = $this->creneauModel->deleteCreneau($id);
+            $this->jsonResponse([
+                'success' => (bool)$result,
+                'message' => $result ? 'Créneau supprimé' : 'Créneau introuvable ou non supprimé'
+            ], $result ? 200 : 400);
+        } catch (\Exception $e) {
+            error_log("Erreur deleteCreneau: " . $e->getMessage());
+            $this->jsonResponse(['success' => false, 'error' => 'Erreur lors de la suppression'], 500);
+        }
+    }
+
+    public function markUnavailableBulk() {
+        if (!$this->checkAdminRights()) return;
+
+        $data = $this->jsonInput();
+        $ids  = $data['ids'] ?? [];
+
+        if (empty($ids) || !is_array($ids)) {
+            $this->jsonResponse(['success' => false, 'error' => 'Aucun créneau sélectionné'], 400);
+        }
+
+        try {
+            $success = true;
+            foreach ($ids as $id) {
+                if (!$this->creneauModel->toggleIndisponible((int)$id)) {
+                    $success = false;
+                    break;
+                }
+            }
+            $this->jsonResponse(['success' => $success], $success ? 200 : 500);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['success' => false, 'error' => 'Erreur lors de la modification des créneaux'], 500);
+        }
+    }
+
+    public function deleteCreneauxBulk() {
+        if (!$this->checkAdminRights()) return;
+
+        $data = $this->jsonInput();
+        $ids  = $data['ids'] ?? [];
+
+        if (empty($ids) || !is_array($ids)) {
+            $this->jsonResponse(['success' => false, 'error' => 'Aucun créneau sélectionné'], 400);
+        }
+
+        try {
+            $success = true;
+            foreach ($ids as $id) {
+                if (!$this->creneauModel->deleteCreneau((int)$id)) {
+                    $success = false;
+                    break;
+                }
+            }
+            $this->jsonResponse(['success' => $success], $success ? 200 : 500);
+        } catch (\Exception $e) {
+            $this->jsonResponse(['success' => false, 'error' => 'Erreur lors de la suppression des créneaux'], 500);
+        }
     }
 
     private function validatePatientData($data, $isUpdate = false) {
         $errors = [];
         $validated = [];
 
-        // Validation du nom
         if (empty($data['nom'])) {
             $errors[] = "Le nom est obligatoire.";
         } else {
             $validated['nom'] = trim($data['nom']);
         }
 
-        // Validation du prénom
         if (empty($data['prenom'])) {
             $errors[] = "Le prénom est obligatoire.";
         } else {
             $validated['prenom'] = trim($data['prenom']);
         }
 
-        // Validation de l'email
         if (empty($data['email'])) {
             $errors[] = "L'email est obligatoire.";
         } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
@@ -187,30 +392,23 @@ class AdminController extends \App\Core\Controller {
             $validated['email'] = trim($data['email']);
         }
 
-        // Validation du téléphone
         if (empty($data['telephone'])) {
             $errors[] = "Le numéro de téléphone est obligatoire.";
         } else {
             $validated['telephone'] = trim($data['telephone']);
         }
 
-        // Validation de la date de naissance
         if (empty($data['date_naissance'])) {
             $errors[] = "La date de naissance est obligatoire.";
         } else {
-            // Conversion d/m/Y vers Y-m-d si nécessaire
             $date = $data['date_naissance'];
             if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $date)) {
                 $dt = DateTime::createFromFormat('d/m/Y', $date);
-                if ($dt) {
-                    $date = $dt->format('Y-m-d');
-                }
+                if ($dt) $date = $dt->format('Y-m-d');
             }
             $validated['date_naissance'] = $date;
         }
 
-
-        // Validation du mot de passe (obligatoire seulement pour la création)
         if (!$isUpdate && empty($data['password'])) {
             $errors[] = "Le mot de passe est obligatoire.";
         } elseif (!empty($data['password'])) {
