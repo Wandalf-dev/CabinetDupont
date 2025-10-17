@@ -21,8 +21,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Mise à jour du bouton et de l'affichage
                         const creneau = this.closest('tr');
                         const statutCell = creneau.querySelector('.statut-creneau');
-                        if (this.textContent.includes('Marquer indisponible')) {
-                            // Passage à indisponible
+                        
+                        // Mettre à jour le texte et les classes en fonction du retour serveur
+                        if (data.estIndisponible) {
+                            // Créneau maintenant indisponible
                             this.textContent = 'Rendre disponible';
                             this.classList.remove('btn-warning');
                             this.classList.add('btn-success');
@@ -30,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 statutCell.innerHTML = '<span class="badge indisponible">Indisponible</span>';
                             }
                         } else {
-                            // Passage à disponible
+                            // Créneau maintenant disponible
                             this.textContent = 'Marquer indisponible';
                             this.classList.remove('btn-success');
                             this.classList.add('btn-warning');
@@ -38,7 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 statutCell.innerHTML = '<span class="badge disponible">Disponible</span>';
                             }
                         }
-                        // Afficher une notification
+                        
+                        // Afficher le message de succès retourné par le serveur
                         showNotification('success', data.message);
                     } else {
                         showNotification('error', data.error || 'Une erreur est survenue');

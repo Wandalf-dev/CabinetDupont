@@ -16,6 +16,15 @@ class CreneauxController {
             exit();
         }
 
+        // Vérification du token CSRF
+        $headers = getallheaders();
+        $token = $headers['X-CSRF-TOKEN'] ?? '';
+        if (empty($token) || !\App\Core\Csrf::checkToken($token)) {
+            http_response_code(403);
+            echo json_encode(['success' => false, 'error' => 'Token CSRF invalide ou manquant']);
+            exit();
+        }
+
         // Récupérer l'ID du créneau depuis la requête POST
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
@@ -28,10 +37,20 @@ class CreneauxController {
         }
 
         // Vérifier que le créneau existe et n'est pas réservé
-        $success = $this->creneauModel->toggleIndisponible($id);
+        $nouveauStatut = $this->creneauModel->toggleIndisponible($id);
         
-        if ($success) {
-            echo json_encode(['success' => true, 'message' => 'Statut du créneau modifié avec succès']);
+        if ($nouveauStatut === true) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Le créneau a été marqué comme indisponible.',
+                'estIndisponible' => true
+            ]);
+        } elseif ($nouveauStatut === false) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Le créneau a été rendu disponible.',
+                'estIndisponible' => false
+            ]);
         } else {
             http_response_code(400);
             echo json_encode(['success' => false, 'error' => 'Impossible de modifier le statut du créneau']);

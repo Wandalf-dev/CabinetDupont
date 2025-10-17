@@ -1,11 +1,10 @@
 <?php
 error_log("Début du chargement du header.php");
-// Démarre la session avec des paramètres sécurisés si elle n'est pas déjà active
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
-        'httponly' => true, // Empêche l'accès au cookie via JavaScript
-        'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on', // Cookie envoyé uniquement en HTTPS
-        'samesite' => 'Strict' // Empêche l'envoi du cookie sur des requêtes cross-site
+        'httponly' => true,
+        'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+        'samesite' => 'Strict'
     ]);
     session_start();
 }
@@ -15,91 +14,127 @@ if (session_status() === PHP_SESSION_NONE) {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<?php echo \App\Core\Csrf::generateToken(); ?>" />
     <title>DupontCare – Cabinet dentaire</title>
-    <!-- Importation des polices et des feuilles de style du projet -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/base/style.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/layouts/header.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/layouts/footer.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/horaires/horaires.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/login.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/register.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/actu/actu.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/admin.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/actu/actu-create.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/actu/actu-posts.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/table-sort.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/tabs.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/profil.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/alerts.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/horaires/horaires-admin.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/about.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneaux.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/agenda/agenda.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/table-actions.css" />
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/rendez-vous/confirmation-rdv.css" />
-    <!-- Animation Lottie pour des illustrations animées -->
+    <!-- CSS de base -->
+    <?php 
+    $cssFiles = [
+        '/css/base/style.css',
+        '/css/layouts/header.css',
+        '/css/layouts/footer.css',
+        '/css/modules/horaires/horaires.css',
+        '/css/pages/login.css',
+        '/css/pages/register.css',
+        '/css/modules/actu/actu.css',
+        '/css/pages/admin.css',
+        '/css/modules/actu/actu-create.css',
+        '/css/modules/actu/actu-posts.css',
+        '/css/components/table-sort.css',
+        '/css/components/tabs.css',
+        '/css/pages/profil.css',
+        '/css/components/alerts.css',
+        '/css/modules/horaires/horaires-admin.css',
+        '/css/pages/about.css',
+        '/css/modules/creneaux/creneaux.css',
+        '/css/modules/agenda/agenda.css',
+        '/css/components/table-actions.css',
+        '/css/modules/rendez-vous/confirmation-rdv.css'
+    ];
+    foreach($cssFiles as $css): ?>
+        <link rel="stylesheet" href="<?php echo BASE_URL . $css; ?>" />
+    <?php endforeach; ?>
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
+    <script src="<?php echo BASE_URL; ?>/js/components/alerts.js"></script>
+    <script src="<?php echo BASE_URL; ?>/js/modules/header/header.js"></script>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <!-- Logo du cabinet en haut à gauche -->
-            <a href="index.php" class="logo">
-                <img src="<?php echo BASE_URL; ?>/assets/dupontcare-logo-horizontal-DUPONT-white.svg" alt="DupontCare" />
+    <!-- Toast container -->
+    <div id="toast-container"></div>
+
+    <header class="modern-header">
+        <div class="header-content">
+            <!-- Logo -->
+            <a href="index.php" class="brand">
+                <img src="<?php echo BASE_URL; ?>/assets/dupontcare-logo-horizontal-DUPONT-white.svg" alt="DupontCare" class="logo" />
             </a>
 
-            <!-- Menu de navigation principal -->
-            <nav>
-                <ul>
-                    <li><a href="index.php?page=home">Accueil</a></li>
-                    <li><a href="index.php?page=actus">Actualités</a></li>
-                    <li><a href="index.php?page=about">À propos</a></li>
+            <!-- Menu principal -->
+            <nav class="main-nav">
+                <button class="mobile-menu-toggle" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+                
+                <div class="nav-links">
+                    <a href="index.php?page=home" class="nav-item">Accueil</a>
+                    <a href="index.php?page=actus" class="nav-item">Actualités</a>
+                    <a href="index.php?page=about" class="nav-item">À propos</a>
+                    
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <?php if (isset($_SESSION['user_role']) && ($_SESSION['user_role'] === 'MEDECIN' || $_SESSION['user_role'] === 'SECRETAIRE')): ?>
-                            <li>
-                                <a href="index.php?page=admin">Administration</a>
-                            </li>
+                            <a href="index.php?page=admin" class="nav-item admin-link">
+                                <i class="fas fa-cog"></i>
+                                <span>Administration</span>
+                            </a>
+                            
                             <?php if ($_SESSION['user_role'] === 'MEDECIN'): ?>
-                            <li>
-                                <a href="index.php?page=agenda&action=planning" class="nav-agenda">
-                                    <i class="fas fa-calendar-alt"></i> Agenda
+                                <a href="index.php?page=agenda&action=planning" class="nav-item agenda-link">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>Agenda</span>
                                 </a>
-                            </li>
                             <?php endif; ?>
                         <?php endif; ?>
+
                         <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'PATIENT'): ?>
-                            <li>
-                                <a href="index.php?page=rendezvous&action=list" class="nav-rdv">
-                                    <i class="fas fa-calendar-check"></i> Mes Rendez-vous
-                                </a>
-                            </li>
+                            <a href="index.php?page=rendezvous&action=list" class="nav-item appointments-link">
+                                <i class="fas fa-calendar-check"></i>
+                                <span>Mes Rendez-vous</span>
+                            </a>
                         <?php endif; ?>
-                        <li><a href="index.php?page=user&action=profile">Mon profil</a></li>
-                        <li><a href="index.php?page=auth&action=logout">Déconnexion</a></li>
-                    <?php else: ?>
-                        <li><a href="index.php?page=auth&action=login">Connexion</a></li>
-                        <li><a href="index.php?page=auth&action=register">Inscription</a></li>
                     <?php endif; ?>
-                </ul>
+                </div>
+
+                <!-- Menu utilisateur -->
+                <div class="user-menu">
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <div class="user-dropdown">
+                            <button class="user-button">
+                                <div class="user-avatar">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="12" cy="12" r="12" fill="#fff"/>
+                                        <circle cx="12" cy="10" r="4" fill="#3a6ea5"/>
+                                        <ellipse cx="12" cy="17.5" rx="6" ry="3.5" fill="#3a6ea5"/>
+                                    </svg>
+                                </div>
+                                <span class="user-name"><?php echo htmlspecialchars($_SESSION['user_prenom']); ?></span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a href="index.php?page=user&action=profile" class="dropdown-item">
+                                    <i class="fas fa-user"></i>
+                                    <span>Mon profil</span>
+                                </a>
+                                <?php if ($_SESSION['user_role'] === 'PATIENT'): ?>
+                                    <a href="index.php?page=rendezvous&action=list" class="dropdown-item">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <span>Mes rendez-vous</span>
+                                    </a>
+                                <?php endif; ?>
+                                <div class="dropdown-divider"></div>
+                                <a href="index.php?page=auth&action=logout" class="dropdown-item text-danger">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Déconnexion</span>
+                                </a>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <div class="auth-buttons">
+                            <a href="index.php?page=auth&action=login" class="nav-item">Connexion</a>
+                            <a href="index.php?page=auth&action=register" class="nav-item">Inscription</a>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </nav>
         </div>
-
-        <?php if (isset($_SESSION['user_id']) && isset($_SESSION['user_prenom']) && isset($_SESSION['user_nom'])): ?>
-            <div class="header-user-info">
-                <!-- Avatar SVG et nom de l'utilisateur connecté -->
-                <span class="user-avatar">
-                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="11" cy="11" r="11" fill="#fff"/>
-                        <circle cx="11" cy="9" r="4" fill="#3a6ea5"/>
-                        <ellipse cx="11" cy="16.2" rx="6" ry="3.2" fill="#3a6ea5"/>
-                    </svg>
-                </span>
-                <span class="user-name">
-                    <?php echo htmlspecialchars($_SESSION['user_prenom'] . ' ' . $_SESSION['user_nom']); ?>
-                </span>
-            </div>
-        <?php endif; ?>
-
     </header>

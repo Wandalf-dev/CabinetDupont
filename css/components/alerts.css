@@ -1,28 +1,21 @@
-
 .flash-message {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 9999;
+    z-index: 100000;
     display: flex;
     align-items: center;
     gap: 12px;
-
     padding: 16px 24px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-    /* Dimensions fixes pour éviter le redimensionnement */
-    width: 380px;
+    width: 280px;
     
-    /* Positionnement initial pour l'animation */
-    transform-origin: top right;
+    /* État initial */
+    opacity: 1;
     transform: translateX(0);
-
-    /* animation d'entrée */
-    animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
 }
-
 
 .flash-message.success {
     background-color: #22c55e;
@@ -34,62 +27,30 @@
     color: #fff;
 }
 
-/* état de sortie : applique .leaving pour fermer */
-
-.flash-message.leaving {
-    animation: fadeOut 0.3s ease-out forwards;
-}
-
-@keyframes popIn {
-    0% {
-        opacity: 0;
-        transform: translate3d(20px, 0, 0);
-    }
-    100% {
-        opacity: 1;
-        transform: translate3d(0, 0, 0);
-    }
-}
-
-@keyframes fadeOut {
-    0% {
-        opacity: 1;
-        transform: translate3d(0, 0, 0);
-    }
-    100% {
-        opacity: 0;
-        transform: translate3d(0, -10px, 0);
-    }
-}
-
-/* Style pour le contenu du message */
-
 .flash-message .message {
     display: block;
     font-size: 15px;
     line-height: 1.4;
     text-align: center;
     width: 100%;
+    color: #fff;
 }
-
-/* Icône de succès/erreur */
 
 .flash-message i {
     font-size: 20px;
+    flex-shrink: 0;
+    color: #fff;
 }
 
-/* Mobile : éviter qu'elle sorte de l'écran */
+.flash-message.hide {
+    transform: translateX(150%);
+    opacity: 0;
+    pointer-events: none;
+}
 
 @media (max-width: 520px) {
     .flash-message {
         width: calc(100% - 32px);
         margin: 0 16px;
-    }
-}
-
-/* Accessibilité motion */
-@media (prefers-reduced-motion: reduce) {
-    .flash-message {
-        animation: none;
     }
 }

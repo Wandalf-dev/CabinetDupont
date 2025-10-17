@@ -83,7 +83,14 @@ class CreneauModel extends Model
 
             $sql = "UPDATE creneau SET statut = ? WHERE id = ?";
             $stmt = $this->db->prepare($sql);
-            return $stmt->execute([$nouveauStatut, $id]);
+            $success = $stmt->execute([$nouveauStatut, $id]);
+
+            // Retourner la nouvelle valeur du statut uniquement si la mise à jour a réussi
+            if ($success) {
+                error_log("Statut du créneau $id changé de {$creneau['statut']} à $nouveauStatut");
+                return $nouveauStatut === self::STATUT_INDISPONIBLE;
+            }
+            return false;
         } catch (\Exception $e) {
             error_log("Erreur toggleIndisponible: " . $e->getMessage());
             return false;

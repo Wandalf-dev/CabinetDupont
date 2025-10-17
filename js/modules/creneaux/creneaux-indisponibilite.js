@@ -98,55 +98,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 const creneauItem = button.closest('.creneau-item');
                 const creneauId = creneauItem.querySelector('.creneau-select').dataset.id;
                 
-                try {
-                    const response = await fetch('index.php?page=creneaux&action=toggleIndisponible', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ id: creneauId })
-                    });
-
-                    const data = await response.json();
-                    
-                    if (!response.ok) {
-                        throw new Error(data.error || 'Erreur serveur');
-                    }
-
-                    if (data.success) {
-                        // Mise à jour visuelle
-                        const statutElement = creneauItem.querySelector('.creneau-statut');
-                        if (statutElement) {
-                            const isNowIndisponible = !statutElement.classList.contains('indisponible');
-                            statutElement.className = `creneau-statut ${isNowIndisponible ? 'indisponible' : 'disponible'}`;
-                            statutElement.innerHTML = `
-                                <i class="fas ${isNowIndisponible ? 'fa-ban' : 'fa-lock-open'}"></i>
-                                ${isNowIndisponible ? 'Indisponible' : 'Disponible'}
-                            `;
-                            
-                            // Mise à jour du bouton
-                            button.textContent = isNowIndisponible ? 'Rendre disponible' : 'Marquer indisponible';
-                            button.className = `btn ${isNowIndisponible ? 'btn-success' : 'btn-warning'} btn-toggle-dispo`;
-                        }
-                    } else {
-                        throw new Error(data.error || 'Échec de la modification');
-                    }
-                } catch (error) {
-                    console.error('Erreur:', error);
-                    const errorMessage = document.createElement('div');
-                    errorMessage.className = 'alert-popup error';
-                    errorMessage.innerHTML = `
-                        <div class="message">
-                            <i class="fas fa-exclamation-circle"></i>
-                            Une erreur est survenue : ${error.message}
-                        </div>
-                    `;
-                    document.body.appendChild(errorMessage);
-                    setTimeout(() => errorMessage.remove(), 5000);
-                }
                 
                 try {
                     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                    if (!csrfToken) {
+                        throw new Error('Token CSRF manquant');
+                    }
                     
                     const response = await fetch('index.php?page=creneaux&action=toggleIndisponible', {
                         method: 'POST',
@@ -157,59 +114,55 @@ document.addEventListener('DOMContentLoaded', function() {
                         body: JSON.stringify({ id: creneauId })
                     });
 
+                    if (!response.ok) {
+                        throw new Error('Erreur serveur');
+                    }
+
                     const result = await response.json();
                     
-                    if (result.success) {
-                        const wasIndisponible = creneauItem.querySelector('.creneau-statut.indisponible') !== null;
-                        const willBeIndisponible = !wasIndisponible;
-                        
-                        // Mise à jour du statut
-                        const statusDiv = creneauItem.querySelector('.creneau-info .creneau-statut');
-                        if (statusDiv) {
-                            const newStatus = willBeIndisponible ? 'indisponible' : 'disponible';
-                            const icon = willBeIndisponible ? 'fa-ban' : 'fa-lock-open';
-                            const text = willBeIndisponible ? 'Indisponible' : 'Disponible';
-                            
-                            statusDiv.className = `creneau-statut ${newStatus}`;
-                            statusDiv.innerHTML = `<i class="fas ${icon}"></i> ${text}`;
-                        }
-
-                        // Mise à jour du bouton
-                        button.className = `btn ${willBeIndisponible ? 'btn-success' : 'btn-warning'} btn-toggle-dispo`;
-                        button.textContent = willBeIndisponible ? 'Rendre disponible' : 'Marquer indisponible';
-
-                        // Décocher la case si elle était cochée
-                        const checkbox = creneauItem.querySelector('.creneau-select');
-                        if (checkbox && checkbox.checked) {
-                            checkbox.checked = false;
-                            creneauItem.classList.remove('selected');
-                        }
-
-                        // Rafraîchir l'affichage du calendrier si présent
-                        if (window.loadUnavailableSlots) {
-                            window.resetUnavailableSlots();
-                            window.loadUnavailableSlots();
-                        }
-
-                        // Afficher le message de succès
-                        const successAlert = document.createElement('div');
-                        successAlert.className = 'flash-message success';
-                        const statusMessage = willBeIndisponible ? 'marqué indisponible' : 'rendu disponible';
-                        successAlert.innerHTML = `<span class="message">Le créneau a été ${statusMessage} avec succès.</span>`;
-                        document.body.appendChild(successAlert);
-                        setTimeout(() => {
-                            if (successAlert && successAlert.parentElement) {
-                                successAlert.parentElement.removeChild(successAlert);
-                            }
-                        }, 5000);
+                    if (!result.success) {
+                        throw new Error(result.error || 'Échec de la modification');
                     }
+
+                    // Récupérer l'état actuel
+                    const wasIndisponible = creneauItem.querySelector('.creneau-statut.indisponible') !== null;
+                    const willBeIndisponible = !wasIndisponible;
+                    
+                    // Mise à jour du statut
+                    const statusDiv = creneauItem.querySelector('.creneau-info .creneau-statut');
+                    if (statusDiv) {
+                        const newStatus = willBeIndisponible ? 'indisponible' : 'disponible';
+                        const icon = willBeIndisponible ? 'fa-ban' : 'fa-lock-open';
+                        const text = willBeIndisponible ? 'Indisponible' : 'Disponible';
+                        
+                        statusDiv.className = `creneau-statut ${newStatus}`;
+                        statusDiv.innerHTML = `<i class="fas ${icon}"></i> ${text}`;
+                    }
+
+                    // Mise à jour du bouton
+                    button.className = `btn-admin ${willBeIndisponible ? 'success' : 'warning'} btn-toggle-dispo`;
+                    const icon = willBeIndisponible ? 'fa-check' : 'fa-ban';
+                    button.innerHTML = `<i class="fas ${icon}"></i>${willBeIndisponible ? 'Rendre disponible' : 'Marquer indisponible'}`;
+
+                    // Décocher la case si elle était cochée
+                    const checkbox = creneauItem.querySelector('.creneau-select');
+                    if (checkbox && checkbox.checked) {
+                        checkbox.checked = false;
+                        creneauItem.classList.remove('selected');
+                    }
+
+                    // Rafraîchir l'affichage du calendrier si présent
+                    if (window.loadUnavailableSlots) {
+                        window.resetUnavailableSlots();
+                        window.loadUnavailableSlots();
+                    }
+
+                    // Afficher le message de succès
+                    const statusMessage = willBeIndisponible ? 'marqué indisponible' : 'rendu disponible';
+                    AlertManager.success(`Le créneau a été ${statusMessage} avec succès.`);
                 } catch (error) {
                     console.error('Erreur:', error);
-                    const errorAlert = document.createElement('div');
-                    errorAlert.className = 'flash-message error';
-                    errorAlert.innerHTML = `<span class="message">Une erreur est survenue lors de la modification du créneau.</span>`;
-                    document.body.appendChild(errorAlert);
-                    setTimeout(() => errorAlert.remove(), 5000);
+                    AlertManager.error(`Une erreur est survenue : ${error.message}`);
                 }
             });
         });
@@ -280,8 +233,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                 // Mise à jour du bouton
                                 const toggleBtn = creneauItem.querySelector('.btn-toggle-dispo');
                                 if (toggleBtn) {
-                                    toggleBtn.className = `btn ${willBeIndisponible ? 'btn-success' : 'btn-warning'} btn-toggle-dispo`;
-                                    toggleBtn.textContent = willBeIndisponible ? 'Rendre disponible' : 'Marquer indisponible';
+                                    toggleBtn.className = `btn-admin ${willBeIndisponible ? 'success' : 'warning'} btn-toggle-dispo`;
+                                    const icon = willBeIndisponible ? 'fa-check' : 'fa-ban';
+                                    toggleBtn.innerHTML = `<i class="fas ${icon}"></i>${willBeIndisponible ? 'Rendre disponible' : 'Marquer indisponible'}`;
                                 }
 
                                 // Décocher la case
@@ -307,26 +261,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         window.loadUnavailableSlots();
                     }
 
-                    // Afficher le message de succès/erreur
-                    const successAlert = document.createElement('div');
-                    successAlert.className = 'flash-message success';
+                    // Afficher le message de succès
                     const statusMessage = allIndisponible ? 'rendu disponible' : 'marqué indisponible';
                     const plurielType = successes > 1 ? 'créneaux' : 'créneau';
-                    successAlert.innerHTML = `<span class="message">${successes} ${plurielType} ${statusMessage}${selectedIds.length > 1 ? 's' : ''}.${errors ? `<br>${errors} échec${errors > 1 ? 's' : ''}.` : ''}</span>`;
-                    document.body.appendChild(successAlert);
-                    setTimeout(() => {
-                        if (successAlert && successAlert.parentElement) {
-                            successAlert.parentElement.removeChild(successAlert);
-                        }
-                    }, 5000);
+                    const message = `${successes} ${plurielType} ${statusMessage}${selectedIds.length > 1 ? 's' : ''}.${errors ? `\n${errors} échec${errors > 1 ? 's' : ''}.` : ''}`;
+                    AlertManager.success(message);
 
                 } catch (error) {
                     console.error('Erreur:', error);
-                    const errorAlert = document.createElement('div');
-                    errorAlert.className = 'flash-message error';
-                    errorAlert.innerHTML = `<span class="message">Une erreur est survenue lors de la modification des créneaux.</span>`;
-                    document.body.appendChild(errorAlert);
-                    setTimeout(() => errorAlert.remove(), 5000);
+                    AlertManager.error('Une erreur est survenue lors de la modification des créneaux.');
                 }
             }
         });

@@ -405,9 +405,9 @@ include __DIR__ . '/templates/flash-messages.php';
                                                                     <?php if (!$creneau['est_reserve']): ?>
                                                                         <div class="creneau-actions">
                                                                             <button type="button" 
-                                                                                    class="btn <?php echo $creneau['statut'] === 'indisponible' ? 'btn-success' : 'btn-warning'; ?> btn-toggle-dispo" 
-                                                                                    data-creneau-id="<?php echo $creneau['id']; ?>"
-                                                                                    style="margin-right: 10px;">
+                                                                                    class="btn-admin <?php echo $creneau['statut'] === 'indisponible' ? 'success' : 'warning'; ?> btn-toggle-dispo" 
+                                                                                    data-creneau-id="<?php echo $creneau['id']; ?>">
+                                                                                <i class="fas <?php echo $creneau['statut'] === 'indisponible' ? 'fa-check' : 'fa-ban'; ?>"></i>
                                                                                 <?php echo $creneau['statut'] === 'indisponible' ? 'Rendre disponible' : 'Marquer indisponible'; ?>
                                                                             </button>
                                                                             <button type="button" class="btn-admin delete btn-delete-creneau" data-id="<?= $creneau['id'] ?>">
@@ -433,25 +433,20 @@ include __DIR__ . '/templates/flash-messages.php';
                 </div>
         </div>
 
-<!-- Styles pour l'interface admin -->
-<link rel="stylesheet" href="/CabinetDupont/css/pages/admin.css">
+<!-- Styles spécifiques pour l'interface admin -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/admin.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/confirmation-popup.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/agenda/notifications.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneaux-alerts.css">
-<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/alerts.css">
-<link rel="stylesheet" href="/CabinetDupont/css/utils/drag-drop.css">
-<link rel="stylesheet" href="/CabinetDupont/css/components/tabs.css">
-<link rel="stylesheet" href="/CabinetDupont/css/components/table-actions.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/utils/drag-drop.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneaux-accordion.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/patient.css">
-
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/status-buttons.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/button-group.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneau-indisponible.css">
 
-
-<!-- Scripts pour la gestion des onglets, du drag & drop et des filtres -->
- <script src="<?php echo BASE_URL; ?>/js/components/confirmation-popup.js"></script>
+<!-- Scripts spécifiques pour l'interface admin -->
+<script src="<?php echo BASE_URL; ?>/js/components/confirmation-popup.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/components/tabs.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/modules/service/service-order.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux-accordion.js"></script>

@@ -1,43 +1,58 @@
-// Auto-hide & close pour .flash-message
-document.addEventListener('DOMContentLoaded', () => {
-  const startLeave = (el) => el.classList.add('leaving');
+// Singleton pour gérer toutes les alertes
+const AlertManager = {
+    show(message, type = 'success', duration = 5000) {
+        // Créer l'alerte
+        const alert = document.createElement('div');
+        alert.className = `flash-message ${type}`;
+        
+        // Ajouter l'icône
+        const icon = document.createElement('i');
+        icon.className = `fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}`;
+        
+        // Ajouter le message
+        const messageSpan = document.createElement('span');
+        messageSpan.className = 'message';
+        messageSpan.textContent = message;
+        
+        // Assembler
+        alert.appendChild(icon);
+        alert.appendChild(messageSpan);
+        
+        // Ajouter au DOM
+        document.body.appendChild(alert);
+        
+        // Retirer les anciennes alertes si présentes
+        document.querySelectorAll('.flash-message').forEach(oldAlert => {
+            if (oldAlert !== alert) {
+                oldAlert.remove();
+            }
+        });
+        
+        // Force un reflow pour assurer le début propre de l'animation
+        alert.offsetHeight;
 
-  const wireToast = (el) => {
-    if (el.__wired) return; // évite double binding
-    el.__wired = true;
+        // Programmer la disparition
+        setTimeout(() => {
+            alert.classList.add('hide');
+            // Écouter la fin de l'animation avant de supprimer
+            alert.addEventListener('animationend', function(e) {
+                if (e.animationName === 'slideRightOut') {
+                    alert.remove();
+                }
+            }, { once: true });
+        }, duration);
 
-    // Durée configurable via data-duration (ms), défaut 5000
-    const duration = parseInt(el.dataset.duration || '5000', 10);
-    let timer = setTimeout(() => startLeave(el), duration);
+        return alert;
+    },
 
-    // Pause au survol
-    el.addEventListener('mouseenter', () => clearTimeout(timer));
-    el.addEventListener('mouseleave', () => {
-      timer = setTimeout(() => startLeave(el), 1200);
-    });
+    success(message, duration = 5000) {
+        return this.show(message, 'success', duration);
+    },
 
-    // Bouton fermer optionnel
-    const btn = el.querySelector('[data-flash-close]');
-    if (btn) btn.addEventListener('click', () => startLeave(el));
+    error(message, duration = 5000) {
+        return this.show(message, 'error', duration);
+    }
+};
 
-    // Retrait du DOM quand l'anim de sortie finit
-    el.addEventListener('animationend', () => {
-      if (el.classList.contains('leaving')) el.remove();
-    });
-  };
-
-  // Toasters présents au chargement
-  document.querySelectorAll('.flash-message').forEach(wireToast);
-
-  // Toasters ajoutés plus tard (ajax/partials)
-  const mo = new MutationObserver((muts) => {
-    muts.forEach(m => {
-      m.addedNodes.forEach(n => {
-        if (n.nodeType !== 1) return;
-        if (n.matches?.('.flash-message')) wireToast(n);
-        n.querySelectorAll?.('.flash-message').forEach(wireToast);
-      });
-    });
-  });
-  mo.observe(document.body, { childList: true, subtree: true });
-});
+// Export global
+window.AlertManager = AlertManager;
