@@ -5,7 +5,10 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 
 <main class="container">
     <section class="select-time">
-        <h2 class="section-title">Choisissez un horaire</h2>
+        <h1 class="page-title">
+            <i class="fas fa-clock"></i>
+            Choisissez un horaire
+        </h1>
         <?php if (isset($service) && isset($date)): ?>
             <p class="selected-date">
                 Horaires disponibles pour le <?= (new DateTime($date))->format('d/m/Y') ?>
@@ -114,8 +117,8 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 }
 
 .navigation-buttons {
-    margin-top: 2rem;
     text-align: center;
+    margin-top: 2.5rem;
 }
 
 .btn {
@@ -133,8 +136,28 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 }
 
 .btn-secondary {
-    background: #f5f5f5;
-    color: #333;
+    background: #f3f4f6;
+    color: #0d47a1;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(13, 71, 161, 0.07);
+    padding: 0.85rem 2rem;
+    transition: all 0.2s cubic-bezier(.4,0,.2,1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-secondary:hover {
+    background: #e3eafc;
+    color: #0d47a1;
+    border-color: #0d47a1;
+    box-shadow: 0 4px 16px rgba(13, 71, 161, 0.12);
+    transform: translateY(-2px) scale(1.04);
+    text-decoration: none;
 }
 
 .no-slots {
@@ -157,6 +180,12 @@ require_once __DIR__ . '/../templates/flash-messages.php';
         width: 100%;
         margin: 0.5rem 0;
         text-align: center;
+    }
+    
+    .btn-secondary {
+        width: 100%;
+        font-size: 0.95rem;
+        padding: 0.75rem 1rem;
     }
 }
 </style>

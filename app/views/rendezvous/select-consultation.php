@@ -113,7 +113,10 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 
 <main class="container">
     <section class="select-consultation">
-        <h2 class="section-title">Veuillez choisir le motif de consultation</h2>
+        <h1 class="page-title">
+            <i class="fas fa-stethoscope"></i>
+            Choisissez votre motif de consultation
+        </h1>
         
         <div class="services-grid">
             <?php foreach ($services as $service) : ?>

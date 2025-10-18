@@ -3,89 +3,138 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
-    padding: 0.75rem 1rem;
-    background-color: #f8f9fa;
-    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.25rem;
+    background-color: white;
+    border-radius: 10px;
     gap: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
 }
 
 .search-box {
     position: relative;
-    flex: 0 0 250px;
+    flex: 0 0 280px;
 }
 
 .search-box i {
     position: absolute;
-    left: 10px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: #666;
+    color: #9ca3af;
+    font-size: 0.95rem;
 }
 
 .search-box input {
     width: 100%;
-    padding: 8px 8px 8px 35px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 0.625rem 0.875rem 0.625rem 2.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
     font-size: 0.9rem;
+    color: #1f2937;
+    background: #f9fafb;
+    transition: all 0.2s ease;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #9ca3af;
+    background: white;
+}
+
+.search-box input::placeholder {
+    color: #9ca3af;
 }
 
 .filter-options {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    flex: 1;
+    justify-content: center;
 }
 
 .filter-options select {
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    background-color: #fff;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: #f9fafb;
     font-size: 0.9rem;
-    color: #2f3437;
+    color: #1f2937;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-options select:hover {
+    border-color: #cbd5e0;
+    background: white;
+}
+
+.filter-options select:focus {
+    outline: none;
+    border-color: #9ca3af;
+    background: white;
 }
 
 .btn-select-all {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
+    padding: 0.625rem 1rem;
     font-size: 0.9rem;
-    color: #2f3437;
+    font-weight: 500;
+    color: #1f2937;
     background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 .btn-select-all:hover {
-    background: #f8f9fa;
+    background: #f9fafb;
     border-color: #cbd5e0;
 }
 
-.btn-select-all i {
-    font-size: 0.85rem;
-    color: #6e7681;
+.btn-select-all:active {
+    background: #f3f4f6;
 }
 
-.selected-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.btn-select-all i {
+    font-size: 0.9rem;
 }
 
 .selected-count {
     font-size: 0.9rem;
-    color: #666;
+    font-weight: 600;
+    color: #1f2937;
+    padding: 0.5rem 0.875rem;
+    background: #f3f4f6;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+
+/* Actions de sélection */
+.selected-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 0.875rem 1rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
     .filters-bar {
         flex-direction: column;
-        gap: 15px;
+        align-items: stretch;
+        gap: 0.875rem;
     }
 
     .search-box {
@@ -95,14 +144,40 @@
 
     .filter-options {
         width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
     }
 
     .filter-options select {
         flex: 1;
+        min-width: 140px;
     }
 
     .selected-actions {
         width: 100%;
-        justify-content: space-between;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .btn-select-all {
+        flex: 1;
+        min-width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .filters-bar {
+        padding: 0.875rem;
+    }
+
+    .search-box input {
+        padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+        font-size: 0.875rem;
+    }
+
+    .filter-options select,
+    .btn-select-all {
+        font-size: 0.875rem;
+        padding: 0.5rem 0.75rem;
     }
 }

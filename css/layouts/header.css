@@ -188,17 +188,34 @@
 .auth-buttons {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
-.auth-buttons .nav-item {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 7px 15px;
+.auth-buttons .nav-item:first-child {
+  /* Bouton Connexion - style simple */
+  border: none;
+  padding: 8px 16px;
+  background: transparent;
 }
 
-.auth-buttons .nav-item:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  background: var(--nav-item-hover);
+.auth-buttons .nav-item:first-child:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.auth-buttons .nav-item:last-child {
+  /* Bouton Inscription - style mis en valeur */
+  border: none;
+  padding: 8px 20px;
+  background: white;
+  color: #3a6ea5;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.auth-buttons .nav-item:last-child:hover {
+  background: #f0f4f8;
+  color: #2c5785;
+  transform: translateY(-1px);
 }
 
 /* Menu mobile */

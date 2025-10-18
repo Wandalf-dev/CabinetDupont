@@ -4,7 +4,10 @@ include __DIR__ . '/../templates/header.php';
 
 <main class="confirmation-page">
     <div class="container">
-        <h1 class="section-title">Confirmation du rendez-vous</h1>
+        <h1 class="page-title">
+            <i class="fas fa-check-circle"></i>
+            Confirmation de votre rendez-vous
+        </h1>
 
         <div class="confirmation-card">
             <!-- Informations du patient -->

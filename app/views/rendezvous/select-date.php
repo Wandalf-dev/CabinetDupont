@@ -5,7 +5,10 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 
 <main class="container">
     <section class="select-date">
-        <h2 class="section-title">Choisissez une date de rendez-vous</h2>
+        <h1 class="page-title">
+            <i class="fas fa-calendar-day"></i>
+            Choisissez une date de rendez-vous
+        </h1>
         
         <div class="calendar-wrapper">
             <!-- Dates disponibles en format JSON pour JavaScript -->
@@ -44,20 +47,21 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 
 <style>
 .select-date {
-    padding: 2rem 0;
-    max-width: 800px;
+    padding: 2rem 0 4rem 0;
+    max-width: 900px;
     margin: 0 auto;
 }
 
 .calendar-wrapper {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-    margin-top: 1.5rem;
-    max-width: 500px;  /* Réduire la largeur maximale */
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+    padding: 2rem;
+    margin-top: 2rem;
+    max-width: 550px;
     margin-left: auto;
     margin-right: auto;
+    border: 1px solid #e5e7eb;
 }
 
 .calendar-navigation {
@@ -65,40 +69,45 @@ require_once __DIR__ . '/../templates/flash-messages.php';
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
+    padding: 0 0.5rem;
 }
 
 .current-month {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #1976d2;
+    color: #0d47a1;
+    text-transform: capitalize;
 }
 
 .nav-btn {
-    background: none;
-    border: 2px solid #1976d2;
-    color: #1976d2;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    color: #0d47a1;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    font-size: 1.1rem;
 }
 
 .nav-btn:hover {
-    background: #1976d2;
+    background: #0d47a1;
     color: white;
+    border-color: #0d47a1;
+    transform: scale(1.05);
+}
+
+.nav-btn:active {
+    transform: scale(0.95);
 }
 
 .calendar {
     width: 100%;
-}
-
-.calendar {
-    width: 100%;
-    padding: 0 8px; /* Ajouter un peu de padding pour éviter que les cercles touchent les bords */
+    padding: 0 0.5rem;
 }
 
 .calendar-header {
@@ -106,55 +115,117 @@ require_once __DIR__ . '/../templates/flash-messages.php';
     grid-template-columns: repeat(7, 1fr);
     text-align: center;
     font-weight: 600;
-    color: #666;
-    margin-bottom: 0.5rem; /* Réduire l'espace entre l'en-tête et les jours */
-    padding: 0 4px; /* Aligner avec les cercles en dessous */
+    color: #6b7280;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .calendar-header div {
-    width: 36px; /* Même largeur que les cercles */
-    margin: 0 auto; /* Centrer dans la colonne */
+    padding: 0.5rem 0;
 }
 
 .calendar-days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    font-size: 0.9rem;
-    justify-items: center; /* Centrer les éléments horizontalement */
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    justify-items: center;
 }
 
 .calendar-day {
-    width: 36px; /* Taille fixe pour les cercles */
-    height: 36px; /* Taille fixe pour les cercles */
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     font-weight: 500;
+    color: #1f2937;
+    background: #f9fafb;
+    border: 2px solid transparent;
 }
 
 .calendar-day:hover:not(.disabled) {
-    background: #e3f2fd;
-    color: #1976d2;
+    background: #e0f2fe;
+    color: #0d47a1;
+    border-color: #bae6fd;
+    transform: scale(1.1);
 }
 
 .calendar-day.active {
-    background: #1976d2;
+    background: #0d47a1;
     color: white;
+    border-color: #0d47a1;
+    box-shadow: 0 4px 12px rgba(13, 71, 161, 0.3);
 }
 
 .calendar-day.disabled {
-    color: #ccc;
+    color: #d1d5db;
     cursor: not-allowed;
-    background: #f5f5f5;
+    background: #f3f4f6;
+    opacity: 0.5;
+}
+
+.calendar-day.disabled:hover {
+    transform: none;
 }
 
 .calendar-day.today {
-    border: 2px solid #1976d2;
-    font-weight: bold;
+    border: 2px solid #0d47a1;
+    font-weight: 700;
+    background: white;
+}
+
+.calendar-day.today:hover:not(.disabled) {
+    background: #e0f2fe;
+}
+
+@media (max-width: 768px) {
+    .calendar-wrapper {
+        padding: 1.5rem 1rem;
+        border-radius: 12px;
+    }
+
+    .current-month {
+        font-size: 1.25rem;
+    }
+
+    .nav-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .calendar-day {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .calendar-wrapper {
+        padding: 1rem;
+    }
+
+    .calendar-day {
+        width: 36px;
+        height: 36px;
+        font-size: 0.85rem;
+        border-radius: 10px;
+    }
+
+    .nav-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .current-month {
+        font-size: 1.1rem;
+    }
 }
 </style>
 

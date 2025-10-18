@@ -84,12 +84,6 @@ if (session_status() === PHP_SESSION_NONE) {
                             <?php endif; ?>
                         <?php endif; ?>
 
-                        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'PATIENT'): ?>
-                            <a href="index.php?page=rendezvous&action=list" class="nav-item appointments-link">
-                                <i class="fas fa-calendar-check"></i>
-                                <span>Mes Rendez-vous</span>
-                            </a>
-                        <?php endif; ?>
                     <?php endif; ?>
                 </div>
 
@@ -105,7 +99,14 @@ if (session_status() === PHP_SESSION_NONE) {
                                         <ellipse cx="12" cy="17.5" rx="6" ry="3.5" fill="#3a6ea5"/>
                                     </svg>
                                 </div>
-                                <span class="user-name"><?php echo htmlspecialchars($_SESSION['user_prenom']); ?></span>
+                                <span class="user-name">
+                                    <?php 
+                                    $nom = htmlspecialchars($_SESSION['user_nom'] ?? '');
+                                    $prenom = htmlspecialchars($_SESSION['user_prenom'] ?? '');
+                                    $premiereLettre = mb_substr($prenom, 0, 1);
+                                    echo strtoupper($nom) . '.' . strtoupper($premiereLettre);
+                                    ?>
+                                </span>
                                 <i class="fas fa-chevron-down"></i>
                             </button>
                             <div class="dropdown-menu">

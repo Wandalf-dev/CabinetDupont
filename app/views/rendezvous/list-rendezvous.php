@@ -3,7 +3,10 @@
 
 <main>
     <div class="rdv-container">
-        <h1 class="section-title" style="margin-top:0;">Mes rendez-vous</h1>
+        <h1 class="page-title">
+            <i class="fas fa-calendar-alt"></i>
+            Mes rendez-vous
+        </h1>
         <div class="rdv-header">
             <a href="index.php?page=rendezvous&action=selectConsultation" class="btn btn-primary btn-new-rdv">
                 <i class="fas fa-plus me-2"></i>
@@ -126,45 +129,67 @@
     text-align: center;
     position: relative;
 }
-/* Popup confirmation d'annulation structurée */
-.modal-header.flex-column {
+/* Popup confirmation d'annulation moderne */
+.modal-custom .modal-content {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.modal-custom .modal-header {
+    background: white;
+    border-bottom: 1px solid #f3f4f6;
+    padding: 2rem 2rem 1rem 2rem;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    background: transparent;
-    border-bottom: none;
-    padding-bottom: 0;
+    align-items: center;
 }
-.modal-title-center {
-    font-size: 2rem;
-    font-weight: 800;
-    color: #e53e3e;
-    letter-spacing: 1px;
+
+.modal-custom .modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
     text-align: center;
-    margin-top: 8px;
-    margin-bottom: 18px;
+    margin: 0;
 }
+
+.modal-custom .modal-body {
+    padding: 1.5rem 2rem 2rem 2rem;
+    text-align: center;
+}
+
 .warning-icon {
-    font-size: 3.2rem !important;
-    color: #e53e3e;
+    font-size: 4rem !important;
+    color: #ef4444;
+    margin-bottom: 1.25rem;
+    display: block;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+.modal-text {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.75rem;
+}
+
+.modal-subtext {
+    font-size: 0.9375rem;
+    color: #9ca3af;
+    font-style: italic;
     margin-bottom: 0;
-    display: block;
-    text-align: center;
-}
-/* Popup confirmation d'annulation */
-.modal-title#confirmationModalLabel {
-    font-size: 2rem;
-    font-weight: 800;
-    color: #e53e3e;
-    letter-spacing: 1px;
-}
-.warning-icon {
-    font-size: 2.8rem !important;
-    color: #e53e3e;
-    margin-bottom: 10px;
-    display: block;
-    text-align: center;
 }
 .section-title::after {
     content: '';
@@ -177,132 +202,69 @@
 }
 
 
-/* Harmonisation graphique avec le site */
-.rdv-container {
-    max-width: 900px;
-    margin: 40px auto;
-    background: #f7f8fa;
-    border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
-    padding: 32px 24px;
-}
+/* Les styles de la liste sont dans css/modules/rendez-vous/list-rendezvous.css */
 
-.rdv-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 32px;
-}
-
-.rdv-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #23408e;
-    margin: 0;
-    font-family: 'Montserrat', 'Arial', sans-serif;
-}
-
-.btn-new-rdv {
-    font-size: 1rem;
-    padding: 0.6rem 1.3rem;
-    border-radius: 8px;
-    background: #23408e;
-    color: #fff;
-    border: none;
-    box-shadow: 0 2px 8px rgba(35,64,142,0.08);
-    font-family: inherit;
-    transition: background 0.2s, box-shadow 0.2s;
-}
-.btn-new-rdv:hover {
-    background: #1a2e5b;
-    box-shadow: 0 4px 16px rgba(35,64,142,0.12);
-}
-
-.rdv-table {
-    margin-top: 16px;
-}
-
-.table {
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
-.table th {
-    background: #e9ecf3;
-    color: #23408e;
-    font-weight: 600;
-    font-size: 1rem;
-    border: none;
-    padding: 0.9rem 0.7rem;
-    font-family: inherit;
-}
-.table td {
-    background: #fff;
-    color: #23408e;
-    font-size: 0.98rem;
-    border: none;
-    padding: 0.8rem 0.7rem;
-    vertical-align: middle;
-    font-family: inherit;
-}
-.table-hover tbody tr:hover {
-    background: #f2f6fc;
-    transition: background 0.2s;
-}
-
-.btn-cancel {
-    font-size: 0.95rem;
-    border-radius: 6px;
-    padding: 0.45rem 1rem;
-    background: #fff;
-    color: #e53e3e;
-    border: 1px solid #e53e3e;
-    font-family: inherit;
-    transition: background 0.2s, color 0.2s;
-}
-.btn-cancel:hover {
-    background: #e53e3e;
-    color: #fff;
-}
-
-.rdv-empty {
-    text-align: center;
-    padding: 48px 0;
-    color: #23408e;
-    font-family: inherit;
-}
-.rdv-empty i {
-    font-size: 2.2rem;
-    color: #bfc8e6;
-    margin-bottom: 12px;
-}
-.rdv-empty p {
-    font-size: 1.08rem;
-    margin-bottom: 8px;
-}
-.rdv-empty .text-muted {
-    color: #bfc8e6 !important;
-}
-
-@media (max-width: 700px) {
-    .rdv-container {
-        padding: 16px 4px;
-    }
-    .rdv-title {
-        font-size: 1.2rem;
-    }
-    .table th, .table td {
-        font-size: 0.92rem;
-        padding: 0.5rem 0.3rem;
-    }
-}
-
-/* Centrage des boutons dans la popup de confirmation */
-.modal-footer {
+/* Centrage et style des boutons dans la popup */
+.modal-custom .modal-footer {
     justify-content: center !important;
     display: flex !important;
-    gap: 18px;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    border-top: 1px solid #f3f4f6;
+    background: #fafafa;
+}
+
+.modal-custom .btn-confirm {
+    font-size: 1rem;
+    border-radius: 10px;
+    padding: 0.75rem 1.75rem;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.modal-custom .btn-confirm:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    transform: translateY(-2px);
+}
+
+.modal-custom .btn-confirm:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .modal-custom .modal-header,
+    .modal-custom .modal-body,
+    .modal-custom .modal-footer {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    .modal-custom .modal-footer {
+        flex-direction: column-reverse;
+        gap: 0.75rem;
+    }
+
+    .modal-custom .btn-cancel,
+    .modal-custom .btn-confirm {
+        width: 100%;
+    }
+
+    .warning-icon {
+        font-size: 3.5rem !important;
+    }
+
+    .modal-custom .modal-title {
+        font-size: 1.25rem;
+    }
+
+    .modal-text {
+        font-size: 1rem;
+    }
 }
 </style>
 

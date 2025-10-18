@@ -88,6 +88,35 @@ body {
   box-sizing: border-box;
 }
 
+/* Titres de pages */
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #0d47a1;
+  margin-bottom: 2.5rem;
+  text-align: center;
+  justify-content: center;
+}
+
+.page-title i {
+  font-size: 2rem;
+  color: #0d47a1;
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .page-title i {
+    font-size: 1.5rem;
+  }
+}
+
 /* Utilitaire accessibilité (défini une seule fois) */
 .sr-only {
   position: absolute !important;

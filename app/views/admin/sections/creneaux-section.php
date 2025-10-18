@@ -67,21 +67,23 @@ $csrf_token = \App\Core\Csrf::generateToken();
                 </select>
             </label>
         </div>
-        <div class="selected-actions">
-            <span class="selected-count">0 sélectionné(s)</span>
-            <button type="button" class="btn-secondary" id="btn-select-all">
-                <i class="fas fa-check-square"></i>
-                Tout sélectionner
-            </button>
-            <button class="btn-warning" id="btn-mark-unavailable" type="button" disabled>
-                <i class="fas fa-ban"></i>
-                Marquer indisponible
-            </button>
-            <button class="btn-danger" id="btn-delete-selected" type="button" disabled>
-                <i class="fas fa-trash"></i>
-                Supprimer
-            </button>
-        </div>
+    </div>
+
+    <!-- Actions de sélection -->
+    <div class="selected-actions">
+        <span class="selected-count">0 sélectionné(s)</span>
+        <button type="button" class="btn-secondary btn-select-all" id="btn-select-all">
+            <i class="fas fa-check-square"></i>
+            Tout sélectionner
+        </button>
+        <button class="btn-warning" id="btn-mark-unavailable" type="button" disabled>
+            <i class="fas fa-ban"></i>
+            Marquer indisponible
+        </button>
+        <button class="btn-danger" id="btn-delete-selected" type="button" disabled>
+            <i class="fas fa-trash"></i>
+            Supprimer
+        </button>
     </div>
 
     <!-- Vue principale des créneaux -->
