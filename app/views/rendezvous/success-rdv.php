@@ -6,8 +6,10 @@
         <div class="success-content">
             <div class="text-center">
                 <div class="success-alert">
-                    <i class="fas fa-check-circle fa-4x success-icon"></i>
-                    <h1 class="success-title page-title">Rendez-vous confirmé avec succès !</h1>
+                    <div class="success-header">
+                        <i class="fas fa-check-circle fa-4x success-icon"></i>
+                        <h1 class="success-heading">Rendez-vous confirmé avec succès !</h1>
+                    </div>
                     <p class="success-message">Un email de confirmation vous a été envoyé avec les détails de votre rendez-vous.</p>
                 </div>
                 

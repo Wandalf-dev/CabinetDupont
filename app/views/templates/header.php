@@ -38,10 +38,15 @@ if (session_status() === PHP_SESSION_NONE) {
         '/css/pages/about.css',
         '/css/modules/agenda/agenda.css',
         '/css/components/table-actions.css',
-        '/css/modules/rendez-vous/confirmation-rdv.css'
+        '/css/modules/rendez-vous/rendezvous-common.css',
+        '/css/modules/rendez-vous/confirmation-rdv.css',
+        '/css/modules/rendez-vous/select-consultation.css',
+        '/css/modules/rendez-vous/select-date.css',
+        '/css/modules/rendez-vous/select-time.css'
     ];
+    $timestamp = time();
     foreach($cssFiles as $css): ?>
-        <link rel="stylesheet" href="<?php echo BASE_URL . $css; ?>" />
+        <link rel="stylesheet" href="<?php echo BASE_URL . $css . '?v=' . $timestamp; ?>" />
     <?php endforeach; ?>
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
     <script src="<?php echo BASE_URL; ?>/js/components/alerts.js"></script>
@@ -53,6 +58,11 @@ if (session_status() === PHP_SESSION_NONE) {
 
     <header class="modern-header">
         <div class="header-content">
+            <!-- Menu burger -->
+            <button class="mobile-menu-toggle" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+
             <!-- Logo -->
             <a href="index.php" class="brand">
                 <img src="<?php echo BASE_URL; ?>/assets/dupontcare-logo-horizontal-DUPONT-white.svg" alt="DupontCare" class="logo" />
@@ -60,10 +70,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
             <!-- Menu principal -->
             <nav class="main-nav">
-                <button class="mobile-menu-toggle" aria-label="Menu">
-                    <span></span><span></span><span></span>
-                </button>
-                
                 <div class="nav-links">
                     <a href="index.php?page=home" class="nav-item">Accueil</a>
                     <a href="index.php?page=actus" class="nav-item">Actualités</a>
@@ -87,11 +93,13 @@ if (session_status() === PHP_SESSION_NONE) {
                     <?php endif; ?>
                 </div>
 
-                <!-- Menu utilisateur -->
-                <div class="user-menu">
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <div class="user-dropdown">
-                            <button class="user-button">
+            </nav>
+
+            <!-- Menu utilisateur -->
+            <div class="user-menu">
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <div class="user-dropdown">
+                        <button class="user-button">
                                 <div class="user-avatar">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <circle cx="12" cy="12" r="12" fill="#fff"/>
@@ -110,6 +118,19 @@ if (session_status() === PHP_SESSION_NONE) {
                                 <i class="fas fa-chevron-down"></i>
                             </button>
                             <div class="dropdown-menu">
+                                <a href="index.php?page=home" class="dropdown-item mobile-nav-item">
+                                    <i class="fas fa-home"></i>
+                                    <span>Accueil</span>
+                                </a>
+                                <a href="index.php?page=actus" class="dropdown-item mobile-nav-item">
+                                    <i class="fas fa-newspaper"></i>
+                                    <span>Actualités</span>
+                                </a>
+                                <a href="index.php?page=about" class="dropdown-item mobile-nav-item">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>À propos</span>
+                                </a>
+                                <div class="dropdown-divider mobile-nav-divider"></div>
                                 <a href="index.php?page=user&action=profile" class="dropdown-item">
                                     <i class="fas fa-user"></i>
                                     <span>Mon profil</span>
@@ -128,12 +149,42 @@ if (session_status() === PHP_SESSION_NONE) {
                             </div>
                         </div>
                     <?php else: ?>
-                        <div class="auth-buttons">
-                            <a href="index.php?page=auth&action=login" class="nav-item">Connexion</a>
-                            <a href="index.php?page=auth&action=register" class="nav-item">Inscription</a>
+                        <div class="user-dropdown">
+                            <button class="user-button guest-button">
+                                <div class="user-avatar">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="12" cy="12" r="12" fill="#fff"/>
+                                        <circle cx="12" cy="10" r="4" fill="#3a6ea5"/>
+                                        <ellipse cx="12" cy="17.5" rx="6" ry="3.5" fill="#3a6ea5"/>
+                                    </svg>
+                                </div>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a href="index.php?page=home" class="dropdown-item mobile-nav-item">
+                                    <i class="fas fa-home"></i>
+                                    <span>Accueil</span>
+                                </a>
+                                <a href="index.php?page=actus" class="dropdown-item mobile-nav-item">
+                                    <i class="fas fa-newspaper"></i>
+                                    <span>Actualités</span>
+                                </a>
+                                <a href="index.php?page=about" class="dropdown-item mobile-nav-item">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>À propos</span>
+                                </a>
+                                <div class="dropdown-divider mobile-nav-divider"></div>
+                                <a href="index.php?page=auth&action=login" class="dropdown-item">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    <span>Connexion</span>
+                                </a>
+                                <a href="index.php?page=auth&action=register" class="dropdown-item">
+                                    <i class="fas fa-user-plus"></i>
+                                    <span>Inscription</span>
+                                </a>
+                            </div>
                         </div>
                     <?php endif; ?>
-                </div>
-            </nav>
+            </div>
         </div>
     </header>

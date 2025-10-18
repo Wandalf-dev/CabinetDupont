@@ -49,7 +49,7 @@ console.log('Scripts chargés');
     <section class="form-section">
         <div class="section-header">
             <h2>Modifier mon profil</h2>
-            <a href="index.php?page=user&action=profile" class="btn btn-secondary">Retour au profil</a>
+            <a href="index.php?page=user&action=profile" class="btn btn-secondary btn-retour-profil">Retour au profil</a>
         </div>
 
         <?php if (isset($_SESSION['error'])): ?>

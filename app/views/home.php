@@ -2,49 +2,59 @@
 include __DIR__ . '/templates/header.php';
 include __DIR__ . '/templates/flash-messages.php'; ?>
 
-<main>
+<main class="home-page">
 
   <!-- ================= HERO ================= -->
   <section class="hero">
-    <div class="container">
-      <!-- Bloc 1 : Animation Lottie et texte d'accueil -->
-      <div class="hero-row">
-        <div class="hero-media">
-          <!-- Animation Lottie pour illustrer l'accueil -->
-          <div id="lottie-animation"></div>
-        </div>
-
-        <div class="hero-text">
-          <h1>Bienvenue chez DupontCare</h1>
-          <p>Un cabinet dentaire moderne, humain et à votre écoute.</p>
-          <!-- Bouton pour prendre rendez-vous -->
+    <div class="hero-container">
+      
+      <!-- Section principale avec animation et CTA -->
+      <div class="hero-main">
+        <div class="hero-content" style="margin-top: 6rem;">
+          <h1 class="hero-title">
+            Bienvenue chez <span class="hero-highlight">DupontCare</span>
+          </h1>
+          <p class="hero-subtitle">
+            Un <strong>cabinet dentaire</strong> humain et à votre écoute, pour prendre soin de votre sourire avec expertise et bienveillance.
+          </p>
           <a href="index.php?page=<?= isset($_SESSION['user_id']) ? 'rendezvous&action=selectConsultation' : 'auth&action=login' ?>" 
-             class="btn btn-primary">
+             class="btn btn-primary btn-hero">
+             <i class="fas fa-calendar-check"></i>
              Prendre rendez-vous
           </a>
         </div>
+        
+        <div class="hero-visual">
+          <div id="lottie-animation"></div>
+        </div>
       </div>
 
-      <!-- Bloc 2 : Présentation du docteur -->
-      <div class="hero-row reverse">
-        <div class="hero-text doctor-card">
-          <p class="doctor-presentation">
-            Le Dr Dupont, chirurgien-dentiste diplômé, vous accueille dans un
-            <span class="doctor-highlight">environnement chaleureux et professionnel</span>.<br><br>
-            Son expertise et son écoute garantissent une prise en charge adaptée à chaque patient.
-          </p>
-        </div>
-
-        <div class="hero-media doctor-photo-halo">
-          <!-- Photo du docteur -->
+      <!-- Section présentation docteur -->
+      <div class="doctor-section">
+        <div class="doctor-image">
           <img
             src="/cabinetdupont/assets/pharmacien-au-travail.jpg"
             alt="Dr Dupont au cabinet"
-            class="doctor-photo"
             loading="lazy"
           />
         </div>
+        
+        <div class="doctor-info">
+          <h2 class="doctor-name">Dr Dupont</h2>
+          <p class="doctor-title">Chirurgien-dentiste diplômé</p>
+          <div class="doctor-description">
+            <p>
+              <i class="fas fa-check-circle"></i>
+              <span>Vous accueille dans un <strong>environnement chaleureux et professionnel</strong></span>
+            </p>
+            <p>
+              <i class="fas fa-check-circle"></i>
+              <span>Son <strong>expertise et son écoute</strong> garantissent une prise en charge adaptée à chaque patient</span>
+            </p>
+          </div>
+        </div>
       </div>
+      
     </div>
   </section>
 

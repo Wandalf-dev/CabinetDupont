@@ -16,6 +16,7 @@
   box-shadow: var(--header-shadow);
   width: 100%;
   z-index: 1000;
+  position: relative;
 }
 
 .header-content {
@@ -25,6 +26,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
+}
+
+/* Menu burger - caché par défaut sur desktop */
+.mobile-menu-toggle {
+  display: none;
 }
 
 /* Logo */
@@ -164,6 +171,15 @@
   transition: var(--transition);
 }
 
+/* Navigation mobile cachée sur desktop */
+.mobile-nav-item {
+  display: none !important;
+}
+
+.mobile-nav-divider {
+  display: none !important;
+}
+
 .dropdown-item i {
   font-size: 1.1rem;
   opacity: 0.7;
@@ -218,74 +234,199 @@
   transform: translateY(-1px);
 }
 
-/* Menu mobile */
+/* Menu burger mobile */
 .mobile-menu-toggle {
   display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   border: none;
-  background: none;
-  padding: 8px;
+  background: transparent;
+  padding: 0;
   cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  width: 44px;
+  height: 44px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.mobile-menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .mobile-menu-toggle span {
   display: block;
   width: 24px;
-  height: 2px;
+  height: 3px;
   background: #fff;
-  margin: 4px 0;
-  transition: var(--transition);
+  transition: all 0.3s ease;
+  border-radius: 0;
+  flex-shrink: 0;
+  min-height: 3px;
+  max-height: 3px;
+}
+
+.mobile-menu-toggle span:not(:last-child) {
+  margin-bottom: 6px;
+}
+
+.mobile-menu-toggle.active span:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.mobile-menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-toggle.active span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
 }
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .nav-links {
-    display: none;
-  }
-
-  .mobile-menu-toggle {
-    display: block;
-  }
-
-  .nav-links.active {
+  .header-content {
     display: flex;
-    flex-direction: column;
-    position: absolute;
-    top: var(--header-height);
-    left: 0;
-    right: 0;
-    background: var(--header-bg);
-    padding: 16px;
-    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    height: var(--header-height);
   }
 
-  .nav-item {
-    width: 100%;
+  /* Burger caché en responsive */
+  .mobile-menu-toggle {
+    display: none !important;
+  }
+
+  /* Logo à gauche */
+  .brand {
+    position: relative;
+    left: auto;
+    transform: none;
+    margin: 0;
+    height: 50px;
+  }
+
+  /* Navigation principale cachée en responsive */
+  .main-nav {
+    display: none !important;
+  }
+
+  /* User menu à droite */
+  .user-menu {
+    margin: 0;
+    margin-left: auto;
+  }
+
+  .user-dropdown {
+    display: flex;
+    align-items: center;
+  }
+
+  .user-button {
+    min-width: 80px;
+    padding: 8px 16px;
+  }
+
+  /* Navigation mobile dans le dropdown */
+  .mobile-nav-item {
+    display: flex !important;
+  }
+
+  .mobile-nav-divider {
+    display: block !important;
   }
 }
 
 @media (max-width: 768px) {
   .header-content {
-    padding: 0 16px;
+    padding: 0 8px;
   }
 
   .brand {
-    margin-right: 24px;
+    height: 38px;
+  }
+
+  .nav-item {
+    font-size: 0.85rem;
+    padding: 6px 10px;
   }
 
   .user-name {
-    display: none;
+    display: inline-block;
+    font-size: 0.85rem;
   }
 
   .user-button {
-    padding: 6px;
-  }
-
-  .auth-buttons {
-    gap: 8px;
-  }
-
-  .btn-login, .btn-register {
     padding: 8px 16px;
+    min-width: 70px;
+    min-height: 56px;
+    width: auto;
+    height: 56px;
+    border-radius: 8px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }  .user-button .fa-chevron-down {
+    display: none;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    margin: 0;
+  }
+
+  .guest-button {
+    padding: 8px;
+    border-radius: 50%;
+  }
+
+  .dropdown-menu {
+    right: 0;
+    min-width: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content {
+    padding: 0 4px;
+  }
+
+  .brand {
+    height: 40px;
+  }
+
+  .nav-item {
+    font-size: 0.8rem;
+    padding: 6px 8px;
+  }
+
+  .nav-item span {
+    display: none;
+  }
+
+  .user-name {
+    display: inline-block;
+    font-size: 0.75rem;
+  }
+
+  .user-button {
+    min-width: 60px;
+    min-height: 38px;
+    width: auto;
+    height: 38px;
+    padding: 6px 12px;
+  }
+
+  .user-avatar {
+    width: 24px;
+    height: 24px;
+  }
+
+  .dropdown-menu {
+    min-width: 160px;
   }
 }
 
@@ -296,3 +437,4 @@
   right: 16px;
   z-index: 1100;
 }
+

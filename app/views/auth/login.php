@@ -35,7 +35,6 @@ include __DIR__ . '/../templates/header.php'; ?>
       <button type="submit" class="btn-login">Se connecter</button>
       <div class="login-links">
         <a href="index.php?page=auth&action=forgot">Mot de passe oublié ?</a>
-        <span>·</span>
         <a href="index.php?page=auth&action=register">Créer un compte</a>
       </div>
     </form>

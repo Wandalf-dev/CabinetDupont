@@ -1,15 +1,17 @@
-/* Style pour la page de succès de rendez-vous */
+/* Style pour la page de succ�s de rendez-vous */
 main {
-    min-height: calc(100vh - 80px); /* 80px est la hauteur approximative du header */
+    min-height: calc(100vh - 80px);
     display: flex;
     flex-direction: column;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
 .success-container {
     flex: 1;
     display: flex;
     align-items: center;
-    padding: 4rem 0;
+    justify-content: center;
+    padding: 4rem 1rem;
 }
 
 .success-content {
@@ -19,54 +21,206 @@ main {
 }
 
 .success-alert {
-    background: linear-gradient(145deg, #f8fff8, #f0fff0);
+    background: #fff;
     border: none;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 128, 0, 0.1);
-    padding: 2.5rem;
-    margin-bottom: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: 
+        0 10px 25px -5px rgba(0, 0, 0, 0.1),
+        0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    padding: 3rem;
+    margin-bottom: 0;
+    position: relative;
+    overflow: hidden;
+    animation: slideUp 0.5s ease-out forwards;
+    border-top: 4px solid #28a745;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* En-tête avec icône et titre côte à côte */
+.success-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
 }
 
 .success-icon {
     color: #28a745;
-    margin-bottom: 1.5rem;
-    animation: scaleIn 0.5s ease-out;
+    animation: scaleIn 0.6s ease-out;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
-.success-title {
-    color: #1a5928;
+@keyframes scaleIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.success-heading {
+    color: #28a745;
     font-size: 1.8rem;
-    margin-bottom: 1rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* Ancien sélecteur pour compatibilité */
+.success-title {
+    color: #28a745;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    line-height: 1.3;
 }
 
 .success-message {
     color: #2d672d;
     font-size: 1.1rem;
-    line-height: 1.6;
+    line-height: 1.7;
+    margin-bottom: 0;
 }
 
 .success-buttons {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .success-buttons .btn {
-    padding: 0.8rem 1.5rem;
-    font-size: 1.1rem;
-    transition: transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    min-width: 200px;
+    box-sizing: border-box;
 }
 
-.success-buttons .btn:hover {
+.success-buttons .btn i {
+    margin-right: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+}
+
+.success-buttons .btn-primary {
+    background: linear-gradient(135deg, #28a745 0%, #20883b 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.success-buttons .btn-primary:hover {
+    background: linear-gradient(135deg, #20883b 0%, #1e7e34 100%);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
     transform: translateY(-2px);
+    color: white;
+    text-decoration: none;
 }
 
-@keyframes scaleIn {
-    from {
-        transform: scale(0);
-        opacity: 0;
+.success-buttons .btn-secondary {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    font-weight: 500;
+}
+
+.success-buttons .btn-secondary:hover {
+    background: #e2e8f0;
+    color: #334155;
+    border-color: #94a3b8;
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .success-container {
+        padding: 3rem 1rem;
     }
-    to {
-        transform: scale(1);
-        opacity: 1;
+
+    .success-alert {
+        padding: 2.5rem 2rem;
+        border-radius: 0.75rem;
+    }
+
+    .success-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .success-title {
+        font-size: 1.5rem;
+    }
+
+    .success-message {
+        font-size: 1rem;
+    }
+
+    .success-buttons {
+        flex-direction: column;
+        margin-top: 2rem;
+    }
+
+    .success-buttons .btn {
+        width: 100%;
+        min-width: 0;
+        padding: 0.875rem 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .success-container {
+        padding: 2rem 0.75rem;
+    }
+
+    .success-alert {
+        padding: 2rem 1.5rem;
+    }
+
+    .success-title {
+        font-size: 1.3rem;
+    }
+
+    .success-message {
+        font-size: 0.95rem;
+    }
+
+    .success-buttons {
+        margin-top: 1.75rem;
+    }
+
+    .success-buttons .btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9375rem;
     }
 }
 

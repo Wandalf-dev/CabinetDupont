@@ -1,39 +1,57 @@
+/* Conteneur principal */
+.select-consultation {
+    padding: 2.5rem 0;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
 /* Conteneur des services */
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 2rem;
     padding: 1rem;
+    justify-items: center;
+    max-width: 100%;
 }
 
 /* Carte de service */
 .service-card {
-    background: #fff;
+    background: white;
     border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: visible;
     display: flex;
     flex-direction: column;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     height: 100%;
+    min-height: 420px;
+    width: 100%;
+    max-width: 450px;
 }
 
 .service-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 /* Image du service */
 .service-image {
     width: 100%;
-    height: 200px;
+    height: 180px;
     overflow: hidden;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px 12px 0 0;
 }
 
 .service-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
 }
 
 /* Contenu du service */
@@ -41,32 +59,32 @@
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
-    height: 100%;
+    flex: 1;
 }
 
 .service-content h3 {
-    margin: 0 0 1rem 0;
-    font-size: 1.5rem;
     color: #1976d2;
+    margin: 0 0 1rem 0;
+    font-size: 1.35rem;
     font-weight: 600;
 }
 
 .service-content p {
-    margin: 0 0 1.5rem 0;
     color: #555;
-    line-height: 1.6;
-    flex-grow: 1;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin: 0 0 1.5rem 0;
+    flex: 1;
 }
 
-/* Style du bouton */
+/* Bouton de sélection */
 .select-service-btn {
     width: 100%;
-    padding: 0.8rem 1.5rem;
+    padding: 0.9rem 1.5rem;
     background: #1976d2;
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
@@ -74,12 +92,14 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    transition: all 0.3s ease;
     margin-top: auto;
-    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .select-service-btn:hover {
     background: #1565c0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
 }
 
 .select-service-btn i {
@@ -87,5 +107,225 @@
 }
 
 .select-service-btn:hover i {
-    transform: translateX(5px);
+    transform: translateX(4px);
+}
+
+/* Responsive Design */
+/* Tablettes et petits écrans */
+@media (max-width: 992px) {
+    .select-consultation {
+        padding: 2rem 1rem;
+    }
+    
+    .services-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        padding: 0.75rem;
+        justify-items: center;
+    }
+    
+    .service-card {
+        min-height: 380px;
+        max-width: 420px;
+    }
+    
+    .service-image {
+        height: 160px;
+        border-radius: 10px 10px 0 0;
+    }
+    
+    .service-content {
+        padding: 1.25rem;
+    }
+    
+    .service-content h3 {
+        font-size: 1.25rem;
+    }
+    
+    .service-content p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+}
+
+/* Tablettes portrait et grands mobiles */
+@media (max-width: 768px) {
+    .select-consultation {
+        padding: 1.5rem 1rem;
+    }
+    
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0.5rem;
+        justify-items: center;
+    }
+    
+    .service-card {
+        min-height: 340px;
+        border-radius: 10px;
+        max-width: 500px;
+        width: 100%;
+    }
+    
+    .service-image {
+        height: 150px;
+        border-radius: 10px 10px 0 0;
+    }
+    
+    .service-content {
+        padding: 1.25rem;
+    }
+    
+    .service-content h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.875rem;
+    }
+    
+    .service-content p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1.25rem;
+    }
+    
+    .select-service-btn {
+        padding: 0.85rem 1.25rem;
+        font-size: 0.95rem;
+        border-radius: 7px;
+    }
+}
+
+/* Mobiles */
+@media (max-width: 640px) {
+    .select-consultation {
+        padding: 1.25rem 0.75rem;
+    }
+    
+    .services-grid {
+        gap: 1.25rem;
+        padding: 0.5rem;
+        justify-items: center;
+    }
+    
+    .service-card {
+        min-height: 320px;
+        border-radius: 10px;
+        max-width: 100%;
+    }
+    
+    .service-image {
+        height: 140px;
+        border-radius: 10px 10px 0 0;
+    }
+    
+    .service-content {
+        padding: 1.125rem;
+    }
+    
+    .service-content h3 {
+        font-size: 1.15rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .service-content p {
+        font-size: 0.875rem;
+        line-height: 1.55;
+        margin-bottom: 1.125rem;
+    }
+    
+    .select-service-btn {
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Petits mobiles */
+@media (max-width: 480px) {
+    .select-consultation {
+        padding: 1rem 0.5rem;
+    }
+    
+    .services-grid {
+        gap: 1rem;
+        padding: 0.5rem;
+        justify-items: center;
+    }
+    
+    .service-card {
+        min-height: 300px;
+        border-radius: 8px;
+        max-width: 100%;
+    }
+    
+    .service-image {
+        height: 130px;
+        border-radius: 8px 8px 0 0;
+    }
+    
+    .service-content {
+        padding: 1rem;
+    }
+    
+    .service-content h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.65rem;
+    }
+    
+    .service-content p {
+        font-size: 0.85rem;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+    }
+    
+    .select-service-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        border-radius: 6px;
+    }
+    
+    .select-service-btn:hover {
+        transform: none;
+    }
+}
+
+/* Très petits écrans */
+@media (max-width: 360px) {
+    .select-consultation {
+        padding: 0.875rem 0.5rem;
+    }
+    
+    .services-grid {
+        gap: 0.875rem;
+        padding: 0.25rem;
+        justify-items: center;
+    }
+    
+    .service-card {
+        min-height: 280px;
+        max-width: 100%;
+    }
+    
+    .service-image {
+        height: 120px;
+        border-radius: 8px 8px 0 0;
+    }
+    
+    .service-content {
+        padding: 0.875rem;
+    }
+    
+    .service-content h3 {
+        font-size: 1.05rem;
+    }
+    
+    .service-content p {
+        font-size: 0.8rem;
+        line-height: 1.45;
+        margin-bottom: 0.875rem;
+    }
+    
+    .select-service-btn {
+        padding: 0.7rem 0.875rem;
+        font-size: 0.85rem;
+    }
 }

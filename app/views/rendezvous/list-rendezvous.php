@@ -104,7 +104,7 @@
                 <p class="modal-subtext">Cette action est irréversible.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-cancel btn-modal-cancel" data-bs-dismiss="modal">
                     <i class="fas fa-times me-2"></i>Annuler
                 </button>
                 <button type="button" class="btn btn-confirm" id="confirmAnnulation">
@@ -251,7 +251,25 @@
 
     .modal-custom .btn-cancel,
     .modal-custom .btn-confirm {
-        width: 100%;
+        width: 100% !important;
+        height: auto !important;
+        padding: 0.875rem 1.5rem !important;
+        font-size: 1rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
+        border-radius: 10px !important;
+        text-indent: 0 !important;
+        overflow: visible !important;
+    }
+    
+    .modal-custom .btn-cancel i,
+    .modal-custom .btn-confirm i {
+        margin: 0 !important;
+        font-size: 1.1rem !important;
+        position: static !important;
+        transform: none !important;
     }
 
     .warning-icon {

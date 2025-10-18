@@ -1,0 +1,239 @@
+/* Page select-time */
+.select-time {
+    padding: 2rem 0;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.selected-date {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #666;
+    margin: 1.5rem 0;
+}
+
+.selected-date small {
+    font-size: 0.9rem;
+    color: #999;
+}
+
+/* Wrapper des créneaux */
+.time-slots-wrapper {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+/* Grille des créneaux */
+.time-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+/* Créneau horaire */
+.time-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border: 2px solid #1976d2;
+    border-radius: 8px;
+    background: white;
+    color: #1976d2;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.time-slot:hover {
+    background: #1976d2;
+    color: white;
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+/* Message d'erreur */
+.error-message {
+    text-align: center;
+    padding: 2rem;
+    background: #fff3f3;
+    border-radius: 8px;
+    margin: 2rem 0;
+}
+
+.error-message p {
+    color: #d32f2f;
+    margin-bottom: 1rem;
+}
+
+/* Aucun créneau disponible */
+.no-slots {
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+}
+
+/* Boutons de navigation */
+.select-time .navigation-buttons {
+    text-align: center;
+    margin-top: 2.5rem;
+}
+
+.select-time .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.select-time .btn-primary {
+    background: #1976d2;
+    color: white;
+}
+
+.select-time .btn-secondary {
+    background: #f3f4f6;
+    color: #1976d2;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.select-time .btn-secondary:hover {
+    background: #e5e7eb;
+    border-color: #1976d2;
+    text-decoration: none;
+}
+
+/* Responsive Design */
+
+/* Tablettes */
+@media (max-width: 768px) {
+    .select-time {
+        padding: 2rem 1rem;
+    }
+
+    .selected-date {
+        font-size: 1.1rem;
+        margin: 1.25rem 0;
+    }
+
+    .time-slots-wrapper {
+        padding: 1.5rem;
+    }
+
+    .time-slots {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 0.8rem;
+    }
+    
+    .time-slot {
+        padding: 0.875rem;
+    }
+
+    .select-time .navigation-buttons {
+        padding: 0 1rem;
+        margin-top: 2rem;
+    }
+    
+    .select-time .btn-secondary {
+        font-size: 0.9rem;
+        padding: 0.7rem 1.25rem;
+    }
+}
+
+/* Mobiles */
+@media (max-width: 640px) {
+    .select-time {
+        padding: 1.5rem 0.75rem;
+    }
+
+    .selected-date {
+        font-size: 1rem;
+        margin: 1rem 0;
+    }
+
+    .time-slots-wrapper {
+        padding: 1.25rem;
+        border-radius: 10px;
+    }
+
+    .time-slots {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .time-slot {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .select-time .navigation-buttons {
+        margin-top: 1.75rem;
+    }
+
+    .select-time .btn-secondary {
+        font-size: 0.875rem;
+        padding: 0.65rem 1rem;
+    }
+}
+
+/* Petits mobiles */
+@media (max-width: 480px) {
+    .select-time {
+        padding: 1.25rem 0.5rem;
+    }
+
+    .selected-date {
+        font-size: 0.95rem;
+    }
+
+    .time-slots-wrapper {
+        padding: 1rem;
+    }
+
+    .time-slots {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 0.65rem;
+    }
+
+    .time-slot {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .select-time .navigation-buttons {
+        margin-top: 1.5rem;
+    }
+
+    .select-time .btn-secondary {
+        font-size: 0.85rem;
+        padding: 0.6rem 0.875rem;
+    }
+}
+
+/* Très petits mobiles */
+@media (max-width: 380px) {
+    .time-slots {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 0.5rem;
+    }
+
+    .time-slot {
+        padding: 0.65rem;
+        font-size: 0.8rem;
+    }
+}
