@@ -473,4 +473,105 @@ class RendezVousController extends Controller {
             echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);
         }
     }
+
+    /**
+     * Change le statut d'un rendez-vous (HONORE, ABSENT, etc.)
+     */
+    public function changerStatut() {
+        // Capturer toute sortie pour éviter de casser le JSON
+        ob_start();
+        
+        header('Content-Type: application/json');
+        
+        try {
+            error_log("=== Début changerStatut ===");
+            error_log("SESSION: " . print_r($_SESSION, true));
+            error_log("POST: " . print_r($_POST, true));
+            
+            // Vérifier que l'utilisateur est admin ou médecin
+            if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['ADMIN', 'MEDECIN'])) {
+                error_log("Accès refusé - Role: " . ($_SESSION['user_role'] ?? 'non défini'));
+                ob_end_clean();
+                http_response_code(403);
+                echo json_encode(['success' => false, 'message' => 'Accès non autorisé']);
+                return;
+            }
+
+            // Récupérer les données
+            $rendezvousId = (int)($_POST['rendezvous_id'] ?? 0);
+            $nouveauStatut = $_POST['statut'] ?? '';
+
+            error_log("RDV ID: $rendezvousId, Statut: $nouveauStatut");
+
+            // Validation
+            if (!$rendezvousId || !$nouveauStatut) {
+                ob_end_clean();
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => 'Données manquantes']);
+                return;
+            }
+
+            // Statuts autorisés
+            $statutsAutorises = ['CONFIRME', 'HONORE', 'ABSENT', 'ANNULE'];
+            if (!in_array($nouveauStatut, $statutsAutorises)) {
+                ob_end_clean();
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => 'Statut invalide']);
+                return;
+            }
+
+            // Vérifier le statut actuel du rendez-vous
+            $rdvActuel = $this->rendezVousModel->getRendezVousById($rendezvousId);
+            if (!$rdvActuel) {
+                ob_end_clean();
+                http_response_code(404);
+                echo json_encode(['success' => false, 'message' => 'Rendez-vous introuvable']);
+                return;
+            }
+
+            // Vérifier si le statut est déjà celui demandé
+            if ($rdvActuel['statut'] === $nouveauStatut) {
+                ob_end_clean();
+                $messageStatut = [
+                    'HONORE' => 'honoré',
+                    'ABSENT' => 'absent',
+                    'CONFIRME' => 'confirmé',
+                    'ANNULE' => 'annulé'
+                ];
+                $statutTexte = $messageStatut[$nouveauStatut] ?? $nouveauStatut;
+                echo json_encode([
+                    'success' => false,
+                    'message' => "Ce rendez-vous est déjà marqué comme \"$statutTexte\""
+                ]);
+                return;
+            }
+
+            // Mettre à jour le statut
+            error_log("Appel updateStatus avec RDV: $rendezvousId, Statut: $nouveauStatut");
+            $success = $this->rendezVousModel->updateStatus($rendezvousId, $nouveauStatut);
+            error_log("Résultat updateStatus: " . ($success ? 'SUCCESS' : 'FAILED'));
+
+            // Nettoyer le buffer et envoyer le JSON
+            ob_end_clean();
+
+            if ($success) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Statut mis à jour avec succès'
+                ]);
+            } else {
+                http_response_code(500);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Erreur lors de la mise à jour du statut'
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            error_log("ERREUR changerStatut: " . $e->getMessage());
+            ob_end_clean();
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);
+        }
+    }
 }

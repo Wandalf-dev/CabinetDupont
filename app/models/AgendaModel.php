@@ -59,6 +59,7 @@ class AgendaModel extends Model {
                        c.est_reserve,
                        c.service_id,
                        r.id as rdv_id,
+                       r.duree as rdv_duree,
                        s.titre as service_titre, 
                        s.duree as service_duree,
                        s.couleur as service_couleur,

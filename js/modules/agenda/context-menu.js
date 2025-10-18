@@ -14,6 +14,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 <i class="fas fa-edit"></i>
                 Modifier
             </div>
+            <div class="context-menu-separator"></div>
+            <div class="context-menu-item" data-action="honore">
+                <i class="fas fa-check-circle"></i>
+                Marquer honoré
+            </div>
+            <div class="context-menu-item" data-action="absent">
+                <i class="fas fa-user-times"></i>
+                Marquer absent
+            </div>
+            <div class="context-menu-separator"></div>
             <div class="context-menu-item" data-action="cancel">
                 <i class="fas fa-times"></i>
                 Annuler
@@ -84,6 +94,30 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('Données du rendez-vous à modifier:', appointmentData);
                     showEditForm(appointmentElement);
                 }
+                break;
+            case 'honore':
+                showConfirmationDialog({
+                    title: 'Marquer comme honoré',
+                    message: 'Confirmez-vous que le patient s\'est présenté à ce rendez-vous ?',
+                    onConfirm: () => {
+                        console.log('Marquer honoré pour ID:', appointmentId);
+                        if (window.changerStatutRdv) {
+                            window.changerStatutRdv(appointmentId, 'HONORE');
+                        }
+                    }
+                });
+                break;
+            case 'absent':
+                showConfirmationDialog({
+                    title: 'Marquer comme absent',
+                    message: 'Confirmez-vous que le patient ne s\'est PAS présenté à ce rendez-vous ?',
+                    onConfirm: () => {
+                        console.log('Marquer absent pour ID:', appointmentId);
+                        if (window.changerStatutRdv) {
+                            window.changerStatutRdv(appointmentId, 'ABSENT');
+                        }
+                    }
+                });
                 break;
             case 'cancel':
                 showConfirmationDialog({

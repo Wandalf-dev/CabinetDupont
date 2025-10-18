@@ -40,6 +40,9 @@ class CreneauModel extends Model
 
     // Normalisation des statuts
     private const STATUT_ANNULE      = 'ANNULE';
+    private const STATUT_CONFIRME    = 'CONFIRME';
+    private const STATUT_HONORE      = 'HONORE';
+    private const STATUT_ABSENT      = 'ABSENT';
     private const STATUT_DEMANDE     = 'DEMANDE';
     private const STATUT_DISPONIBLE  = 'disponible';
     private const STATUT_INDISPONIBLE= 'indisponible';
@@ -174,7 +177,18 @@ class CreneauModel extends Model
     /** Créneaux existants sur une période */
     public function getCreneauxPourPeriode(string $dateDebut, string $dateFin, int $agendaId): array
     {
-        $sql = "SELECT * FROM creneau WHERE agenda_id = ? AND DATE(debut) BETWEEN ? AND ?";
+        $sql = "SELECT c.*, 
+                       r.id AS rdv_id,
+                       r.duree AS rdv_duree,
+                       r.statut AS rdv_statut,
+                       s.titre AS service_titre,
+                       s.duree AS service_duree
+                FROM creneau c
+                LEFT JOIN rendezvous r ON c.id = r.creneau_id AND r.statut != 'ANNULE'
+                LEFT JOIN service s ON c.service_id = s.id
+                WHERE c.agenda_id = ? 
+                AND DATE(c.debut) BETWEEN ? AND ?
+                ORDER BY c.debut ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$agendaId, $dateDebut, $dateFin]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
@@ -185,6 +199,10 @@ class CreneauModel extends Model
     {
         $sql = "SELECT c.*,
                        s.titre AS service_titre,
+                       s.duree AS service_duree,
+                       r.id AS rdv_id,
+                       r.duree AS rdv_duree,
+                       r.statut AS rdv_statut,
                        CASE 
                            WHEN c.statut = 'indisponible' THEN true
                            WHEN EXISTS (
@@ -192,9 +210,9 @@ class CreneauModel extends Model
                                FROM rendezvous r2
                                JOIN creneau c2 ON r2.creneau_id = c2.id
                                WHERE DATE(c2.debut) = DATE(c.debut)
-                                 AND c2.debut < c.fin
-                                 AND c2.fin > c.debut
                                  AND r2.statut != :annule
+                                 AND c2.debut <= c.debut
+                                 AND DATE_ADD(c2.debut, INTERVAL r2.duree MINUTE) > c.debut
                            ) THEN true 
                            ELSE false 
                        END AS est_reserve,
@@ -499,6 +517,7 @@ class CreneauModel extends Model
                 throw new \Exception('Patient introuvable');
             }
 
+
             $stmt = $this->db->prepare("SELECT id, duree FROM service WHERE id = ?");
             $stmt->execute([$serviceId]);
             $service = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -576,11 +595,11 @@ class CreneauModel extends Model
             $existingRdv = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
             if ($existingRdv) {
-                $stmtUpd = $this->db->prepare("UPDATE rendezvous SET patient_id = ?, medecin_id = ?, statut = ? WHERE id = ?");
-                $stmtUpd->execute([$patientId, $medecinId, self::STATUT_DEMANDE, $existingRdv['id']]);
+                $stmtUpd = $this->db->prepare("UPDATE rendezvous SET patient_id = ?, medecin_id = ?, statut = ?, duree = ? WHERE id = ?");
+                $stmtUpd->execute([$patientId, $medecinId, self::STATUT_CONFIRME, $duree, $existingRdv['id']]);
             } else {
-                $stmtIns = $this->db->prepare("INSERT INTO rendezvous (creneau_id, patient_id, medecin_id, statut) VALUES (?, ?, ?, ?)");
-                $stmtIns->execute([$creneauId, $patientId, $medecinId, self::STATUT_DEMANDE]);
+                $stmtIns = $this->db->prepare("INSERT INTO rendezvous (creneau_id, patient_id, medecin_id, statut, duree) VALUES (?, ?, ?, ?, ?)");
+                $stmtIns->execute([$creneauId, $patientId, $medecinId, self::STATUT_CONFIRME, $duree]);
             }
 
             $inIds = implode(',', array_fill(0, count($range), '?'));

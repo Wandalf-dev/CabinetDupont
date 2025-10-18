@@ -175,3 +175,43 @@
     opacity: 0.7;
     pointer-events: none;
 }
+
+/* Indicateurs de statut des rendez-vous */
+.status-indicator {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    line-height: 1;
+    z-index: 10;
+}
+
+.status-indicator.status-honore {
+    color: white;
+}
+
+.status-indicator.status-honore svg {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.status-indicator.status-absent {
+    color: white;
+}
+
+.status-indicator.status-absent svg {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.status-indicator.status-confirme {
+    color: white;
+}
+
+.status-indicator.status-confirme svg {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}

@@ -251,10 +251,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Réinitialiser les créneaux de la vue active (sans supprimer les éléments)
         const activeView = currentView === 'week' ? '.week-view' : '.day-view';
-        const slots = document.querySelectorAll(`${activeView} .slot-cell`);
+        
+        // Supprimer tous les rendez-vous affichés (qui sont en position absolute)
+        const appointments = document.querySelectorAll(`${activeView} .day-content .slot-cell.reserved`);
+        appointments.forEach(apt => {
+            if (apt.style.position === 'absolute') {
+                apt.remove();
+            }
+        });
+        
+        // Réinitialiser les créneaux de base
+        const slots = document.querySelectorAll(`${activeView} .slot-cell:not(.reserved)`);
         slots.forEach(slot => {
-            // Supprimer les rendez-vous existants
-            slot.querySelectorAll('.appointment').forEach(apt => apt.remove());
             slot.classList.remove('reserved');
             slot.removeAttribute('title');
             slot.style.backgroundColor = '';
@@ -392,8 +400,21 @@ document.addEventListener('DOMContentLoaded', function() {
                             titleDisplay = parts[0] + ' ' + parts[1];
                         }
                         
+                        // Créer l'indicateur de statut si nécessaire
+                        let statusIcon = '';
+                        if (event.status === 'HONORE') {
+                            statusIcon = '<span class="status-indicator status-honore" title="Rendez-vous honoré"><svg width="16" height="16" viewBox="0 0 64 64" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="m53.336 20.208-27.353 29.285a1 1 0 0 1 -1.525-.075l-13.858-18.118a1 1 0 0 1 .187-1.4l5.045-3.859a1 1 0 0 1 1.4.187l7.862 10.272a1 1 0 0 0 1.525.075l20.613-22.068a1 1 0 0 1 1.413-.049l4.642 4.342a1 1 0 0 1 .049 1.408z"/></svg></span>';
+                        } else if (event.status === 'ABSENT') {
+                            statusIcon = '<span class="status-indicator status-absent" title="Patient absent"><svg width="16" height="16" viewBox="0 0 512 512" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="m409.5 440.3c0 11.1-9 20.1-20.1 20.1h-369.3c-11.1.1-20.1-8.9-20.1-20 0-78.9 64.2-143.2 143.1-143.2h123.2c79 0 143.2 64.2 143.2 143.1z"/><path d="m318.4 165.2c0 62.8-50.9 113.6-113.6 113.6s-113.7-50.9-113.7-113.6 50.9-113.6 113.6-113.6c62.8 0 113.6 50.8 113.7 113.6z"/><path d="m470.8 224 35.3-35.3c7.7-8 7.5-20.7-.5-28.4-7.8-7.5-20.2-7.5-28 0l-35.3 35.3-35.3-35.3c-7.9-7.9-20.6-7.9-28.5 0s-7.9 20.6 0 28.5l35.3 35.3-35.3 35.3c-7.9 7.9-7.9 20.6 0 28.5s20.6 7.9 28.5 0l35.3-35.3 35.3 35.3c8 7.7 20.7 7.5 28.5-.5 7.5-7.8 7.5-20.2 0-28z"/></svg></span>';
+                        } else if (event.status === 'CONFIRME') {
+                            statusIcon = '<span class="status-indicator status-confirme" title="Rendez-vous confirmé"><svg width="16" height="16" viewBox="0 0 512 512" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="m256 486.075c-126.864 0-230.076-103.213-230.076-230.08 0-126.861 103.212-230.07 230.076-230.07s230.076 103.209 230.076 230.07c0 126.866-103.212 230.08-230.076 230.08zm0-428.15c-109.22 0-198.076 88.854-198.076 198.07 0 109.222 88.856 198.08 198.076 198.08s198.076-88.858 198.076-198.08c0-109.216-88.856-198.07-198.076-198.07z"/><path d="m333.12 332.547c-2.838 0-5.711-.755-8.312-2.34l-77.135-47.01c-4.766-2.904-7.673-8.082-7.673-13.663v-113.59c0-8.836 7.164-16 16-16s16 7.164 16 16v104.604l69.461 42.333c7.546 4.599 9.935 14.444 5.336 21.989-3.013 4.946-8.281 7.677-13.677 7.677z"/></svg></span>';
+                        }
+                        
                         // Format uniforme pour les deux vues
-                        appointmentElement.innerHTML = `${formatTime(startTime)} - ${formatTime(endTime)} ${titleDisplay} ${durationText}`;
+                        appointmentElement.innerHTML = `
+                            <span class="rdv-content">${formatTime(startTime)} - ${formatTime(endTime)} ${titleDisplay} ${durationText}</span>
+                            ${statusIcon}
+                        `;
 
                         // Gérer l'affichage de l'infobulle
                         let tooltipTimeout;

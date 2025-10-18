@@ -181,3 +181,110 @@ async function cancelAppointment(appointmentId) {
         }
     }
 }
+
+// ========================================
+// Gestion des boutons HONORE et ABSENT
+// ========================================
+
+// Fonction pour changer le statut d'un RDV
+async function changerStatutRdv(rendezvousId, nouveauStatut) {
+    try {
+        const formData = new FormData();
+        formData.append('rendezvous_id', rendezvousId);
+        formData.append('statut', nouveauStatut);
+
+        const response = await fetch('index.php?page=rendezvous&action=changerStatut', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.message || 'Erreur lors du changement de statut');
+        }
+
+        // Fermer le modal
+        const modal = document.querySelector('.appointment-details-overlay');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+
+        // Rafraîchir l'affichage
+        document.dispatchEvent(new CustomEvent('appointmentUpdated', {
+            detail: {
+                type: 'statut_change',
+                appointmentId: rendezvousId,
+                statut: nouveauStatut
+            }
+        }));
+
+        // Afficher l'alerte de succès
+        if (window.AlertManager) {
+            const messages = {
+                'HONORE': 'Rendez-vous marqué comme honoré',
+                'ABSENT': 'Patient marqué comme absent'
+            };
+            AlertManager.show(messages[nouveauStatut] || 'Statut mis à jour', 'success');
+        }
+
+    } catch (error) {
+        console.error('Erreur:', error);
+        if (window.AlertManager) {
+            AlertManager.show(error.message || 'Erreur lors du changement de statut', 'error');
+        }
+    }
+}
+
+// Écouter les clics sur les boutons HONORE et ABSENT
+document.addEventListener('DOMContentLoaded', function() {
+    // Utiliser la délégation d'événements pour gérer les boutons dynamiques
+    document.addEventListener('click', function(e) {
+        // Bouton HONORE
+        if (e.target.closest('.btn-admin.honore')) {
+            e.preventDefault();
+            
+            // Récupérer l'ID du RDV depuis le modal ou depuis l'attribut data
+            const modal = document.querySelector('.appointment-details-overlay');
+            const rendezvousId = modal?.dataset.rendezvousId || window.currentAppointmentId;
+            
+            if (rendezvousId) {
+                showConfirmationDialog({
+                    title: 'Marquer comme honoré',
+                    message: 'Confirmez-vous que le patient s\'est présenté à ce rendez-vous ?',
+                    onConfirm: () => changerStatutRdv(rendezvousId, 'HONORE'),
+                    onCancel: () => {}
+                });
+            } else {
+                if (window.AlertManager) {
+                    AlertManager.show('Impossible de déterminer le rendez-vous', 'error');
+                }
+            }
+        }
+        
+        // Bouton ABSENT
+        if (e.target.closest('.btn-admin.absent')) {
+            e.preventDefault();
+            
+            // Récupérer l'ID du RDV depuis le modal ou depuis l'attribut data
+            const modal = document.querySelector('.appointment-details-overlay');
+            const rendezvousId = modal?.dataset.rendezvousId || window.currentAppointmentId;
+            
+            if (rendezvousId) {
+                showConfirmationDialog({
+                    title: 'Marquer comme absent',
+                    message: 'Confirmez-vous que le patient ne s\'est PAS présenté à ce rendez-vous ?',
+                    onConfirm: () => changerStatutRdv(rendezvousId, 'ABSENT'),
+                    onCancel: () => {}
+                });
+            } else {
+                if (window.AlertManager) {
+                    AlertManager.show('Impossible de déterminer le rendez-vous', 'error');
+                }
+            }
+        }
+    });
+});
+
+// Exposer la fonction pour être utilisée globalement si nécessaire
+window.changerStatutRdv = changerStatutRdv;

@@ -37,14 +37,54 @@ require_once __DIR__ . '/../templates/flash-messages.php';
         </div>
     </div>
 
-    <!-- Légende des services -->
-    <div class="services-legend">
-        <?php foreach ($services as $service): ?>
-        <div class="legend-item">
-            <span class="color-dot" style="background-color: <?php echo htmlspecialchars($service['couleur'] ?? '#4CAF50'); ?>"></span>
-            <span class="service-name"><?php echo htmlspecialchars($service['titre']); ?></span>
+    <!-- Légendes : Services + Statuts -->
+    <div class="planning-legends">
+        <!-- Légende des services (à gauche) -->
+        <div class="services-legend">
+            <h4 class="legend-title">Services</h4>
+            <div class="legend-items">
+                <?php foreach ($services as $service): ?>
+                <div class="legend-item">
+                    <span class="color-dot" style="background-color: <?php echo htmlspecialchars($service['couleur'] ?? '#4CAF50'); ?>"></span>
+                    <span class="service-name"><?php echo htmlspecialchars($service['titre']); ?></span>
+                </div>
+                <?php endforeach; ?>
+            </div>
         </div>
-        <?php endforeach; ?>
+
+        <!-- Légende des statuts (à droite) -->
+        <div class="status-legend">
+            <h4 class="legend-title">Statuts</h4>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <span class="status-icon">
+                        <svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="m256 486.075c-126.864 0-230.076-103.213-230.076-230.08 0-126.861 103.212-230.07 230.076-230.07s230.076 103.209 230.076 230.07c0 126.866-103.212 230.08-230.076 230.08zm0-428.15c-109.22 0-198.076 88.854-198.076 198.07 0 109.222 88.856 198.08 198.076 198.08s198.076-88.858 198.076-198.08c0-109.216-88.856-198.07-198.076-198.07z"/>
+                            <path d="m333.12 332.547c-2.838 0-5.711-.755-8.312-2.34l-77.135-47.01c-4.766-2.904-7.673-8.082-7.673-13.663v-113.59c0-8.836 7.164-16 16-16s16 7.164 16 16v104.604l69.461 42.333c7.546 4.599 9.935 14.444 5.336 21.989-3.013 4.946-8.281 7.677-13.677 7.677z"/>
+                        </svg>
+                    </span>
+                    <span class="status-name">Confirmé</span>
+                </div>
+                <div class="legend-item">
+                    <span class="status-icon status-honore">
+                        <svg width="14" height="14" viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="m53.336 20.208-27.353 29.285a1 1 0 0 1 -1.525-.075l-13.858-18.118a1 1 0 0 1 .187-1.4l5.045-3.859a1 1 0 0 1 1.4.187l7.862 10.272a1 1 0 0 0 1.525.075l20.613-22.068a1 1 0 0 1 1.413-.049l4.642 4.342a1 1 0 0 1 .049 1.408z"/>
+                        </svg>
+                    </span>
+                    <span class="status-name">Honoré</span>
+                </div>
+                <div class="legend-item">
+                    <span class="status-icon status-absent">
+                        <svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="m409.5 440.3c0 11.1-9 20.1-20.1 20.1h-369.3c-11.1.1-20.1-8.9-20.1-20 0-78.9 64.2-143.2 143.1-143.2h123.2c79 0 143.2 64.2 143.2 143.1z"/>
+                            <path d="m318.4 165.2c0 62.8-50.9 113.6-113.6 113.6s-113.7-50.9-113.7-113.6 50.9-113.6 113.6-113.6c62.8 0 113.6 50.8 113.7 113.6z"/>
+                            <path d="m470.8 224 35.3-35.3c7.7-8 7.5-20.7-.5-28.4-7.8-7.5-20.2-7.5-28 0l-35.3 35.3-35.3-35.3c-7.9-7.9-20.6-7.9-28.5 0s-7.9 20.6 0 28.5l35.3 35.3-35.3 35.3c-7.9 7.9-7.9 20.6 0 28.5s20.6 7.9 28.5 0l35.3-35.3 35.3 35.3c8 7.7 20.7 7.5 28.5-.5 7.5-7.8 7.5-20.2 0-28z"/>
+                        </svg>
+                    </span>
+                    <span class="status-name">Absent</span>
+                </div>
+            </div>
+        </div>
     </div>
 
         <!-- Conteneur des vues -->
@@ -178,7 +218,6 @@ require_once __DIR__ . '/../templates/flash-messages.php';
             <p><strong>Notes:</strong> <span id="rdv-notes"></span></p>
         </div>
         <div class="modal-actions">
-            <button class="btn-admin confirm">Confirmer</button>
             <button class="btn-admin reschedule">Reprogrammer</button>
             <button class="btn-admin cancel">Annuler le rendez-vous</button>
         </div>

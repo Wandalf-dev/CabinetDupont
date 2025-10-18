@@ -72,7 +72,7 @@ class RendezVousModel extends Model {
 
             error_log("Rendez-vous trouvé : " . print_r($rdv, true));
 
-            // 2. Marquer le rendez-vous comme annulé
+            // 2. Marquer le rendez-vous comme annulé (on garde l'historique)
             $sql = "UPDATE rendezvous SET statut = 'ANNULE' WHERE id = ?";
             $stmt = $this->db->prepare($sql);
             $success = $stmt->execute([$rdvId]);
@@ -129,6 +129,9 @@ class RendezVousModel extends Model {
         error_log("=== Début modifierHeure dans le modèle ===");
         error_log("Paramètres reçus - ID: {$rdvId}, Date: {$nouvelleDate}, Heure: {$nouvelleHeure}");
         
+        // Nettoyer les créneaux orphelins avant toute modification
+        $this->nettoyerCreneauxOrphelins();
+        
         $this->db->beginTransaction();
         try {
             // 1. Récupérer les informations du rendez-vous actuel
@@ -150,6 +153,30 @@ class RendezVousModel extends Model {
             $nbCreneauxNecessaires = (int)ceil($duree / 30);
             $nouvelleDateTime = $nouvelleDate . ' ' . $nouvelleHeure . ':00';
 
+            // 1b. Récupérer tous les créneaux occupés par le RDV actuel pour les exclure de la vérification
+            // On récupère les créneaux en se basant sur ceux qui ont le même service_id ET qui sont réservés
+            // autour du créneau de départ du RDV, en couvrant la durée du service
+            $sql = "SELECT c.id 
+                   FROM creneau c
+                   WHERE c.agenda_id = ? 
+                   AND c.service_id = ?
+                   AND c.est_reserve = 1
+                   AND c.debut >= (SELECT debut FROM creneau WHERE id = ?)
+                   AND c.debut < DATE_ADD((SELECT debut FROM creneau WHERE id = ?), INTERVAL ? MINUTE)
+                   ORDER BY c.debut ASC";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                $rendezvous['agenda_id'],
+                $rendezvous['service_id'], 
+                $rendezvous['creneau_id'], 
+                $rendezvous['creneau_id'], 
+                $duree
+            ]);
+            $creneauxActuelsRdv = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+            error_log("Service ID: " . $rendezvous['service_id']);
+            error_log("Durée du service: " . $duree . " minutes");
+            error_log("Créneaux du RDV actuel à exclure: " . implode(', ', $creneauxActuelsRdv));
+
             // 2. Trouver le créneau de départ correspondant à la nouvelle heure
             $sql = "SELECT id, debut, fin, statut, est_reserve, agenda_id 
                    FROM creneau 
@@ -170,8 +197,8 @@ class RendezVousModel extends Model {
                 throw new \Exception("Ce créneau est marqué comme indisponible");
             }
 
-            // 4. Vérifier qu'il n'est pas déjà réservé (sauf si c'est le même rendez-vous qu'on déplace)
-            if ($nouveauCreneau['est_reserve'] == 1 && $nouveauCreneau['id'] != $rendezvous['creneau_id']) {
+            // 4. Vérifier qu'il n'est pas déjà réservé (sauf si c'est un des créneaux du RDV qu'on déplace)
+            if ($nouveauCreneau['est_reserve'] == 1 && !in_array($nouveauCreneau['id'], $creneauxActuelsRdv)) {
                 throw new \Exception("Ce créneau est déjà réservé");
             }
 
@@ -200,8 +227,8 @@ class RendezVousModel extends Model {
                 if ($creneau['statut'] === 'indisponible') {
                     throw new \Exception("Un des créneaux nécessaires est indisponible");
                 }
-                // Permettre le créneau actuel du rendez-vous, mais pas les autres réservés
-                if ($creneau['est_reserve'] == 1 && $creneau['id'] != $rendezvous['creneau_id']) {
+                // Permettre les créneaux du RDV actuel, mais pas les autres réservés
+                if ($creneau['est_reserve'] == 1 && !in_array($creneau['id'], $creneauxActuelsRdv)) {
                     throw new \Exception("Un des créneaux nécessaires est déjà réservé");
                 }
             }
@@ -229,7 +256,7 @@ class RendezVousModel extends Model {
                 throw new \Exception("Un autre rendez-vous chevauche cet horaire");
             }
 
-            // 7. Libérer l'ancien créneau et tous les créneaux consécutifs associés
+            // 7. D'ABORD : Libérer l'ancien créneau et tous les créneaux consécutifs associés
             // Récupérer tous les créneaux consécutifs de l'ancien rendez-vous
             $sql = "SELECT id 
                    FROM creneau 
@@ -248,6 +275,8 @@ class RendezVousModel extends Model {
             ]);
             $anciensCreneaux = $stmt->fetchAll(\PDO::FETCH_COLUMN);
             
+            error_log("Libération de " . count($anciensCreneaux) . " ancien(s) créneau(x): " . implode(', ', $anciensCreneaux));
+            
             if (!empty($anciensCreneaux)) {
                 $placeholders = implode(',', array_fill(0, count($anciensCreneaux), '?'));
                 $sql = "UPDATE creneau 
@@ -258,7 +287,22 @@ class RendezVousModel extends Model {
                 $stmt->execute($anciensCreneaux);
             }
 
-            // 8. Mettre à jour le rendez-vous avec le nouveau créneau
+            // 8. ENSUITE : Marquer tous les créneaux consécutifs nécessaires comme réservés
+            // On récupère les IDs de tous les créneaux consécutifs vérifiés en étape 5
+            $creneauxIds = array_column($creneauxConsecutifs, 'id');
+            $placeholders = implode(',', array_fill(0, count($creneauxIds), '?'));
+            
+            error_log("Réservation de " . count($creneauxIds) . " nouveau(x) créneau(x): " . implode(', ', $creneauxIds));
+            
+            $sql = "UPDATE creneau 
+                   SET est_reserve = 1, 
+                       service_id = ? 
+                   WHERE id IN ($placeholders)";
+            $stmt = $this->db->prepare($sql);
+            $params = array_merge([$rendezvous['service_id']], $creneauxIds);
+            $stmt->execute($params);
+
+            // 9. ENFIN : Mettre à jour le rendez-vous avec le nouveau créneau de départ
             $sql = "UPDATE rendezvous 
                    SET creneau_id = ? 
                    WHERE id = ?";
@@ -269,19 +313,6 @@ class RendezVousModel extends Model {
                 throw new \Exception("Erreur lors de la modification du rendez-vous");
             }
 
-            // 9. Marquer tous les créneaux consécutifs nécessaires comme réservés
-            // On récupère les IDs de tous les créneaux consécutifs vérifiés en étape 5
-            $creneauxIds = array_column($creneauxConsecutifs, 'id');
-            $placeholders = implode(',', array_fill(0, count($creneauxIds), '?'));
-            
-            $sql = "UPDATE creneau 
-                   SET est_reserve = 1, 
-                       service_id = ? 
-                   WHERE id IN ($placeholders)";
-            $stmt = $this->db->prepare($sql);
-            $params = array_merge([$rendezvous['service_id']], $creneauxIds);
-            $stmt->execute($params);
-
             $this->db->commit();
             error_log("Modification réussie - Ancien créneau: {$rendezvous['creneau_id']}, Nouveau créneau: {$nouveauCreneau['id']}, Service: {$rendezvous['service_id']}, Nb créneaux: " . count($creneauxIds));
             return true;
@@ -290,6 +321,36 @@ class RendezVousModel extends Model {
             $this->db->rollBack();
             error_log("Erreur lors de la modification de l'heure du rendez-vous : " . $e->getMessage());
             throw $e; // Relancer l'exception pour que le contrôleur puisse récupérer le message
+        }
+    }
+
+    /**
+     * Nettoie les créneaux orphelins (marqués comme réservés mais sans RDV actif)
+     * À appeler périodiquement ou après des opérations critiques
+     */
+    public function nettoyerCreneauxOrphelins() {
+        try {
+            $sql = "UPDATE creneau c
+                    SET c.est_reserve = 0, c.service_id = NULL
+                    WHERE c.est_reserve = 1 
+                    AND c.id NOT IN (
+                        SELECT r.creneau_id 
+                        FROM rendezvous r 
+                        WHERE r.statut != 'ANNULE'
+                    )";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $count = $stmt->rowCount();
+            
+            if ($count > 0) {
+                error_log("Nettoyage automatique : $count créneau(x) orphelin(s) libéré(s)");
+            }
+            
+            return $count;
+        } catch (\Exception $e) {
+            error_log("Erreur lors du nettoyage des créneaux orphelins : " . $e->getMessage());
+            return 0;
         }
     }
 }

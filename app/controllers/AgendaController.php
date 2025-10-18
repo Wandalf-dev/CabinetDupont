@@ -127,13 +127,15 @@ class AgendaController extends Controller {
             error_log("Traitement du rendez-vous : " . print_r($rdv, true));
             error_log("Données du rendez-vous avant formatage : " . print_r($rdv, true));
             
-            // Récupérer la durée du service
-            $service_duree = isset($rdv['service_duree']) ? intval($rdv['service_duree']) : 30;
+            // Récupérer la durée réelle du RDV (priorité) sinon la durée du service
+            $duree = isset($rdv['rdv_duree']) && $rdv['rdv_duree'] > 0 
+                ? intval($rdv['rdv_duree']) 
+                : (isset($rdv['service_duree']) ? intval($rdv['service_duree']) : 30);
             $debut = new \DateTime($rdv['debut']);
             $fin = clone $debut;
-            $fin->modify("+{$service_duree} minutes");
+            $fin->modify("+{$duree} minutes");
 
-            error_log("Durée du service : {$service_duree} minutes");
+            error_log("Durée du RDV : {$duree} minutes");
             error_log("Début : {$rdv['debut']}, Fin calculée : {$fin->format('Y-m-d H:i:s')}");
 
             $formattedAppointments[] = [
@@ -148,7 +150,7 @@ class AgendaController extends Controller {
                 ),
                 'status' => $rdv['rdv_statut'],
                 'couleur' => $rdv['service_couleur'] ?? '#4CAF50',
-                'duree' => $service_duree,
+                'duree' => $duree,
                 'patient' => [
                     'nom' => $rdv['patient_nom'],
                     'prenom' => $rdv['patient_prenom']
@@ -156,7 +158,7 @@ class AgendaController extends Controller {
                 'service' => [
                     'titre' => $rdv['service_titre'],
                     'couleur' => $rdv['service_couleur'] ?? '#4CAF50',
-                    'duree' => $service_duree
+                    'duree' => $duree
                 ]
             ];
         }

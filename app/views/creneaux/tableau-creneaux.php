@@ -9,10 +9,20 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($creneauxSection as $creneau): ?>
+            <?php foreach ($creneauxSection as $creneau): 
+                // Calculer la vraie fin du créneau en prenant en compte la durée du RDV
+                $debut = strtotime($creneau['debut']);
+                if (!empty($creneau['rdv_duree']) && $creneau['rdv_duree'] > 0) {
+                    // Si c'est un RDV, calculer la fin avec la durée réelle du RDV
+                    $fin = $debut + ($creneau['rdv_duree'] * 60);
+                } else {
+                    // Sinon, utiliser la fin du créneau par défaut
+                    $fin = strtotime($creneau['fin']);
+                }
+            ?>
                 <tr>
-                    <td><?php echo date('H:i', strtotime($creneau['debut'])); ?></td>
-                    <td><?php echo date('H:i', strtotime($creneau['fin'])); ?></td>
+                    <td><?php echo date('H:i', $debut); ?></td>
+                    <td><?php echo date('H:i', $fin); ?></td>
                     <td class="statut-creneau">
                         <?php 
                         // Debug info

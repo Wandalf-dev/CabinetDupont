@@ -1,36 +1,95 @@
-.services-legend {
+/* Conteneur principal des légendes */
+.planning-legends {
     display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+    gap: 1.5rem;
     padding: 1rem;
     margin: 0.5rem 0;
     background-color: #f8f9fa;
     border-radius: 8px;
-    width: 100%;
-    justify-content: center;
     border: 1px solid #e2e8f0;
 }
 
+/* Légende des services (à gauche) */
+.services-legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Légende des statuts (à droite) */
+.status-legend {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 180px;
+    padding-left: 1.5rem;
+    border-left: 2px solid #e2e8f0;
+}
+
+/* Titres des légendes */
+.legend-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 0.5rem 0;
+}
+
+/* Conteneur des items */
+.legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+/* Items individuels */
 .legend-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.9rem;
-    padding: 0.5rem;
+    padding: 0.4rem 0.75rem;
     background-color: white;
     border-radius: 4px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
+/* Pastille de couleur pour les services */
 .color-dot {
     width: 12px;
     height: 12px;
     border-radius: 50%;
     display: inline-block;
     border: 1px solid rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
 }
 
-.service-name {
+/* Icônes de statut */
+.status-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    color: #64748b;
+    flex-shrink: 0;
+}
+
+.status-icon.status-honore {
+    color: #10b981;
+}
+
+.status-icon.status-absent {
+    color: #ef4444;
+}
+
+/* Noms */
+.service-name,
+.status-name {
     color: #1e293b;
     font-weight: 500;
+    white-space: nowrap;
 }
