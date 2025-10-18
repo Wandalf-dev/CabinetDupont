@@ -3,6 +3,9 @@ include __DIR__ . '/../templates/header.php';
 include __DIR__ . '/../templates/flash-messages.php';
 ?>
 
+<!-- CSS spécifique à la gestion des patients -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/patient.css">
+
 <main class="container">
     <div class="admin-form-container">
         <h1>Modifier un patient</h1>

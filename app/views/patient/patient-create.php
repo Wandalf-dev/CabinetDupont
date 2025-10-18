@@ -1,7 +1,10 @@
-<?php
+    <?php
 include __DIR__ . '/../templates/header.php';
 include __DIR__ . '/../templates/flash-messages.php';
 ?>
+
+<!-- CSS spécifique à la gestion des patients -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/patient.css">
 
 <main class="container">
     <div class="admin-form-container">
@@ -129,3 +132,6 @@ flatpickr(".flatpickr", {
     allowInput: true
 });
 </script>
+
+
+<?php include __DIR__ . '/../templates/footer.php'; ?>

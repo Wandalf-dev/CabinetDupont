@@ -2,6 +2,9 @@
 include __DIR__ . '/../templates/header.php';
 ?>
 
+<!-- CSS spécifiques aux rendez-vous -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/rendez-vous/confirmation-rdv.css">
+
 <main class="confirmation-page">
     <div class="container">
         <h1 class="page-title">

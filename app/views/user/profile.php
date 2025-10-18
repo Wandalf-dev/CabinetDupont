@@ -3,6 +3,9 @@
 include __DIR__ . '/../templates/header.php'; 
 ?>
 
+<!-- CSS spécifique à la page profil -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/profil.css">
+
 <main class="profile-page">
     <div class="profile-container">
         <!-- Affichage des messages de succès ou d'erreur -->

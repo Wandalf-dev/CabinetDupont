@@ -2,6 +2,9 @@
 require_once __DIR__ . '/../templates/header.php';
 require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
+
+<!-- CSS spécifiques aux créneaux -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/creneaux/creneaux.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/confirmation-popup.css">
 
 <main class="container">

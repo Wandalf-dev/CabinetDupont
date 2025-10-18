@@ -1,6 +1,9 @@
 <?php
 include __DIR__ . '/../templates/header.php'; ?>
 
+<!-- CSS spécifiques aux horaires -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/horaires/horaires.css">
+
 <main>
     <section class="horaires-edit-section">
         <div class="container">

@@ -3,6 +3,10 @@
 include __DIR__ . '/../templates/header.php';
 include __DIR__ . '/../templates/flash-messages.php';
 ?>
+
+<!-- CSS spécifique à la création d'actualités -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/actu/actu-create.css">
+
 <main>
   <section class="actu-create-section">
     <!-- Formulaire pour créer une nouvelle actualité -->

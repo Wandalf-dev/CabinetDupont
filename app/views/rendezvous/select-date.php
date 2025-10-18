@@ -3,6 +3,10 @@ require_once __DIR__ . '/../templates/header.php';
 require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
 
+<!-- CSS spécifiques aux rendez-vous -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/rendez-vous/select-date.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/calendar-align.css">
+
 <main class="container">
     <section class="select-date">
         <h1 class="page-title">

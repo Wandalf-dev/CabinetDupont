@@ -4,6 +4,10 @@ include __DIR__ . '/../templates/header.php';
 include __DIR__ . '/../templates/flash-messages.php';
 ?>
 
+<!-- CSS spécifiques aux actualités -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/actu/actu.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/actu/actu-posts.css">
+
 <main>
   <section class="actu-section">
     <h2>Actualités du cabinet</h2>

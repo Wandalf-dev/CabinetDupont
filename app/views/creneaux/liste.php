@@ -3,9 +3,9 @@ require_once __DIR__ . '/../templates/header.php';
 require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
 
-<!-- Inclusion des styles CSS spécifiques -->
-<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneaux.css">
-<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneaux-accordion.css">
+<!-- CSS spécifiques aux créneaux -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/creneaux/creneaux.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/creneaux/components/creneaux-accordion.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/calendar-compact.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/confirmation-popup.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/creneaux/creneaux-alerts.css">

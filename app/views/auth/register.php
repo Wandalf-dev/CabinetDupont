@@ -1,6 +1,9 @@
 <?php
 include __DIR__ . '/../templates/header.php'; ?>
 
+<!-- CSS spécifique à la page register -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/register.css">
+
 <!-- Font Awesome pour les icônes -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 

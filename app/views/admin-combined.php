@@ -4,6 +4,14 @@ include __DIR__ . '/templates/header.php';
 include __DIR__ . '/templates/flash-messages.php';
 ?>
 
+<!-- CSS spécifiques à la page admin -->
+<link rel="stylesheet" href="/cabinetdupont/css/pages/admin.css">
+<link rel="stylesheet" href="/cabinetdupont/css/components/tabs.css">
+<link rel="stylesheet" href="/cabinetdupont/css/components/table-sort.css">
+<link rel="stylesheet" href="/cabinetdupont/css/components/table-actions.css">
+<link rel="stylesheet" href="/cabinetdupont/css/modules/horaires/horaires.css">
+<link rel="stylesheet" href="/cabinetdupont/css/modules/horaires/horaires-admin.css">
+
 <main class="container">
 
     <div class="tabs-container">

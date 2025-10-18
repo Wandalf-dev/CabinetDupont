@@ -1,5 +1,7 @@
 <?php require_once 'app/views/templates/header.php'; ?>
-<link rel="stylesheet" href="css/modules/rendez-vous/list-rendezvous.css">
+
+<!-- CSS spécifique à la liste des rendez-vous -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/rendez-vous/list-rendezvous.css">
 
 <main>
     <div class="rdv-container">

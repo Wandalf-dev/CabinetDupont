@@ -1,5 +1,7 @@
 <?php require_once 'app/views/templates/header.php'; ?>
-<link rel="stylesheet" href="<?= BASE_URL ?>/css/modules/rendez-vous/success-rdv.css">
+
+<!-- CSS spécifique à la confirmation de rendez-vous -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/rendez-vous/success-rdv.css">
 
 <main>
     <div class="success-container">

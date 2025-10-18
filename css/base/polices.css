@@ -1,0 +1,103 @@
+/* ========================================
+   POLICES - Applique Poppins partout
+   ======================================== */
+
+/* Force Poppins sur le body et tous les éléments */
+body {
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
+}
+
+/* Force Poppins sur TOUS les éléments interactifs */
+button, 
+input, 
+select, 
+textarea,
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-admin,
+.btn-hero,
+.btn-outline,
+.btn-small,
+.btn-login,
+.btn-register,
+.btn-cancel,
+.btn-confirm,
+.btn-new-rdv,
+.tab-button,
+.user-button,
+.guest-button,
+label,
+span,
+p,
+h1, h2, h3, h4, h5, h6,
+div,
+a,
+td, th {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+/* Formulaires */
+.form-group input,
+.form-group select,
+.form-group textarea,
+.admin-filter input,
+.login-field input,
+.register-field input,
+.date-input,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="date"],
+input[type="number"] {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+/* Éléments d'administration */
+.admin-table,
+.admin-table th,
+.admin-table td,
+.section-title {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+/* ========================================
+   LAYOUT - Footer collé en bas
+   ======================================== */
+
+/* Solution pour coller le footer en bas sans casser le planning */
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Le main prend l'espace disponible */
+body > main {
+  flex: 1 0 auto;
+}
+
+/* Le footer reste en bas */
+body > footer,
+body > .footer {
+  flex-shrink: 0;
+}
+
+/* Exception pour les pages avec planning (qui ont besoin d'un layout différent) */
+body:has(.planning-container),
+body:has(.agenda-container),
+body:has(#calendar-container) {
+  display: block;
+  min-height: auto;
+}
+
+body:has(.planning-container) > main,
+body:has(.agenda-container) > main,
+body:has(#calendar-container) > main {
+  flex: none;
+}

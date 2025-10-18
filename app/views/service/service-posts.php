@@ -3,6 +3,11 @@
 include __DIR__ . '/../templates/header.php';
 include __DIR__ . '/../templates/flash-messages.php';
 ?>
+
+<!-- CSS spécifiques aux services -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/service/service-posts.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/utils/drag-drop.css">
+
 <style>
 .grip-cell, .grip-cell .grip-icon {
     cursor: move !important; /* Curseur pour le drag & drop des lignes */

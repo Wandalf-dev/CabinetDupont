@@ -1,5 +1,11 @@
 <?php
 error_log("Début du chargement du header.php");
+
+// Inclusion de la configuration pour avoir accès à BASE_URL
+if (!defined('BASE_URL')) {
+    require_once __DIR__ . '/../../../config.php';
+}
+
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
         'httponly' => true,
@@ -18,36 +24,21 @@ if (session_status() === PHP_SESSION_NONE) {
     <title>DupontCare – Cabinet dentaire</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <!-- CSS de base -->
+    <!-- CSS de base - Chargés sur TOUTES les pages -->
     <?php 
     $cssFiles = [
-        '/css/base/style.css',
-        '/css/layouts/header.css',
-        '/css/layouts/footer.css',
-        '/css/modules/horaires/horaires.css',
-        '/css/pages/login.css',
-        '/css/pages/register.css',
-        '/css/modules/actu/actu.css',
-        '/css/modules/actu/actu-create.css',
-        '/css/modules/actu/actu-posts.css',
-        '/css/components/table-sort.css',
-        '/css/components/tabs.css',
-        '/css/pages/profil.css',
-        '/css/components/alerts.css',
-        '/css/modules/horaires/horaires-admin.css',
-        '/css/pages/about.css',
-        '/css/modules/agenda/agenda.css',
-        '/css/components/table-actions.css',
-        '/css/modules/rendez-vous/rendezvous-common.css',
-        '/css/modules/rendez-vous/confirmation-rdv.css',
-        '/css/modules/rendez-vous/select-consultation.css',
-        '/css/modules/rendez-vous/select-date.css',
-        '/css/modules/rendez-vous/select-time.css'
+        '/css/base/polices.css',         // Polices (Poppins partout)
+        '/css/base/style.css',           // Styles globaux
+        '/css/layouts/header.css',       // Header du site
+        '/css/layouts/footer.css',       // Footer du site
+        '/css/components/alerts.css'     // Système d'alertes global
     ];
     $timestamp = time();
     foreach($cssFiles as $css): ?>
         <link rel="stylesheet" href="<?php echo BASE_URL . $css . '?v=' . $timestamp; ?>" />
     <?php endforeach; ?>
+    
+    <!-- Les autres CSS doivent être chargés dans leurs pages respectives -->
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
     <script src="<?php echo BASE_URL; ?>/js/components/alerts.js"></script>
     <script src="<?php echo BASE_URL; ?>/js/modules/header/header.js"></script>

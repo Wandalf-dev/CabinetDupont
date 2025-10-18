@@ -2,6 +2,10 @@
 // Inclusion du header du site
 include __DIR__ . '/../templates/header.php'; 
 ?>
+
+<!-- CSS spécifique à la modification d'actualités -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/actu/actu-create.css">
+
 <main>
   <section class="actu-create-section">
     <!-- Formulaire pour modifier une actualité existante -->
