@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\UserModel;
 use App\Core\Csrf;
+use App\Core\Security;
 
 // Contrôleur pour la gestion de l'authentification des utilisateurs
 class AuthController {
@@ -25,6 +26,7 @@ class AuthController {
 
             // Vérifie le token CSRF pour la sécurité
             if (!Csrf::checkToken($csrf_token)) {
+                Security::logSecurityEvent('CSRF_FAILURE', 'Tentative de connexion avec token CSRF invalide');
                 $_SESSION['error'] = "Session expirée ou tentative frauduleuse.";
                 header('Location: index.php?page=auth&action=login');
                 exit();
@@ -37,11 +39,27 @@ class AuthController {
                 exit();
             }
 
+            // Vérification anti-bruteforce (5 tentatives max en 15 minutes)
+            $clientIp = Security::getClientIp();
+            $identifier = $email . '_' . $clientIp;
+            $checkAttempts = Security::checkLoginAttempts($identifier, 5, 900);
+            
+            if (!$checkAttempts['allowed']) {
+                $waitMinutes = ceil($checkAttempts['wait_time'] / 60);
+                Security::logSecurityEvent('BRUTEFORCE_BLOCKED', "Trop de tentatives pour $email depuis $clientIp");
+                $_SESSION['error'] = "Trop de tentatives de connexion. Veuillez réessayer dans $waitMinutes minutes.";
+                header('Location: index.php?page=auth&action=login');
+                exit();
+            }
+
             // Recherche l'utilisateur par email
             $user = $this->userModel->getUserByEmail($email);
 
             // Vérifie le mot de passe
             if ($user && password_verify($password, $user['password_hash'])) {
+                // Connexion réussie : réinitialiser les tentatives
+                Security::resetLoginAttempts($identifier);
+                
                 session_regenerate_id(true); // Sécurise la session après connexion
                 // Stocke les informations importantes en session
                 $_SESSION['user_id'] = $user['id'];
@@ -50,10 +68,24 @@ class AuthController {
                 $_SESSION['user_nom'] = $user['nom'];
                 $_SESSION['user_prenom'] = $user['prenom'];
                 $_SESSION['success'] = "Connexion réussie !";
+                
+                Security::logSecurityEvent('LOGIN_SUCCESS', "Connexion réussie pour $email");
+                
                 header('Location: index.php?page=home');
                 exit();
             } else {
-                $_SESSION['error'] = "Email ou mot de passe incorrect";
+                // Échec de connexion : enregistrer la tentative
+                Security::recordLoginAttempt($identifier);
+                $remaining = $checkAttempts['remaining'] - 1;
+                
+                Security::logSecurityEvent('LOGIN_FAILURE', "Échec de connexion pour $email depuis $clientIp");
+                
+                if ($remaining > 0) {
+                    $_SESSION['error'] = "Email ou mot de passe incorrect. Il vous reste $remaining tentative(s).";
+                } else {
+                    $_SESSION['error'] = "Email ou mot de passe incorrect. Votre compte sera temporairement bloqué après la prochaine tentative.";
+                }
+                
                 header('Location: index.php?page=auth&action=login');
                 exit();
             }
@@ -84,13 +116,13 @@ class AuthController {
             }
             // Récupère et sécurise les données du formulaire
             $data = [
-                'nom' => mb_strtoupper(filter_input(INPUT_POST, 'nom', FILTER_SANITIZE_STRING)),
-                'prenom' => filter_input(INPUT_POST, 'prenom', FILTER_SANITIZE_STRING),
+                'nom' => mb_strtoupper(htmlspecialchars(strip_tags($_POST['nom'] ?? ''), ENT_QUOTES, 'UTF-8')),
+                'prenom' => htmlspecialchars(strip_tags($_POST['prenom'] ?? ''), ENT_QUOTES, 'UTF-8'),
                 'email' => filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL),
                 'password' => $_POST['password'] ?? '',
                 'password_confirm' => $_POST['password_confirm'] ?? '',
-                'telephone' => filter_input(INPUT_POST, 'telephone', FILTER_SANITIZE_STRING),
-                'date_naissance' => filter_input(INPUT_POST, 'date_naissance', FILTER_SANITIZE_STRING),
+                'telephone' => htmlspecialchars(strip_tags($_POST['telephone'] ?? ''), ENT_QUOTES, 'UTF-8'),
+                'date_naissance' => htmlspecialchars(strip_tags($_POST['date_naissance'] ?? ''), ENT_QUOTES, 'UTF-8'),
                 'role' => 'PATIENT' // Par défaut, les nouveaux inscrits sont des patients
             ];
 
@@ -105,6 +137,23 @@ class AuthController {
             // Vérifie que les mots de passe correspondent
             if ($data['password'] !== $data['password_confirm']) {
                 $_SESSION['error'] = "Les mots de passe ne correspondent pas";
+                $_SESSION['form_data'] = $data;
+                header('Location: index.php?page=auth&action=register');
+                exit();
+            }
+
+            // Validation de la force du mot de passe
+            $passwordValidation = Security::validatePasswordStrength($data['password']);
+            if (!$passwordValidation['valid']) {
+                // Construire un message plus clair avec des puces
+                $errorMessage = "Mot de passe trop faible. Il doit contenir :<br>";
+                $errorMessage .= "• Au moins 8 caractères<br>";
+                $errorMessage .= "• Une majuscule (A-Z)<br>";
+                $errorMessage .= "• Une minuscule (a-z)<br>";
+                $errorMessage .= "• Un chiffre (0-9)<br>";
+                $errorMessage .= "• Un caractère spécial (!@#$%^&*...)";
+                
+                $_SESSION['error'] = $errorMessage;
                 $_SESSION['form_data'] = $data;
                 header('Location: index.php?page=auth&action=register');
                 exit();

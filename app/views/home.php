@@ -4,6 +4,7 @@ include __DIR__ . '/templates/flash-messages.php'; ?>
 
 <!-- CSS spécifique à la page d'accueil -->
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/home.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/cabinet-gallery.css">
 
 <main class="home-page">
 
@@ -193,6 +194,42 @@ include __DIR__ . '/templates/flash-messages.php'; ?>
         </aside>
       </div> <!-- /.hours-grid -->
     </div> <!-- /.container -->
+  </section>
+
+  <!-- ================= GALERIE CABINET ================= -->
+  <section class="cabinet-gallery">
+    <div class="container">
+      <h2>Notre cabinet</h2>
+      <p class="cabinet-gallery-intro">
+        Découvrez nos installations modernes et notre équipe dévouée à votre service.
+      </p>
+
+      <div class="gallery-grid">
+        <div class="gallery-item">
+          <img
+            src="<?php echo BASE_URL; ?>/assets/bureau-de-stomatologie-avec-equipement-moderne-et-infirmiere-en-uniforme-bleu-travaillant-sur-ordinateur.jpg"
+            alt="Cabinet dentaire moderne avec équipement professionnel"
+            loading="lazy"
+          />
+          <div class="gallery-caption">
+            <h3>Équipement moderne</h3>
+            <p>Un cabinet équipé des dernières technologies pour votre confort</p>
+          </div>
+        </div>
+
+        <div class="gallery-item">
+          <img
+            src="<?php echo BASE_URL; ?>/assets/zone-d-attente-de-stomatologie-bondee-avec-des-personnes-remplissant-un-formulaire-pour-une-consultation-dentaire.jpg"
+            alt="Salle d'attente du cabinet dentaire"
+            loading="lazy"
+          />
+          <div class="gallery-caption">
+            <h3>Accueil chaleureux</h3>
+            <p>Une équipe à votre écoute dans un environnement convivial</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ================= FOOTER ================= -->

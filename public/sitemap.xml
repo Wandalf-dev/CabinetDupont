@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+    
+    <!-- Page d'accueil -->
+    <url>
+        <loc>http://localhost/cabinetdupont/</loc>
+        <lastmod>2025-10-19</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    
+    <!-- Page Accueil -->
+    <url>
+        <loc>http://localhost/cabinetdupont/index.php?page=home</loc>
+        <lastmod>2025-10-19</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    
+    <!-- Page Actualités -->
+    <url>
+        <loc>http://localhost/cabinetdupont/index.php?page=actus</loc>
+        <lastmod>2025-10-19</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <!-- Page À propos -->
+    <url>
+        <loc>http://localhost/cabinetdupont/index.php?page=about</loc>
+        <lastmod>2025-10-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <!-- Page Connexion -->
+    <url>
+        <loc>http://localhost/cabinetdupont/index.php?page=auth&amp;action=login</loc>
+        <lastmod>2025-10-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    
+    <!-- Page Inscription -->
+    <url>
+        <loc>http://localhost/cabinetdupont/index.php?page=auth&amp;action=register</loc>
+        <lastmod>2025-10-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    
+    <!-- Page Prise de rendez-vous -->
+    <url>
+        <loc>http://localhost/cabinetdupont/index.php?page=rendezvous&amp;action=select-consultation</loc>
+        <lastmod>2025-10-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    
+</urlset>

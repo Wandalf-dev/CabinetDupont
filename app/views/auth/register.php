@@ -7,46 +7,11 @@ include __DIR__ . '/../templates/header.php'; ?>
 <!-- Font Awesome pour les icônes -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<style>
-/* Styles pour le groupe de champs mot de passe avec icône d'affichage */
-.password-group {
-    position: relative;
-}
-.password-input-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-.password-input-container input {
-    width: 100%;
-    padding-right: 40px; /* Espace pour l'icône */
-}
-.password-toggle {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #666;
-    padding: 5px;
-}
-.password-toggle:hover {
-    color: #333;
-}
-.password-toggle i {
-    font-size: 1.1em;
-}
-</style>
+<!-- Flatpickr pour le calendrier -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 <main>
     <section class="register-section">
-        <!-- Affiche un message d'erreur si présent en session -->
-        <?php if (isset($_SESSION['error'])): ?>
-            <div class="alert alert-danger">
-                <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
-            </div>
-        <?php endif; ?>
-
         <?php 
         // Récupérer les données du formulaire en cas d'erreur
         $form_data = $_SESSION['form_data'] ?? [];
@@ -54,6 +19,15 @@ include __DIR__ . '/../templates/header.php'; ?>
         ?>
 
         <form class="register-form" method="post" action="index.php?page=auth&action=register">
+            <!-- Affiche un message d'erreur si présent en session -->
+            <?php if (isset($_SESSION['error'])): ?>
+                <div class="register-alert register-alert-error">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="alert-content">
+                        <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
+                    </div>
+                </div>
+            <?php endif; ?>
             <!-- Champ caché pour le token CSRF (sécurité) -->
             <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
             <h2>Création de compte</h2>
@@ -142,41 +116,29 @@ include __DIR__ . '/../templates/header.php'; ?>
             <!-- Champ date de naissance avec Flatpickr -->
             <div class="form-group">
                 <label for="date_naissance">Date de naissance</label>
-                <input type="text" 
-                       id="date_naissance" 
-                       name="date_naissance" 
-                       class="flatpickr" 
-                       required 
-                       placeholder="Sélectionnez une date"
-                       value="<?php 
-                           $date_value = $form_data['date_naissance'] ?? '';
-                           if (!empty($date_value) && $date_value !== '0000-00-00') {
-                               $date = DateTime::createFromFormat('Y-m-d', $date_value);
-                               if ($date) {
-                                   echo $date->format('d/m/Y');
+                <div class="date-input-container">
+                    <input type="text" 
+                           id="date_naissance" 
+                           name="date_naissance" 
+                           class="flatpickr" 
+                           placeholder="JJ/MM/AAAA"
+                           autocomplete="off"
+                           value="<?php 
+                               $date_value = $form_data['date_naissance'] ?? '';
+                               if (!empty($date_value) && $date_value !== '0000-00-00') {
+                                   $date = DateTime::createFromFormat('Y-m-d', $date_value);
+                                   if ($date) {
+                                       echo $date->format('d/m/Y');
+                                   }
                                }
-                           }
-                       ?>">
+                           ?>">
+                    <i class="fas fa-calendar-alt date-icon"></i>
+                </div>
             </div>
 
             <div class="form-group">
                 <button type="submit" class="btn-register">Créer mon compte</button>
             </div>
-
-            <!-- Inclusion de Flatpickr pour le calendrier de date de naissance -->
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-            <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
-
-            <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                flatpickr(".flatpickr", {
-                    locale: "fr",
-                    dateFormat: "d/m/Y",
-                    allowInput: true
-                });
-            });
-            </script>
 
             <p class="login-link">
                 Déjà inscrit ? <a href="index.php?page=auth&action=login">Connectez-vous ici</a>
@@ -197,10 +159,55 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<!-- Inclusion de Cleave.js et des scripts personnalisés pour le formatage -->
+<!-- Scripts externes -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
-<script src="js/password-toggle.js"></script>
-<script src="js/phone-formatter.js"></script>
-<script src="js/date-formatter.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+
+<!-- Scripts personnalisés -->
+<script src="<?php echo BASE_URL; ?>/js/components/password-toggle.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/utils/phone-formatter.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/utils/date-formatter.js"></script>
+
+<!-- Initialisation Flatpickr -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initialisation de Flatpickr...');
+    
+    // Vérifier si Flatpickr est chargé
+    if (typeof flatpickr === 'undefined') {
+        console.error('Flatpickr n\'est pas chargé !');
+        return;
+    }
+    
+    // Vérifier si l'élément existe
+    const dateInput = document.querySelector('.flatpickr');
+    if (!dateInput) {
+        console.error('Element .flatpickr non trouvé !');
+        return;
+    }
+    
+    console.log('Element trouvé:', dateInput);
+    
+    // Initialiser Flatpickr
+    try {
+        const fp = flatpickr(".flatpickr", {
+            locale: "fr",
+            dateFormat: "d/m/Y",
+            allowInput: true,
+            maxDate: "today",
+            disableMobile: false,
+            static: false,
+            clickOpens: true,
+            onChange: function(selectedDates, dateStr, instance) {
+                console.log('Date sélectionnée:', dateStr);
+            }
+        });
+        console.log('Flatpickr initialisé avec succès:', fp);
+    } catch(error) {
+        console.error('Erreur lors de l\'initialisation de Flatpickr:', error);
+    }
+});
+</script>
 
 <?php include __DIR__ . '/../templates/footer.php'; ?>

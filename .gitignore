@@ -1,8 +1,19 @@
 *.log
 *.tmp
 .DS_Store
+
+# Dossier logs
+logs/
+logs/*.log
+logs/*.txt
+
 # logs PHP / Windows
 **/error_log
 **/error_log.txt
 *.log
 *.ps1
+
+# Fichiers de configuration sensibles
+config/config.php
+config/.htaccess
+.env

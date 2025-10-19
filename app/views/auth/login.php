@@ -18,13 +18,17 @@ include __DIR__ . '/../templates/header.php'; ?>
   
   <section class="login-section">
     <form class="login-form" method="post" action="index.php?page=auth&action=login">
+      <h2>Connexion à votre espace</h2>
+      
       <!-- Affiche un message d'erreur si présent en session -->
       <?php if (isset($_SESSION['error'])): ?>
-        <div class="alert alert-danger" style="margin-bottom: 18px; text-align: center;">
-            <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
+        <div class="login-alert login-alert-error">
+            <i class="fas fa-exclamation-circle"></i>
+            <div class="alert-content">
+                <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
+            </div>
         </div>
       <?php endif; ?>
-      <h2>Connexion à votre espace</h2>
       <div class="login-field">
         <label for="email">Adresse e-mail</label>
         <input type="email" id="email" name="email" required autocomplete="username" placeholder="Email" />

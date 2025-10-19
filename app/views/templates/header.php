@@ -3,7 +3,7 @@ error_log("Début du chargement du header.php");
 
 // Inclusion de la configuration pour avoir accès à BASE_URL
 if (!defined('BASE_URL')) {
-    require_once __DIR__ . '/../../../config.php';
+    require_once __DIR__ . '/../../../config/config.php';
 }
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -14,14 +14,25 @@ if (session_status() === PHP_SESSION_NONE) {
     ]);
     session_start();
 }
+
+// Récupérer la page et l'action pour le SEO
+$currentPage = $_GET['page'] ?? 'home';
+$currentAction = $_GET['action'] ?? null;
+
+// Charger la classe SEO
+use App\Core\Seo;
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="<?php echo \App\Core\Csrf::generateToken(); ?>" />
-    <title>DupontCare – Cabinet dentaire</title>
+    
+    <!-- Titre dynamique SEO -->
+    <title><?php echo Seo::getTitle($currentPage, $currentAction); ?></title>
+    
+    <!-- Meta tags SEO dynamiques -->
+    <?php echo Seo::renderMetaTags($currentPage, $currentAction); ?>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <!-- CSS de base - Chargés sur TOUTES les pages -->
@@ -42,6 +53,11 @@ if (session_status() === PHP_SESSION_NONE) {
     <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
     <script src="<?php echo BASE_URL; ?>/js/components/alerts.js"></script>
     <script src="<?php echo BASE_URL; ?>/js/modules/header/header.js"></script>
+    
+    <!-- Données structurées Schema.org pour le référencement -->
+    <?php if ($currentPage === 'home'): ?>
+        <?php echo Seo::renderStructuredData('organization'); ?>
+    <?php endif; ?>
 </head>
 <body>
     <!-- Toast container -->

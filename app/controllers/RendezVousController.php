@@ -90,7 +90,7 @@ class RendezVousController extends Controller {
     }
 
     public function selectTime() {
-        $logFile = __DIR__ . '/../../debug_rdv.log';
+        $logFile = __DIR__ . '/../../logs/debug_rdv.log';
         file_put_contents($logFile, "\n=== " . date('Y-m-d H:i:s') . " - Début selectTime() ===\n", FILE_APPEND);
         file_put_contents($logFile, "GET params: " . print_r($_GET, true) . "\n", FILE_APPEND);
         file_put_contents($logFile, "Session: " . print_r($_SESSION, true) . "\n", FILE_APPEND);
@@ -161,7 +161,7 @@ class RendezVousController extends Controller {
     }
 
     public function confirmation() {
-        $logFile = __DIR__ . '/../../debug_rdv.log';
+        $logFile = __DIR__ . '/../../logs/debug_rdv.log';
         file_put_contents($logFile, "\n=== " . date('Y-m-d H:i:s') . " - Début confirmation() ===\n", FILE_APPEND);
         try {
             // Vérification des paramètres requis

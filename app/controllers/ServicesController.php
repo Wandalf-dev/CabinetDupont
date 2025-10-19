@@ -74,28 +74,55 @@ class ServicesController {
                 exit();
             }
 
-            // Gestion de l'upload d'image
+            // Gestion de l'upload d'image (SÉCURISÉE)
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 $uploadDir = 'C:/xampp/htdocs/CabinetDupont/public/uploads/';
                 if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
+                    mkdir($uploadDir, 0755, true); // Permissions plus sécurisées (0755 au lieu de 0777)
                 }
-                $fileName = uniqid() . '_' . basename($_FILES['image']['name']);
-                $uploadFile = $uploadDir . $fileName;
-                $fileType = mime_content_type($_FILES['image']['tmp_name']);
-                $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
                 
-                if (in_array($fileType, $allowedTypes)) {
-                    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
-                        $data['image'] = $fileName;
-                    } else {
-                        $_SESSION['error'] = "Erreur lors de l'upload de l'image.";
-                        $_SESSION['form_data'] = $data;
-                        header('Location: index.php?page=services&action=create');
-                        exit();
-                    }
+                // SÉCURITÉ 1 : Vérifier l'extension du fichier
+                $originalFileName = $_FILES['image']['name'];
+                $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                
+                if (!\App\Core\Security::isAllowedFileExtension($originalFileName, $allowedExtensions)) {
+                    $_SESSION['error'] = "Extension de fichier non autorisée. Formats acceptés : jpg, jpeg, png, gif, webp";
+                    $_SESSION['form_data'] = $data;
+                    header('Location: index.php?page=services&action=create');
+                    exit();
+                }
+                
+                // SÉCURITÉ 2 : Vérifier le type MIME réel du fichier (pas juste l'extension)
+                $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                
+                if (!\App\Core\Security::isAllowedMimeType($_FILES['image']['tmp_name'], $allowedMimes)) {
+                    \App\Core\Security::logSecurityEvent('UPLOAD_BLOCKED', "Tentative d'upload avec MIME invalide : $originalFileName");
+                    $_SESSION['error'] = "Le fichier n'est pas une image valide.";
+                    $_SESSION['form_data'] = $data;
+                    header('Location: index.php?page=services&action=create');
+                    exit();
+                }
+                
+                // SÉCURITÉ 3 : Vérifier la taille du fichier (max 5MB)
+                $maxSize = 5 * 1024 * 1024; // 5 MB
+                if ($_FILES['image']['size'] > $maxSize) {
+                    $_SESSION['error'] = "Le fichier est trop volumineux. Taille maximale : 5 MB";
+                    $_SESSION['form_data'] = $data;
+                    header('Location: index.php?page=services&action=create');
+                    exit();
+                }
+                
+                // SÉCURITÉ 4 : Générer un nom de fichier sécurisé (évite les injections)
+                $fileName = \App\Core\Security::generateSecureFilename($originalFileName);
+                $uploadFile = $uploadDir . $fileName;
+                
+                // Upload du fichier
+                if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
+                    // SÉCURITÉ 5 : Définir les permissions du fichier (lecture seule pour les autres)
+                    chmod($uploadFile, 0644);
+                    $data['image'] = $fileName;
                 } else {
-                    $_SESSION['error'] = "Format d'image non autorisé (jpg, png, gif, webp uniquement).";
+                    $_SESSION['error'] = "Erreur lors de l'upload de l'image.";
                     $_SESSION['form_data'] = $data;
                     header('Location: index.php?page=services&action=create');
                     exit();

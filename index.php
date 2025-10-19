@@ -5,7 +5,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Chargement de la configuration
-require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/config/config.php';
 
 // Autoloader
 spl_autoload_register(function ($class) {

@@ -236,7 +236,7 @@ class CreneauModel extends Model
 
         $creneaux = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
-        $logFile = __DIR__ . '/../../debug_creneaux.log';
+        $logFile = __DIR__ . '/../../logs/debug_creneaux.log';
         @file_put_contents($logFile, "=== Créneaux pour le {$date} ===\n", FILE_APPEND);
         foreach ($creneaux as $cr) {
             $msg = sprintf(

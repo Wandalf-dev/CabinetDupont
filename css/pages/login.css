@@ -1,4 +1,37 @@
-/* Alert Styles */
+/* Alert Styles - Alertes dans le formulaire de connexion */
+.login-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  border: 1px solid;
+}
+
+.login-alert i {
+  font-size: 1.15rem;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.login-alert-error {
+  background: linear-gradient(135deg, #fee 0%, #fdd 100%);
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+.login-alert-error i {
+  color: #dc3545;
+}
+
+.login-alert .alert-content {
+  flex: 1;
+}
+
+/* Ancien style pour compatibilité */
 .alert-danger {
   background: #ffeaea;
   color: #c0392b;

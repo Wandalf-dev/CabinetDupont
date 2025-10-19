@@ -93,30 +93,6 @@
 <!-- Scripts Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Modal de confirmation -->
-<div class="modal fade modal-custom" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header flex-column align-items-center border-0 pb-0" style="background:transparent;">
-                <i class="fas fa-exclamation-triangle warning-icon"></i>
-                <h5 class="modal-title modal-title-center" id="confirmationModalLabel">Confirmation d'annulation</h5>
-            </div>
-            <div class="modal-body text-center pt-2">
-                <p class="modal-text">Êtes-vous sûr de vouloir annuler ce rendez-vous ?</p>
-                <p class="modal-subtext">Cette action est irréversible.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-cancel btn-modal-cancel" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Annuler
-                </button>
-                <button type="button" class="btn btn-confirm" id="confirmAnnulation">
-                    <i class="fas fa-check me-2"></i>Confirmer
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Styles -->
 <style>
 /* Style du titre principal comme sur les autres pages */
@@ -131,34 +107,104 @@
     text-align: center;
     position: relative;
 }
-/* Popup confirmation d'annulation moderne */
-.modal-custom .modal-content {
-    border-radius: 20px;
-    border: none;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-    overflow: hidden;
-}
-
-.modal-custom .modal-header {
-    background: white;
-    border-bottom: 1px solid #f3f4f6;
-    padding: 2rem 2rem 1rem 2rem;
-    display: flex;
-    justify-content: center;
+/* Popup confirmation d'annulation - Custom simple */
+.custom-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
     align-items: center;
+    justify-content: center;
 }
 
-.modal-custom .modal-title {
+.custom-modal.show {
+    display: flex !important;
+}
+
+.custom-modal.closing .custom-modal-dialog {
+    animation: modalZoomOut 0.3s ease-out forwards;
+}
+
+.custom-modal.closing .custom-modal-backdrop {
+    opacity: 0;
+}
+
+.custom-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    transition: opacity 0.3s ease;
+}
+
+.custom-modal-dialog {
+    position: relative;
+    z-index: 2;
+    max-width: 500px;
+    width: 90%;
+    animation: modalZoom 0.3s ease-out;
+}
+
+@keyframes modalZoom {
+    from {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes modalZoomOut {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+}
+
+.custom-modal-content {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.custom-modal-header {
+    padding: 2rem 2rem 1rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.custom-modal-title {
     font-size: 1.5rem;
     font-weight: 700;
     color: #1f2937;
-    text-align: center;
     margin: 0;
 }
 
-.modal-custom .modal-body {
-    padding: 1.5rem 2rem 2rem 2rem;
+.custom-modal-body {
+    padding: 1.5rem 2rem;
     text-align: center;
+}
+
+.custom-modal-footer {
+    padding: 1.5rem 2rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    border-top: 1px solid #f3f4f6;
+    background: #fafafa;
+    border-radius: 0 0 20px 20px;
 }
 
 .warning-icon {
@@ -207,16 +253,7 @@
 /* Les styles de la liste sont dans css/modules/rendez-vous/list-rendezvous.css */
 
 /* Centrage et style des boutons dans la popup */
-.modal-custom .modal-footer {
-    justify-content: center !important;
-    display: flex !important;
-    gap: 1rem;
-    padding: 1.5rem 2rem;
-    border-top: 1px solid #f3f4f6;
-    background: #fafafa;
-}
-
-.modal-custom .btn-confirm {
+.custom-modal-footer .btn-confirm {
     font-size: 1rem;
     border-radius: 10px;
     padding: 0.75rem 1.75rem;
@@ -228,57 +265,39 @@
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
-.modal-custom .btn-confirm:hover {
+.custom-modal-footer .btn-confirm:hover {
     background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
     transform: translateY(-2px);
 }
 
-.modal-custom .btn-confirm:active {
+.custom-modal-footer .btn-confirm:active {
     transform: translateY(0);
 }
 
 @media (max-width: 768px) {
-    .modal-custom .modal-header,
-    .modal-custom .modal-body,
-    .modal-custom .modal-footer {
+    .custom-modal-header,
+    .custom-modal-body,
+    .custom-modal-footer {
         padding-left: 1.5rem;
         padding-right: 1.5rem;
     }
 
-    .modal-custom .modal-footer {
+    .custom-modal-footer {
         flex-direction: column-reverse;
         gap: 0.75rem;
     }
 
-    .modal-custom .btn-cancel,
-    .modal-custom .btn-confirm {
-        width: 100% !important;
-        height: auto !important;
-        padding: 0.875rem 1.5rem !important;
-        font-size: 1rem !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 0.5rem !important;
-        border-radius: 10px !important;
-        text-indent: 0 !important;
-        overflow: visible !important;
-    }
-    
-    .modal-custom .btn-cancel i,
-    .modal-custom .btn-confirm i {
-        margin: 0 !important;
-        font-size: 1.1rem !important;
-        position: static !important;
-        transform: none !important;
+    .custom-modal-footer .btn-cancel,
+    .custom-modal-footer .btn-confirm {
+        width: 100%;
     }
 
     .warning-icon {
         font-size: 3.5rem !important;
     }
 
-    .modal-custom .modal-title {
+    .custom-modal-title {
         font-size: 1.25rem;
     }
 
@@ -286,22 +305,52 @@
         font-size: 1rem;
     }
 }
+
+/* Forcer le masquage de la modal par défaut */
+.modal {
+    display: none;
+}
+
+.modal.show {
+    display: flex !important;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    opacity: 0;
+    transition: opacity 0.15s linear;
+}
+
+.modal-backdrop.show {
+    opacity: 0.5;
+}
+
+.modal-backdrop.fade {
+    opacity: 0;
+}
 </style>
 
 <!-- Modal de confirmation -->
-<div class="modal fade modal-custom" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmationModalLabel">Confirmation d'annulation</h5>
-            </div>
-            <div class="modal-body">
+<div id="confirmationModal" class="custom-modal" style="display: none;">
+    <div class="custom-modal-backdrop"></div>
+    <div class="custom-modal-dialog">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
                 <i class="fas fa-exclamation-triangle warning-icon"></i>
+                <h5 class="custom-modal-title">Confirmation d'annulation</h5>
+            </div>
+            <div class="custom-modal-body">
                 <p class="modal-text">Êtes-vous sûr de vouloir annuler ce rendez-vous ?</p>
                 <p class="modal-subtext">Cette action est irréversible.</p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
+            <div class="custom-modal-footer">
+                <button type="button" class="btn btn-cancel" onclick="closeModal()">
                     <i class="fas fa-times me-2"></i>Annuler
                 </button>
                 <button type="button" class="btn btn-confirm" id="confirmAnnulation">
@@ -314,55 +363,37 @@
 
 <script>
 let currentButton = null;
-let confirmationModal = null;
 
-// Fonction pour créer et afficher un toast
-function showToast(message, type = 'success') {
-    console.log('Création du toast:', message, type);
-    
-    const toastId = 'toast-' + Date.now();
-    const bgColor = type === 'success' ? 'bg-success' : 'bg-danger';
-    const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
-    
-    const toastHtml = `
-        <div id="${toastId}" class="toast text-white ${bgColor} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex align-items-center">
-                <div class="toast-body">
-                    <i class="fas ${icon} me-2"></i>${message}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2" data-bs-dismiss="toast" aria-label="Fermer"></button>
-            </div>
-        </div>
-    `;
-    
-    const toastContainer = document.getElementById('toast-container');
-    if (!toastContainer) {
-        console.error('Toast container not found');
-        return;
-    }
-    
-    toastContainer.insertAdjacentHTML('beforeend', toastHtml);
-    
-    const toastElement = document.getElementById(toastId);
-    if (!toastElement) {
-        console.error('Toast element not found after creation');
-        return;
-    }
-    
-    const toast = new bootstrap.Toast(toastElement, {
-        animation: true,
-        autohide: true,
-        delay: type === 'success' ? 3000 : 5000
-    });
-    
-    toastElement.addEventListener('hidden.bs.toast', () => {
-        console.log('Toast hidden, removing from DOM');
-        toastElement.remove();
-    });
-    
-    console.log('Showing toast');
-    toast.show();
+function openModal() {
+    const modal = document.getElementById('confirmationModal');
+    modal.style.display = 'flex';
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
 }
+
+function closeModal() {
+    const modal = document.getElementById('confirmationModal');
+    modal.classList.add('closing');
+    
+    setTimeout(() => {
+        modal.classList.remove('show');
+        modal.classList.remove('closing');
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }, 300);
+}
+
+function annulerRendezVous(button) {
+    currentButton = button;
+    openModal();
+}
+
+// Fermer la modal en cliquant sur le backdrop
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('custom-modal-backdrop')) {
+        closeModal();
+    }
+});
 
 function showEmptyMessage() {
     const container = document.querySelector('.rdv-container');
@@ -379,34 +410,7 @@ function showEmptyMessage() {
     container.appendChild(emptyMessage);
 }
 
-function annulerRendezVous(button) {
-    console.log('Bouton annuler cliqué');
-    currentButton = button;
-    
-    // S'assurer que la modal est initialisée
-    if (!confirmationModal) {
-        const modalElement = document.getElementById('confirmationModal');
-        if (!modalElement) {
-            console.error('Modal element not found');
-            return;
-        }
-        confirmationModal = new bootstrap.Modal(modalElement);
-    }
-    
-    console.log('ID du rendez-vous:', button.getAttribute('data-rdv-id'));
-    confirmationModal.show();
-}
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialiser la modal
-    const modalElement = document.getElementById('confirmationModal');
-    if (!modalElement) {
-        console.error('Modal element not found on page load');
-        return;
-    }
-    confirmationModal = new bootstrap.Modal(modalElement);
-
-    // Gestionnaire pour le bouton de confirmation
     const confirmButton = document.getElementById('confirmAnnulation');
     if (!confirmButton) {
         console.error('Bouton de confirmation non trouvé');
@@ -456,7 +460,10 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
-            confirmationModal.hide();
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+            }
             
             if (data.success) {
                 updateUIAfterCancellation();
@@ -491,7 +498,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Erreur:', error);
-            confirmationModal.hide();
+            closeModal();
             alert('Une erreur est survenue lors de l\'annulation du rendez-vous.');
         })
         .finally(() => {

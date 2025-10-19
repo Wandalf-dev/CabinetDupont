@@ -57,6 +57,6 @@
     </footer>
     
     <!-- Scripts globaux du site (JS principal) -->
-    <script src="<?php echo BASE_URL; ?>/js/utils/main.js"></script>
+    <!-- <script src="<?php echo BASE_URL; ?>/js/utils/main.js"></script> -->
 </body>
 </html>

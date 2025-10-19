@@ -1,0 +1,24 @@
+# Robots.txt pour Cabinet Dupont
+# Guide les moteurs de recherche sur les pages à indexer
+
+User-agent: *
+Allow: /
+
+# Pages à ne pas indexer
+Disallow: /app/
+Disallow: /Backup/
+Disallow: /config.php
+Disallow: /error_log.txt
+Disallow: *.log$
+
+# Autoriser l'accès aux ressources publiques
+Allow: /css/
+Allow: /js/
+Allow: /assets/
+Allow: /public/uploads/
+
+# Sitemap
+Sitemap: http://localhost/cabinetdupont/sitemap.xml
+
+# Temps d'attente entre les requêtes (en secondes)
+Crawl-delay: 1
