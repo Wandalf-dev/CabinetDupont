@@ -35,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($requestData['action'])) {
                         ]);
                     }
                 } catch (\Exception $e) {
-                    error_log("Erreur lors de l'annulation du rendez-vous: " . $e->getMessage());
                     echo json_encode([
                         'success' => false,
                         'message' => 'Une erreur est survenue : ' . $e->getMessage()

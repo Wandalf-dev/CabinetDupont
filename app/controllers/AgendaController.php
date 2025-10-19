@@ -124,8 +124,6 @@ class AgendaController extends Controller {
         // Formater les rendez-vous pour le JavaScript
         $formattedAppointments = [];
         foreach ($appointments as $rdv) {
-            error_log("Traitement du rendez-vous : " . print_r($rdv, true));
-            error_log("Données du rendez-vous avant formatage : " . print_r($rdv, true));
             
             // Récupérer la durée réelle du RDV (priorité) sinon la durée du service
             $duree = isset($rdv['rdv_duree']) && $rdv['rdv_duree'] > 0 
@@ -135,8 +133,6 @@ class AgendaController extends Controller {
             $fin = clone $debut;
             $fin->modify("+{$duree} minutes");
 
-            error_log("Durée du RDV : {$duree} minutes");
-            error_log("Début : {$rdv['debut']}, Fin calculée : {$fin->format('Y-m-d H:i:s')}");
 
             $formattedAppointments[] = [
                 'id' => $rdv['rdv_id'],
@@ -163,7 +159,6 @@ class AgendaController extends Controller {
             ];
         }
         
-        error_log("Rendez-vous formatés : " . print_r($formattedAppointments, true));
         
         // Retourner les rendez-vous formatés
         header('Content-Type: application/json');
@@ -328,19 +323,16 @@ class AgendaController extends Controller {
         
         try {
             // Log pour debug
-            error_log('[getCabinetHoraires] Appel de la méthode');
             
             // Récupère les horaires depuis le modèle
             $horaires = $this->agendaModel->getHorairesCabinet();
             
-            error_log('[getCabinetHoraires] Horaires récupérés: ' . json_encode($horaires));
             
             echo json_encode([
                 'success' => true,
                 'horaires' => $horaires
             ]);
         } catch (\Exception $e) {
-            error_log('[getCabinetHoraires] Erreur: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
                 'success' => false,

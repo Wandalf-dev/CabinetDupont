@@ -326,7 +326,6 @@ include __DIR__ . '/templates/flash-messages.php';
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/admin-buttons-fix.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/admin-mobile-enhancements.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/confirmation-popup.css">
-<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/agenda/notifications.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/utils/drag-drop.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/patient.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/button-group.css">

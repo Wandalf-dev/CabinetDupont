@@ -133,6 +133,61 @@ class AuthController {
                 header('Location: index.php?page=auth&action=register');
                 exit();
             }
+            
+            // Validation de la date de naissance
+            if (!empty($data['date_naissance'])) {
+                $date = trim($data['date_naissance']);
+                $finalDate = null;
+                $dateObject = null;
+                
+                // Essayer le format dd/mm/yyyy (saisie manuelle ou formaté par JS)
+                if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $date)) {
+                    $dt = \DateTime::createFromFormat('d/m/Y', $date);
+                    if ($dt && $dt->format('d/m/Y') === $date) {
+                        $dateObject = $dt;
+                        $finalDate = $dt->format('Y-m-d');
+                    }
+                }
+                // Essayer le format yyyy-mm-dd (Flatpickr ou format MySQL)
+                elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+                    $dt = \DateTime::createFromFormat('Y-m-d', $date);
+                    if ($dt && $dt->format('Y-m-d') === $date) {
+                        $dateObject = $dt;
+                        $finalDate = $date; // Déjà au bon format
+                    }
+                }
+                
+                // Si aucun format valide
+                if ($finalDate === null) {
+                    $_SESSION['error'] = "La date de naissance n'est pas au bon format (attendu : jj/mm/aaaa).";
+                    $_SESSION['form_data'] = $data;
+                    header('Location: index.php?page=auth&action=register');
+                    exit();
+                }
+                
+                // Validation de l'âge (entre 3 et 120 ans)
+                $today = new \DateTime();
+                $age = $today->diff($dateObject)->y;
+                
+                if ($age < 3) {
+                    $_SESSION['error'] = "Vous devez avoir au moins 3 ans pour créer un compte.";
+                    $_SESSION['form_data'] = $data;
+                    header('Location: index.php?page=auth&action=register');
+                    exit();
+                } elseif ($age > 120) {
+                    $_SESSION['error'] = "La date de naissance ne peut pas dépasser 120 ans.";
+                    $_SESSION['form_data'] = $data;
+                    header('Location: index.php?page=auth&action=register');
+                    exit();
+                } elseif ($dateObject > $today) {
+                    $_SESSION['error'] = "La date de naissance ne peut pas être dans le futur.";
+                    $_SESSION['form_data'] = $data;
+                    header('Location: index.php?page=auth&action=register');
+                    exit();
+                }
+                
+                $data['date_naissance'] = $finalDate;
+            }
 
             // Vérifie que les mots de passe correspondent
             if ($data['password'] !== $data['password_confirm']) {

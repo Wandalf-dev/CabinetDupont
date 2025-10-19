@@ -58,14 +58,9 @@ class AdminController extends \App\Core\Controller {
     // Méthode principale pour afficher le panneau d'administration
     public function index() {
         // Debug
-        error_log("=== ADMIN DEBUG ===");
-        error_log("Session: " . print_r($_SESSION, true));
-        error_log("Request Method: " . $_SERVER['REQUEST_METHOD']);
-        error_log("=== END DEBUG ===");
 
         // Vérifie que l'utilisateur est bien un administrateur (médecin ou secrétaire)
         if (!isset($_SESSION['user_role']) || ($_SESSION['user_role'] !== 'MEDECIN' && $_SESSION['user_role'] !== 'SECRETAIRE')) {
-            error_log("Accès refusé - Role: " . ($_SESSION['user_role'] ?? 'non défini'));
             header('Location: index.php?page=home');
             exit();
         }
@@ -194,7 +189,6 @@ class AdminController extends \App\Core\Controller {
             }
             $this->jsonResponse(['success' => true, 'creneaux' => $creneaux], 200);
         } catch (\Exception $e) {
-            error_log("Erreur getAllCreneaux: " . $e->getMessage());
             $this->jsonResponse(['success' => false, 'error' => 'Erreur lors de la récupération des créneaux'], 500);
         }
     }
@@ -233,7 +227,6 @@ class AdminController extends \App\Core\Controller {
                 'message'         => $result ? 'Statut mis à jour' : 'Erreur lors de la mise à jour'
             ], $result !== false ? 200 : 400);
         } catch (\Exception $e) {
-            error_log("Erreur toggleIndisponible: " . $e->getMessage());
             $this->jsonResponse(['success' => false, 'error' => 'Erreur lors de la mise à jour du statut'], 500);
         }
     }
@@ -258,7 +251,6 @@ class AdminController extends \App\Core\Controller {
                 'message' => $result ? 'Créneaux générés avec succès' : 'Erreur lors de la génération'
             ], $result ? 200 : 500);
         } catch (\Exception $e) {
-            error_log("Erreur genererCreneaux: " . $e->getMessage());
             $this->jsonResponse(['success' => false, 'error' => 'Erreur lors de la génération des créneaux'], 500);
         }
     }
@@ -278,7 +270,6 @@ class AdminController extends \App\Core\Controller {
             }
             $this->jsonResponse(['success' => true, 'creneaux' => $creneaux], 200);
         } catch (\Exception $e) {
-            error_log("Erreur getCreneauxPourDate: " . $e->getMessage());
             $this->jsonResponse(['success' => false, 'error' => 'Erreur lors de la récupération des créneaux'], 500);
         }
     }
@@ -293,7 +284,6 @@ class AdminController extends \App\Core\Controller {
                 'message' => $result ? 'Nettoyage effectué avec succès' : 'Erreur lors du nettoyage'
             ], $result ? 200 : 500);
         } catch (\Exception $e) {
-            error_log("Erreur cleanupInconsistentSlots: " . $e->getMessage());
             $this->jsonResponse(['success' => false, 'error' => 'Erreur lors du nettoyage des créneaux'], 500);
         }
     }
@@ -315,7 +305,6 @@ class AdminController extends \App\Core\Controller {
                 'message' => $result ? 'Créneau supprimé' : 'Créneau introuvable ou non supprimé'
             ], $result ? 200 : 400);
         } catch (\Exception $e) {
-            error_log("Erreur deleteCreneau: " . $e->getMessage());
             $this->jsonResponse(['success' => false, 'error' => 'Erreur lors de la suppression'], 500);
         }
     }
@@ -401,19 +390,54 @@ class AdminController extends \App\Core\Controller {
         if (empty($data['date_naissance'])) {
             $errors[] = "La date de naissance est obligatoire.";
         } else {
-            $date = $data['date_naissance'];
+            $date = trim($data['date_naissance']);
+            $finalDate = null;
+            $dateObject = null;
+            
+            // Essayer le format dd/mm/yyyy (saisie manuelle ou formaté par JS)
             if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $date)) {
                 $dt = DateTime::createFromFormat('d/m/Y', $date);
-                if ($dt) $date = $dt->format('Y-m-d');
+                if ($dt && $dt->format('d/m/Y') === $date) {
+                    $dateObject = $dt;
+                    $finalDate = $dt->format('Y-m-d');
+                }
             }
-            $validated['date_naissance'] = $date;
+            // Essayer le format yyyy-mm-dd (Flatpickr ou format MySQL)
+            elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+                $dt = DateTime::createFromFormat('Y-m-d', $date);
+                if ($dt && $dt->format('Y-m-d') === $date) {
+                    $dateObject = $dt;
+                    $finalDate = $date; // Déjà au bon format
+                }
+            }
+            
+            // Si aucun format valide
+            if ($finalDate === null) {
+                $errors[] = "La date de naissance n'est pas au bon format (attendu : jj/mm/aaaa ou aaaa-mm-jj).";
+            } else {
+                // Validation de l'âge (entre 3 et 120 ans)
+                $today = new DateTime();
+                $age = $today->diff($dateObject)->y;
+                
+                if ($age < 3) {
+                    $errors[] = "Le patient doit avoir au moins 3 ans.";
+                } elseif ($age > 120) {
+                    $errors[] = "La date de naissance ne peut pas dépasser 120 ans.";
+                } elseif ($dateObject > $today) {
+                    $errors[] = "La date de naissance ne peut pas être dans le futur.";
+                } else {
+                    $validated['date_naissance'] = $finalDate;
+                }
+            }
         }
 
         if (!$isUpdate && empty($data['password'])) {
             $errors[] = "Le mot de passe est obligatoire.";
         } elseif (!empty($data['password'])) {
-            if (strlen($data['password']) < 6) {
-                $errors[] = "Le mot de passe doit contenir au moins 6 caractères.";
+            // Validation de la force du mot de passe
+            $passwordValidation = \App\Core\Security::validatePasswordStrength($data['password']);
+            if (!$passwordValidation['valid']) {
+                $errors[] = "Mot de passe trop faible. Il doit contenir : au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*...).";
             } else {
                 $validated['password'] = $data['password'];
             }

@@ -17,13 +17,11 @@ class RendezVousModel extends Model {
             ]);
 
             if (!$result) {
-                error_log("Erreur SQL lors de la mise à jour du statut: " . implode(", ", $stmt->errorInfo()));
                 return false;
             }
 
             return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
-            error_log("Erreur lors de la mise à jour du statut du rendez-vous : " . $e->getMessage());
             throw $e;
         }
     }
@@ -40,19 +38,15 @@ class RendezVousModel extends Model {
             
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($result) {
-                error_log("Données du rendez-vous récupérées: " . print_r($result, true));
             } else {
-                error_log("Aucun rendez-vous trouvé avec l'ID: " . $id);
             }
             return $result;
         } catch (PDOException $e) {
-            error_log("Erreur lors de la récupération du rendez-vous : " . $e->getMessage());
             throw $e;
         }
     }
 
     public function annulerRendezVous($rdvId) {
-        error_log("=== Début annulation du rendez-vous ===");
         $this->db->beginTransaction();
         
         try {
@@ -70,7 +64,6 @@ class RendezVousModel extends Model {
                 throw new \Exception("Rendez-vous introuvable");
             }
 
-            error_log("Rendez-vous trouvé : " . print_r($rdv, true));
 
             // 2. Marquer le rendez-vous comme annulé (on garde l'historique)
             $sql = "UPDATE rendezvous SET statut = 'ANNULE' WHERE id = ?";
@@ -110,7 +103,6 @@ class RendezVousModel extends Model {
                        WHERE id IN ($placeholders)";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute($creneauxALiberer);
-                error_log("Créneaux libérés : " . count($creneauxALiberer));
             }
 
             // Valider la transaction
@@ -120,14 +112,11 @@ class RendezVousModel extends Model {
         } catch (\Exception $e) {
             // En cas d'erreur, annuler toutes les modifications
             $this->db->rollBack();
-            error_log("Erreur lors de l'annulation du rendez-vous : " . $e->getMessage());
             return false;
         }
     }
 
     public function modifierHeure($rdvId, $nouvelleDate, $nouvelleHeure) {
-        error_log("=== Début modifierHeure dans le modèle ===");
-        error_log("Paramètres reçus - ID: {$rdvId}, Date: {$nouvelleDate}, Heure: {$nouvelleHeure}");
         
         // Nettoyer les créneaux orphelins avant toute modification
         $this->nettoyerCreneauxOrphelins();
@@ -140,7 +129,6 @@ class RendezVousModel extends Model {
                    INNER JOIN creneau c ON r.creneau_id = c.id 
                    LEFT JOIN service s ON c.service_id = s.id 
                    WHERE r.id = ? AND r.statut != 'ANNULE'";
-            error_log("Exécution de la requête: " . $sql);
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$rdvId]);
             $rendezvous = $stmt->fetch();
@@ -173,9 +161,6 @@ class RendezVousModel extends Model {
                 $duree
             ]);
             $creneauxActuelsRdv = $stmt->fetchAll(\PDO::FETCH_COLUMN);
-            error_log("Service ID: " . $rendezvous['service_id']);
-            error_log("Durée du service: " . $duree . " minutes");
-            error_log("Créneaux du RDV actuel à exclure: " . implode(', ', $creneauxActuelsRdv));
 
             // 2. Trouver le créneau de départ correspondant à la nouvelle heure
             $sql = "SELECT id, debut, fin, statut, est_reserve, agenda_id 
@@ -275,7 +260,6 @@ class RendezVousModel extends Model {
             ]);
             $anciensCreneaux = $stmt->fetchAll(\PDO::FETCH_COLUMN);
             
-            error_log("Libération de " . count($anciensCreneaux) . " ancien(s) créneau(x): " . implode(', ', $anciensCreneaux));
             
             if (!empty($anciensCreneaux)) {
                 $placeholders = implode(',', array_fill(0, count($anciensCreneaux), '?'));
@@ -292,7 +276,6 @@ class RendezVousModel extends Model {
             $creneauxIds = array_column($creneauxConsecutifs, 'id');
             $placeholders = implode(',', array_fill(0, count($creneauxIds), '?'));
             
-            error_log("Réservation de " . count($creneauxIds) . " nouveau(x) créneau(x): " . implode(', ', $creneauxIds));
             
             $sql = "UPDATE creneau 
                    SET est_reserve = 1, 
@@ -314,12 +297,10 @@ class RendezVousModel extends Model {
             }
 
             $this->db->commit();
-            error_log("Modification réussie - Ancien créneau: {$rendezvous['creneau_id']}, Nouveau créneau: {$nouveauCreneau['id']}, Service: {$rendezvous['service_id']}, Nb créneaux: " . count($creneauxIds));
             return true;
 
         } catch (\Exception $e) {
             $this->db->rollBack();
-            error_log("Erreur lors de la modification de l'heure du rendez-vous : " . $e->getMessage());
             throw $e; // Relancer l'exception pour que le contrôleur puisse récupérer le message
         }
     }
@@ -344,12 +325,10 @@ class RendezVousModel extends Model {
             $count = $stmt->rowCount();
             
             if ($count > 0) {
-                error_log("Nettoyage automatique : $count créneau(x) orphelin(s) libéré(s)");
             }
             
             return $count;
         } catch (\Exception $e) {
-            error_log("Erreur lors du nettoyage des créneaux orphelins : " . $e->getMessage());
             return 0;
         }
     }

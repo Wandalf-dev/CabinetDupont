@@ -34,16 +34,12 @@ class PatientModel extends \App\Core\Model {
      * @return array|false Données du patient ou false si non trouvé
      */
     public function getPatientByUserId($userId) {
-        error_log("Recherche du patient avec userId: " . $userId);
         $sql = "SELECT * FROM utilisateur WHERE id = :userId AND role = 'PATIENT'";
-        error_log("SQL: " . $sql);
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch();
-        error_log("Résultat de la recherche patient: " . ($result ? "trouvé" : "non trouvé"));
         if ($result) {
-            error_log("Données patient: " . print_r($result, true));
         }
         return $result;
     }

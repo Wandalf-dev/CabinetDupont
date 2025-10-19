@@ -26,9 +26,6 @@
                     <td class="statut-creneau">
                         <?php 
                         // Debug info
-                        error_log("Créneau ID: " . $creneau['id']);
-                        error_log("est_reserve: " . ($creneau['est_reserve'] ? 'true' : 'false'));
-                        error_log("statut: " . ($creneau['statut'] ?? 'non défini'));
                         ?>
                         <!-- Debug visible -->
                         <div style="font-size: 10px; color: #666;">

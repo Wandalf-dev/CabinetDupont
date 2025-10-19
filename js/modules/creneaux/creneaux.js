@@ -264,7 +264,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     throw new Error('Structure HTML invalide dans la réponse');
                 }
             } catch (error) {
-                console.error('Erreur détaillée:', error);
                 this.showError(error.message || 'Erreur lors du chargement des créneaux');
             }
         },
@@ -324,8 +323,48 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.selectedCount.textContent = `${count} sélectionné${count > 1 ? 's' : ''}`;
             }
             const hasSelection = count > 0;
-            if (this.bulkActions.markUnavailable) this.bulkActions.markUnavailable.disabled = !hasSelection;
-            if (this.bulkActions.delete)          this.bulkActions.delete.disabled          = !hasSelection;
+            
+            // Vérifier le statut des créneaux sélectionnés
+            let hasAvailable = false;
+            let hasUnavailable = false;
+            
+            if (hasSelection) {
+                this.selectedCreneaux.forEach(id => {
+                    const checkbox = this.creneauxView.querySelector(`.creneau-select[data-id="${id}"]`);
+                    if (checkbox) {
+                        const card = checkbox.closest('.creneau-card');
+                        if (card) {
+                            if (card.classList.contains('available')) {
+                                hasAvailable = true;
+                            } else if (card.classList.contains('unavailable')) {
+                                hasUnavailable = true;
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Gérer le bouton "Marquer indisponible"
+            if (this.bulkActions.markUnavailable) {
+                // Désactiver si aucune sélection OU si au moins un créneau est déjà indisponible
+                const shouldDisable = !hasSelection || hasUnavailable;
+                this.bulkActions.markUnavailable.disabled = shouldDisable;
+                
+                // Changer le texte et le titre selon le cas
+                if (hasUnavailable && hasAvailable) {
+                    // Mélange de disponibles et indisponibles
+                    this.bulkActions.markUnavailable.title = 'Impossible : la sélection contient des créneaux déjà indisponibles';
+                } else if (hasUnavailable && !hasAvailable) {
+                    // Que des indisponibles
+                    this.bulkActions.markUnavailable.title = 'Créneaux déjà indisponibles';
+                } else {
+                    this.bulkActions.markUnavailable.title = '';
+                }
+            }
+            
+            if (this.bulkActions.delete) {
+                this.bulkActions.delete.disabled = !hasSelection;
+            }
 
             // Mettre à jour le texte et l'icône du bouton "Tout sélectionner"
             if (this.btnSelectAll) {
@@ -373,7 +412,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         async toggleDisponibilite(id) {
             try {
-                console.log('Envoi de la requête pour le créneau:', id);
                 const response = await fetch('index.php?page=creneaux&action=toggleIndisponible', {
                     method: 'POST',
                     headers: {
@@ -384,31 +422,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 const responseText = await response.text();
-                console.log('Réponse brute du serveur:', responseText);
 
                 let data;
                 try {
                     data = JSON.parse(responseText);
-                    console.log('Données JSON parsées:', data);
                 } catch (e) {
-                    console.error('Erreur de parsing JSON:', e);
                     throw new Error('Réponse invalide du serveur');
                 }
 
                 if (!response.ok) {
-                    console.error('Statut HTTP non-ok:', response.status);
                     throw new Error(data.error || 'Erreur lors du changement de disponibilité');
                 }
 
                 if (!data.success) {
-                    console.error('Réponse indique un échec:', data);
                     throw new Error(data.error || 'La modification a échoué');
                 }
 
                 await this.loadCreneaux();
                 this.showSuccess(data.message || 'Statut du créneau mis à jour');
             } catch (error) {
-                console.error('Erreur complète:', error);
                 this.showError(error.message || 'Erreur lors de la modification du créneau');
             }
         },
@@ -432,7 +464,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 await this.loadCreneaux();
                 this.showSuccess('Créneau supprimé avec succès');
             } catch (error) {
-                console.error(error);
                 this.showError('Erreur lors de la suppression du créneau');
             }
         },
@@ -456,7 +487,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 await this.loadCreneaux();
                 this.showSuccess('Rendez-vous annulé avec succès');
             } catch (error) {
-                console.error(error);
                 this.showError('Erreur lors de l\'annulation du rendez-vous');
             }
         },
@@ -483,7 +513,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.updateSelectionUI();
                 this.showSuccess('Créneaux marqués comme indisponibles');
             } catch (error) {
-                console.error(error);
                 this.showError('Erreur lors de la modification des créneaux');
             }
         },
@@ -510,7 +539,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.updateSelectionUI();
                 this.showSuccess('Créneaux supprimés avec succès');
             } catch (error) {
-                console.error(error);
                 this.showError('Erreur lors de la suppression des créneaux');
             }
         },
@@ -558,7 +586,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 await this.loadCreneaux();
                 this.showSuccess('Créneaux générés avec succès');
             } catch (error) {
-                console.error(error);
                 this.showError('Erreur lors de la génération des créneaux');
             }
         },
@@ -590,9 +617,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 return await window.showConfirmationPopup(options);
             }
             // Sinon, fallback sur confirm() natif
-            const message = typeof options === 'string' ? options : 
-                options.action === 'delete' ? `Êtes-vous sûr de vouloir supprimer ${options.count} créneau(x) ?` :
-                `Êtes-vous sûr de vouloir effectuer cette action ?`;
+            if (typeof options === 'string') {
+                return confirm(options);
+            }
+            
+            let message = '';
+            if (options.action === 'delete') {
+                message = `Êtes-vous sûr de vouloir supprimer ${options.count} créneau(x) ?`;
+            } else if (options.action === 'statut' && options.type === 'indisponible') {
+                message = `Êtes-vous sûr de vouloir marquer ${options.count} créneau(x) comme indisponible(s) ?`;
+            } else {
+                message = `Êtes-vous sûr de vouloir effectuer cette action sur ${options.count || 1} créneau(x) ?`;
+            }
             return confirm(message);
         },
 

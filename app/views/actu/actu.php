@@ -19,7 +19,6 @@ include __DIR__ . '/../templates/flash-messages.php';
         <?php 
         // Récupère la première actualité pour la mettre en avant
         $latestActu = array_shift($actus); 
-        error_log("Dernière actualité : " . print_r($latestActu, true));
         ?>
         <!-- Dernière actualité mise en avant -->
         <article class="actu-featured">
@@ -29,11 +28,6 @@ include __DIR__ . '/../templates/flash-messages.php';
                 <!-- Affiche l'image de l'actualité si elle existe -->
                 <img src="/cabinetdupont/public/uploads/<?php echo htmlspecialchars($latestActu['image']); ?>" alt="Image de l'actualité" loading="lazy">
               </div>
-              <?php 
-              error_log("Affichage de l'image : /cabinetdupont/public/uploads/" . $latestActu['image']);
-              ?>
-            <?php else: ?>
-              <?php error_log("Pas d'image trouvée dans latestActu : " . print_r($latestActu, true)); ?>
             <?php endif; ?>
             <h3><?php echo htmlspecialchars($latestActu['titre']); ?></h3>
             <p><?php echo htmlspecialchars(substr(strip_tags($latestActu['contenu']), 0, 400)) . '...'; ?></p>

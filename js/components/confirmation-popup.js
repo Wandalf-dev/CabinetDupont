@@ -1,9 +1,10 @@
 // Fonction universelle pour afficher une popup de confirmation
+// Accepte soit une chaîne de caractères, soit un objet { action, count, type }
 // action: 'delete' ou 'statut'
 // count: nombre de créneaux concernés
 // type: 'indisponible', 'disponible', ou null
 
-function showConfirmationPopup({ action, count, type }) {
+function showConfirmationPopup(options) {
     return new Promise((resolve) => {
         // Overlay sombre
         const overlay = document.createElement('div');
@@ -12,19 +13,27 @@ function showConfirmationPopup({ action, count, type }) {
 
         // Texte dynamique
         let message = '';
-        const pluriel = count > 1 ? 'créneaux' : 'créneau';
-        if (action === 'delete') {
-            message = `Êtes-vous sûr de vouloir supprimer ${count} ${pluriel} ?`;
-        } else if (action === 'statut') {
-            if (type === 'indisponible') {
-                message = `Êtes-vous sûr de vouloir marquer ${count} ${pluriel} comme indisponible${count > 1 ? 's' : ''} ?`;
-            } else if (type === 'disponible') {
-                message = `Êtes-vous sûr de vouloir rendre ${count} ${pluriel} disponible${count > 1 ? 's' : ''} ?`;
-            } else {
-                message = `Êtes-vous sûr de vouloir changer le statut de ${count} ${pluriel} ?`;
-            }
+        
+        // Si c'est une chaîne, l'utiliser directement
+        if (typeof options === 'string') {
+            message = options;
         } else {
-            message = `Êtes-vous sûr de vouloir effectuer cette action sur ${count} ${pluriel} ?`;
+            const { action, count, type } = options;
+            const pluriel = count > 1 ? 'créneaux' : 'créneau';
+            
+            if (action === 'delete') {
+                message = `Êtes-vous sûr de vouloir supprimer ${count} ${pluriel} ?`;
+            } else if (action === 'statut') {
+                if (type === 'indisponible') {
+                    message = `Êtes-vous sûr de vouloir marquer ${count} ${pluriel} comme indisponible${count > 1 ? 's' : ''} ?`;
+                } else if (type === 'disponible') {
+                    message = `Êtes-vous sûr de vouloir rendre ${count} ${pluriel} disponible${count > 1 ? 's' : ''} ?`;
+                } else {
+                    message = `Êtes-vous sûr de vouloir changer le statut de ${count} ${pluriel} ?`;
+                }
+            } else {
+                message = `Êtes-vous sûr de vouloir effectuer cette action sur ${count || 1} ${pluriel} ?`;
+            }
         }
 
         // Popup

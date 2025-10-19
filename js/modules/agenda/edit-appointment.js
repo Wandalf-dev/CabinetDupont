@@ -24,12 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Fonction pour ouvrir le formulaire de modification
     window.showEditForm = function(appointment) {
-        console.log('Ouverture du formulaire de modification');
         const overlay = document.querySelector('.edit-appointment-overlay');
         const form = overlay.querySelector('form');
         const appointmentData = JSON.parse(appointment.getAttribute('data-appointment'));
-        console.log('Données du rendez-vous:', appointmentData);
-        console.log('Durée récupérée:', appointmentData.duration);
         
         // Remplir les détails du rendez-vous
         overlay.querySelector('.patient-name').textContent = appointmentData.patient || 'Non défini';
@@ -68,12 +65,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const newDate = document.querySelector('#edit-appointment-date').value;
         const newTime = document.querySelector('#edit-appointment-time').value;
         
-        console.log('Soumission du formulaire avec:', {
-            appointmentId,
-            newDate,
-            newTime
-        });
-        
         // Appeler l'API pour modifier le rendez-vous
         fetch('index.php?page=rendezvous&action=modifier', {
             method: 'POST',
@@ -83,11 +74,9 @@ document.addEventListener('DOMContentLoaded', function() {
             body: `rdv_id=${appointmentId}&nouvelle_date=${newDate}&nouvelle_heure=${newTime}`
         })
         .then(response => {
-            console.log('Status de la réponse:', response.status);
             return response.json();
         })
         .then(data => {
-            console.log('Réponse du serveur:', data);
             if (data.success) {
                 // Fermer le formulaire
                 editOverlay.style.display = 'none';
@@ -104,7 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('Erreur:', error);
             AlertManager.show('Une erreur est survenue lors de la modification du rendez-vous', 'error');
         });
     });

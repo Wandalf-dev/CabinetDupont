@@ -13,7 +13,6 @@ class AgendaModel extends Model {
      * @return array|false Les informations de l'agenda ou false si non trouvé
      */
     public function getAgendaByUtilisateur($utilisateurId) {
-        error_log("Recherche de l'agenda pour l'utilisateur " . $utilisateurId);
         $sql = "SELECT * FROM agenda WHERE utilisateur_id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$utilisateurId]);
@@ -21,14 +20,12 @@ class AgendaModel extends Model {
         
         // Si aucun agenda n'existe, on en crée un
         if (!$result) {
-            error_log("Aucun agenda trouvé, création d'un nouveau");
             if ($this->creerAgenda($utilisateurId)) {
                 $stmt->execute([$utilisateurId]);
                 $result = $stmt->fetch();
             }
         }
         
-        error_log("Résultat final de la recherche d'agenda : " . print_r($result, true));
         return $result;
     }
 
@@ -50,7 +47,6 @@ class AgendaModel extends Model {
      * Récupère les rendez-vous pour une période donnée
      */
     public function getRendezVousByPeriod($dateDebut, $dateFin, $agendaId) {
-        error_log("Recherche des rendez-vous entre $dateDebut et $dateFin pour l'agenda $agendaId");
         
         $sql = "SELECT 
                        c.id as creneau_id,
@@ -98,7 +94,6 @@ class AgendaModel extends Model {
         $stmt->execute([$agendaId, $dateDebut, $dateFin]);
         $results = $stmt->fetchAll();
         
-        error_log("Rendez-vous trouvés : " . print_r($results, true));
         return $results;
     }
 

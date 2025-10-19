@@ -60,7 +60,6 @@ class CreneauModel extends Model
             $log .= "\n" . print_r($data, true);
         }
         $log .= "\n";
-        error_log($log);
     }
 
     /**
@@ -87,13 +86,11 @@ class CreneauModel extends Model
 
             if (!$creneau) {
                 $this->db->rollBack();
-                error_log("Créneau $id non trouvé");
                 return false;
             }
 
             if ($creneau['has_active_rdv']) {
                 $this->db->rollBack();
-                error_log("Créneau $id a un rendez-vous actif");
                 return false;
             }
 
@@ -119,7 +116,6 @@ class CreneauModel extends Model
 
             if ($success) {
                 $this->db->commit();
-                error_log("Statut du créneau $id changé de {$creneau['statut']} à $nouveauStatut");
                 return $nouveauStatut === self::STATUT_INDISPONIBLE;
             }
 
@@ -127,7 +123,6 @@ class CreneauModel extends Model
             return false;
         } catch (\Exception $e) {
             if ($this->db->inTransaction()) $this->db->rollBack();
-            error_log("Erreur toggleIndisponible: " . $e->getMessage());
             return false;
         }
     }
@@ -169,7 +164,6 @@ class CreneauModel extends Model
             $this->logDebug("Nombre de créneaux trouvés", count($creneaux));
             return $creneaux ?: [];
         } catch (\Exception $e) {
-            error_log("ERREUR getAllCreneaux: " . $e->getMessage());
             throw $e;
         }
     }
@@ -322,9 +316,25 @@ class CreneauModel extends Model
         $stmtVerif->execute([':date' => $date]);
         $this->logDebug('RDV du jour', $stmtVerif->fetchAll(PDO::FETCH_ASSOC));
 
+        // Calculer la limite de temps UNIQUEMENT pour le jour actuel
+        $dateActuelle = (new \DateTime())->format('Y-m-d');
+        $dateSelectionnee = $date;
+        
+        // Si c'est le jour actuel, appliquer le délai de 4 heures
+        $conditionDelai = '';
+        $delaiMinimumStr = null;
+        
+        if ($dateSelectionnee === $dateActuelle) {
+            $delaiMinimum = new \DateTime();
+            $delaiMinimum->modify('+4 hours');
+            $delaiMinimumStr = $delaiMinimum->format('Y-m-d H:i:s');
+            $conditionDelai = 'AND c.debut > :delai_minimum';
+        }
+
         $sql = "SELECT DISTINCT c.id, c.debut, c.fin, c.statut, c.service_id
                 FROM creneau c
                 WHERE DATE(c.debut) = :d
+                  {$conditionDelai}
                   AND c.est_reserve = 0
                   AND c.statut != :indispo
                   AND NOT EXISTS (
@@ -344,15 +354,22 @@ class CreneauModel extends Model
                   )
                 ORDER BY c.debut ASC";
 
+        $params = [
+            ':d'              => $date,
+            ':indispo'        => self::STATUT_INDISPONIBLE,
+            ':annule'         => self::STATUT_ANNULE,
+            ':annule2'        => self::STATUT_ANNULE,
+            ':d1'             => $duree,
+            ':d2'             => $duree,
+        ];
+        
+        // Ajouter le paramètre de délai uniquement si c'est le jour actuel
+        if ($delaiMinimumStr !== null) {
+            $params[':delai_minimum'] = $delaiMinimumStr;
+        }
+
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            ':d'       => $date,
-            ':indispo' => self::STATUT_INDISPONIBLE,
-            ':annule'  => self::STATUT_ANNULE,
-            ':annule2' => self::STATUT_ANNULE,
-            ':d1'      => $duree,
-            ':d2'      => $duree,
-        ]);
+        $stmt->execute($params);
         $departSlots = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
         $this->logDebug('Créneaux candidats (départ)', count($departSlots));
@@ -491,7 +508,6 @@ class CreneauModel extends Model
                     $stmtUpd->execute([':dispo' => self::STATUT_DISPONIBLE, ':id' => $cr['id']]);
                     $this->logDebug('[DEBUG CANCEL] Libération du créneau ' . $cr['id']);
                 } else {
-                    error_log("Créneau #" . $cr['id'] . " non libéré, il reste $nbActifs RDV actifs.");
                 }
             }
 
@@ -499,7 +515,6 @@ class CreneauModel extends Model
             return true;
         } catch (\Exception $e) {
             if ($this->db->inTransaction()) $this->db->rollBack();
-            error_log("Erreur cancelRendezVous: " . $e->getMessage());
             return false;
         }
     }
@@ -564,7 +579,6 @@ class CreneauModel extends Model
             ]);
             $chevauchement = (int)$stmtChev->fetchColumn();
             if ($chevauchement > 0) {
-                error_log("[REFUS RDV] Chevauchement détecté : creneauId=$creneauId, chevauchement=$chevauchement");
                 throw new \Exception("Chevauchement détecté : créneau indisponible");
             }
 
@@ -586,7 +600,6 @@ class CreneauModel extends Model
 
             $needCount = max(1, (int)ceil($duree / 30));
             if (count($range) < $needCount) {
-                error_log("[REFUS RDV] Pas assez de créneaux consécutifs : besoin=$needCount, dispo=" . count($range));
                 throw new \Exception("Pas assez de créneaux consécutifs disponibles");
             }
 
@@ -612,7 +625,6 @@ class CreneauModel extends Model
             return true;
         } catch (\Exception $e) {
             if ($this->db->inTransaction()) $this->db->rollBack();
-            error_log('Erreur createRendezVous: ' . $e->getMessage());
             return false;
         }
     }
@@ -624,7 +636,6 @@ class CreneauModel extends Model
             $this->db->beginTransaction();
 
             if (!$this->verifierAgenda($agendaId)) {
-                error_log("Agenda $agendaId introuvable");
                 $this->db->rollBack();
                 return false;
             }
@@ -633,7 +644,6 @@ class CreneauModel extends Model
             $stmt->execute();
             $horaires = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
             if (!$horaires) {
-                error_log('Aucun horaire en base');
                 $this->db->rollBack();
                 return false;
             }
@@ -665,7 +675,6 @@ class CreneauModel extends Model
             return true;
         } catch (\Exception $e) {
             if ($this->db->inTransaction()) $this->db->rollBack();
-            error_log('Erreur genererCreneaux: ' . $e->getMessage());
             return false;
         }
     }
@@ -677,7 +686,6 @@ class CreneauModel extends Model
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$agendaId, $date, $heureDebut, $heureFin]);
         if ((int)$stmt->fetchColumn() > 0) {
-            error_log("Créneaux déjà présents le {$date} entre {$heureDebut} et {$heureFin}");
             return;
         }
 
@@ -698,7 +706,6 @@ class CreneauModel extends Model
                         self::STATUT_DISPONIBLE,
                     ]);
                 } catch (\PDOException $e) {
-                    error_log('Erreur insert creneau: ' . $e->getMessage());
                 }
             }
             $debut->add($interval);

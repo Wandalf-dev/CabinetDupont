@@ -44,9 +44,6 @@ class RendezVousController extends Controller {
     }
 
     public function selectDate() {
-        error_log("=== Début méthode selectDate() ===");
-        error_log("GET params reçus : " . print_r($_GET, true));
-        error_log("Session user_id : " . (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'non défini'));
         
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['error'] = "Vous devez être connecté pour prendre un rendez-vous.";
@@ -55,14 +52,12 @@ class RendezVousController extends Controller {
         }
 
         if (!isset($_GET['service_id'])) {
-            error_log("service_id manquant");
             $_SESSION['error'] = "Veuillez sélectionner un service.";
             header('Location: ' . BASE_URL . '/index.php?page=rendezvous&action=selectConsultation');
             exit;
         }
 
         $serviceId = (int)$_GET['service_id'];
-        error_log("Service ID reçu : " . $serviceId);
 
         // Récupération du service
         $service = $this->serviceModel->getServiceById($serviceId);
@@ -74,8 +69,6 @@ class RendezVousController extends Controller {
 
         // Récupération des dates disponibles (tous services confondus)
         $datesDisponibles = $this->creneauModel->getDatesDisponibles();
-        error_log("Dates disponibles trouvées : " . print_r($datesDisponibles, true));
-        error_log("Nombre de dates disponibles : " . count($datesDisponibles));
 
         if (empty($datesDisponibles)) {
             $_SESSION['error'] = "Aucun créneau disponible actuellement.";
@@ -184,14 +177,12 @@ class RendezVousController extends Controller {
             $serviceId = (int)$_GET['service_id'];
             $userId = $_SESSION['user_id'];
             
-            error_log("Paramètres reçus - creneauId: $creneauId, serviceId: $serviceId, userId: $userId");
 
             // Récupération et vérification du créneau
             $creneau = $this->creneauModel->getCreneauById($creneauId);
             if (!$creneau) {
                 throw new \Exception("Le créneau sélectionné n'existe pas.");
             }
-            error_log("Créneau trouvé : " . print_r($creneau, true));
 
             // Vérification que le créneau n'est pas déjà réservé
             if ($creneau['est_reserve']) {
@@ -203,16 +194,13 @@ class RendezVousController extends Controller {
             if (!$service) {
                 throw new \Exception("Le service demandé n'existe plus.");
             }
-            error_log("Service trouvé : " . print_r($service, true));
 
             // Récupération du profil patient
             $patient = $this->patientModel->getPatientByUserId($userId);
             if (!$patient) {
-                error_log("Patient non trouvé pour l'user_id: $userId");
                 throw new \Exception("Profil patient introuvable.");
             }
 
-            error_log("Patient trouvé : " . print_r($patient, true));
 
             // Affiche la vue de confirmation
             $this->view('rendezvous/confirmation-rdv', [
@@ -222,7 +210,6 @@ class RendezVousController extends Controller {
             ]);
 
         } catch (\Exception $e) {
-            error_log("ERREUR dans confirmation() : " . $e->getMessage());
             $_SESSION['error'] = $e->getMessage();
             header('Location: index.php?page=rendezvous&action=selectConsultation');
             exit;
@@ -230,17 +217,14 @@ class RendezVousController extends Controller {
     }
 
     public function confirmer() {
-        error_log("=== Début méthode confirmer() ===");
         try {
             if (!isset($_SESSION['user_id'])) {
                 throw new \Exception("Vous devez être connecté pour confirmer un rendez-vous.");
             }
 
             // Vérifier la présence des données POST
-            error_log("POST data: " . print_r($_POST, true));
             
             if (!isset($_POST['creneau_id']) || !isset($_POST['service_id'])) {
-                error_log("Données POST manquantes - creneau_id ou service_id non défini");
                 throw new \Exception("Informations manquantes pour la confirmation.");
             }
 
@@ -248,48 +232,43 @@ class RendezVousController extends Controller {
             $serviceId = (int)$_POST['service_id'];
             $userId = $_SESSION['user_id'];
 
-            error_log("Données extraites - creneauId: $creneauId, serviceId: $serviceId, userId: $userId");
 
             // Récupérer le patient
-            error_log("Recherche du patient pour userId: " . $userId);
             $patient = $this->patientModel->getPatientByUserId($userId);
             if (!$patient) {
-                error_log("Patient non trouvé pour userId: " . $userId);
                 throw new \Exception("Profil patient introuvable.");
             }
-            error_log("Patient trouvé: " . print_r($patient, true));
 
             // Vérifier que le créneau est toujours disponible
-            error_log("Vérification du créneau: " . $creneauId);
             $creneau = $this->creneauModel->getCreneauById($creneauId);
             if (!$creneau) {
-                error_log("Créneau non trouvé: " . $creneauId);
                 throw new \Exception("Ce créneau n'existe pas.");
             }
             if ($creneau['est_reserve']) {
-                error_log("Créneau déjà réservé: " . $creneauId);
                 throw new \Exception("Ce créneau n'est plus disponible.");
             }
-            error_log("Créneau disponible: " . print_r($creneau, true));
+
+            // Vérifier que le créneau n'est pas dans moins de 4 heures (délai minimum)
+            $dateHeureCreneau = new \DateTime($creneau['date'] . ' ' . $creneau['heure_debut']);
+            $maintenant = new \DateTime();
+            $maintenant->modify('+4 hours'); // Ajoute 4 heures à l'heure actuelle
+            
+            if ($dateHeureCreneau < $maintenant) {
+                throw new \Exception("Les rendez-vous doivent être pris au moins 4 heures à l'avance. Veuillez choisir un autre créneau.");
+            }
 
             // Vérifier le service
-            error_log("Vérification du service: " . $serviceId);
             $service = $this->serviceModel->getServiceById($serviceId);
             if (!$service) {
-                error_log("Service non trouvé: " . $serviceId);
                 throw new \Exception("Le service demandé n'existe pas.");
             }
-            error_log("Service trouvé: " . print_r($service, true));
 
             // Créer le rendez-vous
-            error_log("Tentative de création du rendez-vous avec - creneauId: $creneauId, serviceId: $serviceId, patientId: " . $patient['id']);
             $success = $this->creneauModel->createRendezVous($creneauId, $serviceId, $patient['id']);
             
             if (!$success) {
-                error_log("Échec de la création du rendez-vous");
                 throw new \Exception("Erreur lors de la création du rendez-vous.");
             }
-            error_log("Rendez-vous créé avec succès");
 
             // Rediriger vers la page de succès
             // On ne met plus de message flash de succès pour éviter l'affichage intempestif
@@ -297,7 +276,6 @@ class RendezVousController extends Controller {
             exit;
 
         } catch (\Exception $e) {
-            error_log("ERREUR dans confirmer() : " . $e->getMessage());
             $_SESSION['error'] = $e->getMessage();
             header('Location: index.php?page=rendezvous&action=selectConsultation');
             exit;
@@ -314,13 +292,9 @@ class RendezVousController extends Controller {
 
     public function modifier() {
         header('Content-Type: application/json');
-        error_log("=== Début de la méthode modifier() ===");
-        error_log("POST data reçu : " . print_r($_POST, true));
-        error_log("Session : " . print_r($_SESSION, true));
         
         try {
             if (!isset($_SESSION['user_id'])) {
-                error_log("Erreur: Utilisateur non connecté");
                 http_response_code(401);
                 echo json_encode(['success' => false, 'message' => 'Vous devez être connecté pour effectuer cette action']);
                 return;
@@ -362,27 +336,22 @@ class RendezVousController extends Controller {
             if ($rdv['patient_user_id'] != $_SESSION['user_id'] && 
                 (!isset($_SESSION['user_role']) || 
                 ($_SESSION['user_role'] !== 'SECRETAIRE' && $_SESSION['user_role'] !== 'MEDECIN'))) {
-                error_log("Accès refusé - user_id: " . $_SESSION['user_id'] . ", role: " . $_SESSION['user_role']);
                 http_response_code(403);
                 echo json_encode(['success' => false, 'message' => 'Vous n\'êtes pas autorisé à modifier ce rendez-vous']);
                 return;
             }
 
             // Mettre à jour l'heure du rendez-vous
-            error_log("Tentative de modification du rendez-vous - ID: {$rdvId}, Date: {$nouvelleDate}, Heure: {$nouvelleHeure}");
             
             try {
                 if ($this->rendezVousModel->modifierHeure($rdvId, $nouvelleDate, $nouvelleHeure)) {
-                    error_log("Modification réussie");
                     echo json_encode(['success' => true, 'message' => 'Le rendez-vous a été modifié avec succès']);
                 }
             } catch (\Exception $e) {
-                error_log("Erreur de modification: " . $e->getMessage());
                 http_response_code(400);
                 echo json_encode(['success' => false, 'message' => $e->getMessage()]);
             }
         } catch (\Exception $e) {
-            error_log("Erreur lors de la modification du rendez-vous : " . $e->getMessage());
             http_response_code(500);
             echo json_encode(['success' => false, 'message' => 'Erreur lors de la modification du rendez-vous']);
         }
@@ -405,13 +374,9 @@ class RendezVousController extends Controller {
     public function annuler() {
         header('Content-Type: application/json');
         
-        error_log("=== Début annulation rendez-vous (PHP) ===");
-        error_log("POST data: " . print_r($_POST, true));
-        error_log("Session data: " . print_r($_SESSION, true));
         
         try {
             if (!isset($_SESSION['user_id'])) {
-                error_log("Erreur: Utilisateur non connecté");
                 http_response_code(401);
                 echo json_encode(['success' => false, 'message' => 'Vous devez être connecté pour effectuer cette action']);
                 return;
@@ -428,36 +393,25 @@ class RendezVousController extends Controller {
         // Vérifier que le rendez-vous existe et que l'utilisateur a les droits
         try {
             $rdv = $this->rendezVousModel->getRendezVousById($rdvId);
-            error_log("=== Détails du rendez-vous ===");
-            error_log("RDV complet : " . print_r($rdv, true));
-            error_log("ID du rendez-vous : " . $rdvId);
-            error_log("Session user_id : " . $_SESSION['user_id']);
-            error_log("Date et heure de début : " . ($rdv ? $rdv['debut'] : 'non trouvée'));
-            error_log("Date et heure de fin : " . ($rdv ? $rdv['fin'] : 'non trouvée'));
             
             if (!$rdv) {
-                error_log("ERREUR: Rendez-vous non trouvé pour l'ID: " . $rdvId);
                 http_response_code(404);
                 echo json_encode(['success' => false, 'message' => 'Rendez-vous non trouvé']);
                 return;
             }
             
-            error_log("Vérification des droits - patient_id: " . $rdv['patient_id'] . ", medecin_id: " . $rdv['medecin_id'] . ", session_user_id: " . $_SESSION['user_id']);
             
             // Vérifier si l'utilisateur est le patient, le médecin ou un secrétaire
             if ($rdv['patient_id'] == $_SESSION['user_id'] || 
                 $rdv['medecin_id'] == $_SESSION['user_id'] || 
                 isset($_SESSION['role']) && $_SESSION['role'] === 'secretaire') {
                 
-                error_log("Accès autorisé pour l'utilisateur: " . $_SESSION['user_id']);
             } else {
-                error_log("Accès non autorisé - user_id: " . $_SESSION['user_id']);
                 http_response_code(403);
                 echo json_encode(['success' => false, 'message' => 'Vous n\'êtes pas autorisé à annuler ce rendez-vous']);
                 return;
             }
         } catch (\Exception $e) {
-            error_log("Erreur lors de la vérification du rendez-vous: " . $e->getMessage());
             http_response_code(500);
             echo json_encode(['success' => false, 'message' => 'Erreur lors de la vérification du rendez-vous']);
             return;
@@ -484,13 +438,9 @@ class RendezVousController extends Controller {
         header('Content-Type: application/json');
         
         try {
-            error_log("=== Début changerStatut ===");
-            error_log("SESSION: " . print_r($_SESSION, true));
-            error_log("POST: " . print_r($_POST, true));
             
             // Vérifier que l'utilisateur est admin ou médecin
             if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['ADMIN', 'MEDECIN'])) {
-                error_log("Accès refusé - Role: " . ($_SESSION['user_role'] ?? 'non défini'));
                 ob_end_clean();
                 http_response_code(403);
                 echo json_encode(['success' => false, 'message' => 'Accès non autorisé']);
@@ -501,7 +451,6 @@ class RendezVousController extends Controller {
             $rendezvousId = (int)($_POST['rendezvous_id'] ?? 0);
             $nouveauStatut = $_POST['statut'] ?? '';
 
-            error_log("RDV ID: $rendezvousId, Statut: $nouveauStatut");
 
             // Validation
             if (!$rendezvousId || !$nouveauStatut) {
@@ -547,9 +496,7 @@ class RendezVousController extends Controller {
             }
 
             // Mettre à jour le statut
-            error_log("Appel updateStatus avec RDV: $rendezvousId, Statut: $nouveauStatut");
             $success = $this->rendezVousModel->updateStatus($rendezvousId, $nouveauStatut);
-            error_log("Résultat updateStatus: " . ($success ? 'SUCCESS' : 'FAILED'));
 
             // Nettoyer le buffer et envoyer le JSON
             ob_end_clean();
@@ -568,7 +515,6 @@ class RendezVousController extends Controller {
             }
 
         } catch (\Exception $e) {
-            error_log("ERREUR changerStatut: " . $e->getMessage());
             ob_end_clean();
             http_response_code(500);
             echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);

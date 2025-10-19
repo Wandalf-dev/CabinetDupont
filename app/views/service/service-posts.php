@@ -50,7 +50,6 @@ include __DIR__ . '/../templates/flash-messages.php';
               <td>
                 <?php 
                 echo "<!--";
-                var_dump($service);
                 echo "-->";
                 echo htmlspecialchars($service['duree'] ?? 'non défini'); ?> min
               </td>

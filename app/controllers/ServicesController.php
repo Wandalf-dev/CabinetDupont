@@ -173,7 +173,6 @@ class ServicesController {
 
             // Validation de la couleur
             if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $data['couleur'])) {
-                error_log("Couleur invalide reçue : " . $data['couleur']);
                 $data['couleur'] = '#4CAF50'; // Couleur par défaut si invalide
             }
 

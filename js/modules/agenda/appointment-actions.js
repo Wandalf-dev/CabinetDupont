@@ -1,7 +1,6 @@
 // Fonction pour calculer la position verticale d'un créneau
 function calculatePosition(time) {
     if (!time) {
-        console.error('Temps non défini dans calculatePosition');
         return 0;
     }
     
@@ -10,7 +9,6 @@ function calculatePosition(time) {
     try {
         const match = time.match(TIME_FORMAT);
         if (!match) {
-            console.error('Format de temps invalide:', time);
             return 0;
         }
         
@@ -18,7 +16,6 @@ function calculatePosition(time) {
         const minutes = parseInt(match[2]);
         
         if (isNaN(hours) || isNaN(minutes)) {
-            console.error('Valeurs de temps invalides:', hours, minutes);
             return 0;
         }
         
@@ -28,7 +25,6 @@ function calculatePosition(time) {
         
         return Math.max(0, offsetMinutes); // position en pixels (1 minute = 1 pixel)
     } catch (error) {
-        console.error('Erreur dans calculatePosition:', error);
         return 0;
     }
 }
@@ -84,24 +80,14 @@ function showConfirmationDialog({ title, message, onConfirm, onCancel }) {
 async function cancelAppointment(appointmentId) {
     let appointment;
     try {
-        console.log('=== Début annulation rendez-vous ===');
-        console.log('ID du rendez-vous:', appointmentId);
         
         // Vérifier d'abord si l'élément existe avant de faire la requête
         appointment = document.querySelector(`[data-id="${appointmentId}"]`);
-        console.log('Élément trouvé:', appointment);
-        console.log('Classes de l\'élément:', appointment ? appointment.className : 'non trouvé');
-        console.log('Attributs de l\'élément:', appointment ? {
-            'data-id': appointment.getAttribute('data-id'),
-            'data-start-time': appointment.getAttribute('data-start-time'),
-            'style': appointment.getAttribute('style')
-        } : 'non trouvé');
         
         if (!appointment) {
             throw new Error('Rendez-vous introuvable dans le planning');
         }
 
-        console.log('=== Envoi requête annulation ===');
         const response = await fetch('index.php?page=rendezvous&action=annuler', {
             method: 'POST',
             headers: {
@@ -109,14 +95,12 @@ async function cancelAppointment(appointmentId) {
             },
             body: `rdv_id=${appointmentId}`
         });
-        console.log('Statut de la réponse:', response.status);
 
         if (!response.ok) {
             throw new Error(`Erreur serveur: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('Réponse du serveur:', data);
         
         if (!data.success) {
             throw new Error(data.message || 'Erreur lors de l\'annulation');
@@ -124,14 +108,11 @@ async function cancelAppointment(appointmentId) {
 
         // Vérifier que l'élément est toujours dans le DOM
         if (!appointment.isConnected) {
-            console.error('L\'élément du rendez-vous n\'est plus dans le DOM:', appointmentId);
             throw new Error('Élément du rendez-vous non trouvé');
         }
 
         // On ne vérifie plus les attributs data-* car on fait confiance à la réponse du serveur
-        console.log('Élément du rendez-vous trouvé, envoi de la requête d\'annulation...');
 
-        console.log('Mise à jour de l\'interface pour le rendez-vous:', appointmentId);
 
         // Si on arrive ici, c'est que l'annulation a réussi
             // Supprimer l'élément du rendez-vous
@@ -172,8 +153,6 @@ async function cancelAppointment(appointmentId) {
         }
 
     } catch (error) {
-        console.error('Erreur complète:', error);
-        console.error('Message d\'erreur:', error.message);
         
         // Afficher l'alerte d'erreur
         if (window.AlertManager) {
@@ -229,7 +208,6 @@ async function changerStatutRdv(rendezvousId, nouveauStatut) {
         }
 
     } catch (error) {
-        console.error('Erreur:', error);
         if (window.AlertManager) {
             AlertManager.show(error.message || 'Erreur lors du changement de statut', 'error');
         }

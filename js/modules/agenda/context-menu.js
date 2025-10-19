@@ -106,14 +106,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Gérer les actions du menu
     function handleContextMenuAction(action, appointmentId) {
-        console.log('Action:', action, 'AppointmentId:', appointmentId);
         switch(action) {
             case 'edit':
-                console.log('Modifier le rendez-vous:', appointmentId);
                 const appointmentElement = document.querySelector(`[data-id="${appointmentId}"]`);
                 if (appointmentElement) {
                     const appointmentData = JSON.parse(appointmentElement.getAttribute('data-appointment'));
-                    console.log('Données du rendez-vous à modifier:', appointmentData);
                     showEditForm(appointmentElement);
                 }
                 break;
@@ -122,7 +119,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     title: 'Marquer comme honoré',
                     message: 'Confirmez-vous que le patient s\'est présenté à ce rendez-vous ?',
                     onConfirm: () => {
-                        console.log('Marquer honoré pour ID:', appointmentId);
                         if (window.changerStatutRdv) {
                             window.changerStatutRdv(appointmentId, 'HONORE');
                         }
@@ -134,7 +130,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     title: 'Marquer comme absent',
                     message: 'Confirmez-vous que le patient ne s\'est PAS présenté à ce rendez-vous ?',
                     onConfirm: () => {
-                        console.log('Marquer absent pour ID:', appointmentId);
                         if (window.changerStatutRdv) {
                             window.changerStatutRdv(appointmentId, 'ABSENT');
                         }
@@ -146,13 +141,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     title: 'Annuler le rendez-vous',
                     message: 'Êtes-vous sûr de vouloir annuler ce rendez-vous ? Cette action est irréversible.',
                     onConfirm: () => {
-                        console.log('Confirmation annulation pour ID:', appointmentId);
                         cancelAppointment(appointmentId);
                     }
                 });
                 break;
             case 'email':
-                console.log('Envoyer un mail au patient:', appointmentId);
                 // TODO: Implémenter l'envoi d'email
                 break;
         }
@@ -166,13 +159,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Gestion du clic droit (desktop)
     document.addEventListener('contextmenu', function(e) {
-        console.log('Target:', e.target);
         const appointment = e.target.closest('.slot-cell.reserved');
-        console.log('Appointment found:', appointment);
         if (appointment) {
             e.preventDefault();
             const appointmentId = appointment.getAttribute('data-id');
-            console.log('AppointmentId:', appointmentId);
             if (appointmentId) {
                 createContextMenu(e, appointmentId);
             }

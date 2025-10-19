@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         } catch (error) {
-            console.error('Erreur lors du chargement de l\'animation Lottie:', error);
         }
     }
 

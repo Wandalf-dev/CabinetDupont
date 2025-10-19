@@ -184,7 +184,6 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(removeGripCells, 200);
     }
 
-    console.log('✅ Améliorations mobile admin chargées');
 });
 
 // Classe pour réduire les animations sur appareils lents

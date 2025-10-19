@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+﻿document.addEventListener('DOMContentLoaded', function() {
     // Détection du mode responsive (mobile/tablette)
     const isMobile = () => window.innerWidth <= 768;
     
@@ -142,7 +142,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function switchView(view) {
         // Empêcher la vue semaine sur mobile
         if (isMobile() && view === 'week') {
-            console.warn('[Agenda] Vue semaine désactivée sur mobile');
             return;
         }
         
@@ -252,13 +251,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.loadUnavailableSlots) {
             await window.loadUnavailableSlots(startDateStr, endDateStr);
         }
-        
-        console.log('[Agenda] Déclenchement de calendarViewUpdated:', {
-            startDate: startDateStr,
-            endDate: endDateStr,
-            view: currentView
-        });
-        
         document.dispatchEvent(new CustomEvent('calendarViewUpdated', {
             detail: {
                 startDate: startDateStr,
@@ -297,28 +289,11 @@ document.addEventListener('DOMContentLoaded', function() {
             slot.removeAttribute('title');
             slot.style.backgroundColor = '';
         });
-
-        console.log('[Agenda] Chargement des rendez-vous pour la période:', { 
-            start, 
-            end, 
-            view: currentView,
-            activeView: activeView
-        });
-
         try {
             const response = await fetch(`index.php?page=agenda&action=getAppointments&start=${start}&end=${end}`);
             const events = await response.json();
-                console.log('Rendez-vous reçus (données brutes):', events);
                 events.forEach(event => {
                     // Vérification des dates brutes
-                    console.log('Données brutes du rendez-vous:', {
-                        start: event.start,
-                        end: event.end,
-                        duree: event.duree,
-                        raw_start: new Date(event.start),
-                        raw_end: new Date(event.end)
-                    });
-
                     const startTime = new Date(event.start);
                     const endTime = new Date(startTime);
                     // Si la durée est spécifiée, l'utiliser pour calculer l'heure de fin
@@ -328,29 +303,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         endTime.setTime(new Date(event.end).getTime());
                     }
                     const slotDate = formatDateISO(startTime);
-
-                    console.log('Traitement du rendez-vous:', {
-                        date: slotDate,
-                        start: event.start,
-                        startObj: startTime,
-                        end: event.end,
-                        endObj: endTime,
-                        duration: (endTime - startTime) / (60 * 1000), // Durée en minutes
-                        title: event.title,
-                        view: currentView
-                    });
-
                         // Vérifier si le rendez-vous est dans la période affichée
                     const slotDateTime = new Date(slotDate);
                     if (currentView === 'week' || 
                         (currentView === 'day' && formatDateISO(slotDateTime) === formatDateISO(currentDate))) {
                         
                         const dayName = startTime.toLocaleString('en-US', { weekday: 'long' }).toLowerCase();
-                        console.log('Recherche de la colonne pour:', {
-                            date: formatDateISO(startTime),
-                            dayName: dayName,
-                            selector: `${activeView} .day-column[data-date="${formatDateISO(startTime)}"]`
-                        });
 
                         // Trouver la colonne du jour correspondant selon la vue
                         let dayColumn;
@@ -367,12 +325,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
 
                         if (!dayColumn) {
-                            console.log('Colonne non trouvée pour:', {
-                                view: currentView,
-                                date: formatDateISO(startTime),
-                                currentDate: formatDateISO(currentDate),
-                                dayName: dayName
-                            });
                             return;
                         }
 
@@ -404,7 +356,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         const exactTop = (startMinutes / 30) * slotHeight;
                         
                         // Log pour déboguer
-                        console.log('Données du rendez-vous:', event);
 
                         // Créer le contenu détaillé pour la vue jour
                         // Appliquer le style avec précision
@@ -493,7 +444,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
         } catch (error) {
-            console.error('Erreur lors du chargement des rendez-vous:', error);
         }
     }
 
@@ -516,11 +466,6 @@ document.addEventListener('DOMContentLoaded', function() {
             dayElement.setAttribute('data-day', date.toLocaleString('en-US', { weekday: 'long' }).toLowerCase());
             dayElement.setAttribute('data-date', formatDateISO(date));
         });
-
-        console.log('Colonnes de la semaine mises à jour:', [...dayElements].map(col => ({
-            dataDay: col.getAttribute('data-day'),
-            dataDate: col.getAttribute('data-date')
-        })));
 
         // Mise à jour des attributs data pour les créneaux
         updateTimeSlots(monday, dayElements);
@@ -548,31 +493,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 header.querySelector('.day-name').textContent = dayName;
                 header.querySelector('.day-date').textContent = formatDate(currentDate);
             }
-            
-            console.log('Mise à jour de la vue jour:', {
-                date: dateStr,
-                dataDay: dayElement.getAttribute('data-day'),
-                dataDate: dayElement.getAttribute('data-date'),
-                hasContent: !!dayElement.querySelector('.day-content'),
-                currentView: currentView
-            });
-
             // Récupérer tous les créneaux de la vue jour
             const slots = dayElement.querySelectorAll('.day-content .slot-cell');
             slots.forEach(slot => {
                 const hour = slot.dataset.hour;
                 slot.dataset.date = dateStr;
-                console.log('Configuration du créneau:', {
-                    date: dateStr,
-                    hour: hour,
-                    selector: `.day-view .slot-cell[data-date="${dateStr}"][data-hour="${hour}"]`
-                });
             });
 
             // Recharger les rendez-vous après avoir mis à jour tous les créneaux
             loadAppointments();
         } else {
-            console.error('Élément .day-view .day-column non trouvé dans le DOM');
         }
     }
 
@@ -586,12 +516,6 @@ document.addEventListener('DOMContentLoaded', function() {
             slots.forEach(slot => {
                 const hour = slot.dataset.hour;
                 slot.dataset.date = dateStr;
-                console.log('Mise à jour du créneau:', {
-                    date: dateStr,
-                    hour: hour,
-                    view: currentView,
-                    element: slot
-                });
             });
         });
     }
@@ -645,7 +569,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const slot = event.target.closest('.time-slot');
         const hour = slot.dataset.hour;
         const date = slot.dataset.date;
-        console.log(`Créneau sélectionné: ${hour}h le ${date}`);
         
         // Ici vous pouvez ajouter la logique pour ouvrir la modal ou gérer le clic
     }
@@ -653,43 +576,33 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction utilitaire pour récupérer les horaires du cabinet
     let horairesCabinet = null;
     function fetchHorairesCabinet() {
-        console.log('[fetchHorairesCabinet] Début du chargement...');
         return fetch('index.php?page=agenda&action=getCabinetHoraires')
             .then(response => {
-                console.log('[fetchHorairesCabinet] Response status:', response.status);
                 return response.json();
             })
             .then(data => {
-                console.log('[fetchHorairesCabinet] Data reçue:', data);
                 if (data.success) {
                     horairesCabinet = data.horaires;
-                    console.log('[fetchHorairesCabinet] horairesCabinet chargé:', horairesCabinet);
                 } else {
-                    console.error('[fetchHorairesCabinet] Erreur dans la réponse:', data);
                 }
             })
             .catch(error => {
-                console.error('[fetchHorairesCabinet] Erreur chargement horaires:', error);
             });
     }
 
     // Fonction pour griser les créneaux hors plages horaires
     function markOutOfHoursSlots() {
-        console.log('[markOutOfHoursSlots] Début, horairesCabinet:', horairesCabinet);
         
         if (!horairesCabinet) {
-            console.warn('[markOutOfHoursSlots] horairesCabinet est null');
             return;
         }
         
         // Pour chaque colonne de jour
         const dayColumns = document.querySelectorAll('.day-column');
-        console.log('[markOutOfHoursSlots] Nombre de colonnes:', dayColumns.length);
         
         dayColumns.forEach(dayCol => {
             const dateStr = dayCol.getAttribute('data-date');
             if (!dateStr) {
-                console.warn('[markOutOfHoursSlots] Colonne sans data-date');
                 return;
             }
             
@@ -698,14 +611,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const jours = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
             const jour = jours[jsDay];
             
-            console.log(`[markOutOfHoursSlots] Traitement du ${jour} (${dateStr})`);
             
             // Chercher les horaires pour ce jour
             const horaires = horairesCabinet.find(h => h.jour === jour);
             
             // Pour chaque créneau
             const slots = dayCol.querySelectorAll('.slot-cell');
-            console.log(`[markOutOfHoursSlots] ${slots.length} créneaux à traiter`);
             
             slots.forEach(slot => {
                 const hourStr = slot.getAttribute('data-hour');
@@ -760,7 +671,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!isOpen) {
                     slot.classList.add('out-of-hours-slot');
                     if (hourStr >= '12:00' && hourStr < '14:00') {
-                        console.log(`[markOutOfHoursSlots] Grisage créneau pause déjeuner: ${hourStr}`);
                     }
                 } else {
                     slot.classList.remove('out-of-hours-slot');
@@ -768,7 +678,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        console.log('[markOutOfHoursSlots] Fin du traitement');
     }
 
     // Charger les horaires cabinet au démarrage

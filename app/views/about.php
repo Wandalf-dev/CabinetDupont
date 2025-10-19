@@ -1,8 +1,6 @@
 
 <?php 
-error_log("Début du rendu de la vue about.php");
 include __DIR__ . '/templates/header.php'; 
-error_log("Header inclus dans about.php");
 ?>
 
 <!-- CSS spécifique à la page À propos -->

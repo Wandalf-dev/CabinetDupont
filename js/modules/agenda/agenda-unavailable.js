@@ -1,11 +1,8 @@
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('[Agenda] Initialisation des créneaux indisponibles...');
+﻿document.addEventListener('DOMContentLoaded', function() {
 
     // Fonction pour nettoyer les créneaux indisponibles
     window.resetUnavailableSlots = function() {
-        console.log('[Agenda] Réinitialisation des créneaux indisponibles...');
         const activeView = document.querySelector('.week-view.active') ? '.week-view' : '.day-view';
-        console.log('[Agenda] Réinitialisation dans la vue:', activeView);
         
         // Supprimer tous les blocs fusionnés
         document.querySelectorAll(`${activeView} .merged-unavailable`).forEach(slot => {
@@ -23,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function markUnavailableSlots() {
-        console.log('[Agenda] Marquage des pauses déjeuner...');
         // Réinitialiser d'abord
         resetUnavailableSlots();
         
@@ -33,11 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Utiliser la vue active (semaine ou jour)
         const activeView = document.querySelector('.week-view.active') ? '.week-view' : '.day-view';
-        console.log('[Agenda] Vue active:', activeView);
         
         document.querySelectorAll(`${activeView} .day-column`).forEach(dayColumn => {
             const date = dayColumn.getAttribute('data-date');
-            console.log('[Agenda] Traitement de la colonne:', date);
             
             dayColumn.querySelectorAll('.slot-cell').forEach(slot => {
                 const hour = parseInt(slot.getAttribute('data-hour').split(':')[0]);
@@ -52,53 +46,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fonction pour charger et afficher les créneaux indisponibles
     window.loadUnavailableSlots = async function(startDate, endDate) {
-        console.log('[Agenda] Chargement des créneaux indisponibles...', startDate, endDate);
         
         try {
             const response = await fetch(`index.php?page=agenda&action=getUnavailableSlots&start=${startDate}&end=${endDate}`);
-            console.log('[Agenda] Réponse reçue:', response);
             const slots = await response.json();
-            console.log('[Agenda] Créneaux indisponibles reçus:', slots);
             
             slots.forEach(slot => {
                 const slotDate = new Date(slot.start);
-                console.log('[Agenda] Traitement du créneau indisponible:', slotDate);
                 
                 // Formatage de la date pour correspondre à l'attribut data-date
                 const dateStr = slotDate.toISOString().split('T')[0];
-                console.log('[Agenda] Recherche de la colonne pour la date:', dateStr);
                 
                 // Rechercher dans la vue active (semaine ou jour)
                 const activeView = document.querySelector('.week-view.active') ? '.week-view' : '.day-view';
                 const dayColumn = document.querySelector(`${activeView} .day-column[data-date="${dateStr}"]`);
-                console.log('[Agenda] Colonne trouvée dans', activeView, ':', dayColumn);
                 
                 if (dayColumn) {
                     const hour = slotDate.getHours();
                     const minutes = slotDate.getMinutes();
                     const timeStr = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-                    console.log('[Agenda] Recherche du créneau horaire:', timeStr);
                     
                     const slotCell = dayColumn.querySelector(`.slot-cell[data-hour="${timeStr}"]`);
-                    console.log('[Agenda] Cellule trouvée:', slotCell);
                     
                     if (slotCell) {
                         // NE PAS marquer comme indisponible si le créneau a déjà un rendez-vous
                         const hasAppointment = slotCell.classList.contains('reserved') || slotCell.querySelector('.appointment');
-                        console.log('[Agenda] État du créneau:', {
-                            time: timeStr,
-                            hasReservedClass: slotCell.classList.contains('reserved'),
-                            hasAppointmentElement: !!slotCell.querySelector('.appointment'),
-                            hasAppointment: hasAppointment,
-                            innerHTML: slotCell.innerHTML
-                        });
-                        
                         if (hasAppointment) {
-                            console.log('[Agenda] ⚠️ Créneau ignoré car il contient un rendez-vous');
                             return;
                         }
                         
-                        console.log('[Agenda] ✓ Marquage du créneau comme indisponible');
                         slotCell.classList.add('unavailable-slot');
                         slotCell.setAttribute('data-unavailable-text', 'Indisponibilité');
                     }
@@ -107,7 +83,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Fusion immédiate des créneaux indisponibles
             mergeUnavailableBlocks();
         } catch (error) {
-            console.error('Erreur lors du chargement des créneaux indisponibles:', error);
         }
     }
 
@@ -177,35 +152,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Fonction pour obtenir la date de début de la semaine affichée
-    function getDisplayedWeekStart() {
-        const weekView = document.querySelector('.week-view');
-        if (!weekView) return null;
-        
-        // Trouver la première colonne de jour
-        const firstDayColumn = weekView.querySelector('.day-column');
-        if (!firstDayColumn) return null;
-        
-        // Récupérer la date de cette colonne
-        return firstDayColumn.getAttribute('data-date');
-    }
-
-    // Appel initial pour charger les créneaux indisponibles
-    const startDateString = getDisplayedWeekStart();
-    if (startDateString) {
-        const endDate = new Date(startDateString);
-        endDate.setDate(endDate.getDate() + 6); // Une semaine plus tard
-        const endDateString = endDate.toISOString().split('T')[0];
-        
-        // Chargement initial des créneaux indisponibles
-        loadUnavailableSlots(startDateString, endDateString);
-    }
-
-    // Répéter le chargement toutes les 10 minutes (600000 ms)
-    setInterval(() => {
-        const now = new Date();
-        const nextEndDate = new Date();
-        nextEndDate.setDate(now.getDate() + 6); // Une semaine plus tard
-        loadUnavailableSlots(now.toISOString().split('T')[0], nextEndDate.toISOString().split('T')[0]);
-    }, 600000);
+    // Les créneaux indisponibles sont chargés automatiquement 
+    // par loadCalendarView() dans agenda.js lors de chaque changement de vue
 });

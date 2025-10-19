@@ -140,9 +140,9 @@ include __DIR__ . '/../templates/header.php'; ?>
                 <button type="submit" class="btn-register">Créer mon compte</button>
             </div>
 
-            <p class="login-link">
-                Déjà inscrit ? <a href="index.php?page=auth&action=login">Connectez-vous ici</a>
-            </p>
+            <div class="login-links">
+                <a href="index.php?page=auth&action=login">Déjà inscrit ? Connectez-vous ici</a>
+            </div>
         </form>
     </section>
 </main>
@@ -172,22 +172,24 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Initialisation Flatpickr -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Initialisation de Flatpickr...');
     
     // Vérifier si Flatpickr est chargé
     if (typeof flatpickr === 'undefined') {
-        console.error('Flatpickr n\'est pas chargé !');
         return;
     }
     
     // Vérifier si l'élément existe
     const dateInput = document.querySelector('.flatpickr');
     if (!dateInput) {
-        console.error('Element .flatpickr non trouvé !');
         return;
     }
     
-    console.log('Element trouvé:', dateInput);
+    // Calcul des dates limites
+    const today = new Date();
+    const minDate = new Date();
+    minDate.setFullYear(today.getFullYear() - 120); // Maximum 120 ans
+    const maxDate = new Date();
+    maxDate.setFullYear(today.getFullYear() - 3); // Minimum 3 ans
     
     // Initialiser Flatpickr
     try {
@@ -195,17 +197,16 @@ document.addEventListener('DOMContentLoaded', function() {
             locale: "fr",
             dateFormat: "d/m/Y",
             allowInput: true,
-            maxDate: "today",
+            maxDate: maxDate, // Ne peut pas être plus récent que 3 ans
+            minDate: minDate, // Ne peut pas être plus ancien que 120 ans
+            defaultDate: new Date(today.getFullYear() - 30, today.getMonth(), today.getDate()), // Défaut: 30 ans
             disableMobile: false,
             static: false,
             clickOpens: true,
             onChange: function(selectedDates, dateStr, instance) {
-                console.log('Date sélectionnée:', dateStr);
             }
         });
-        console.log('Flatpickr initialisé avec succès:', fp);
     } catch(error) {
-        console.error('Erreur lors de l\'initialisation de Flatpickr:', error);
     }
 });
 </script>

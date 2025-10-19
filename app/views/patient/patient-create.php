@@ -74,7 +74,8 @@ include __DIR__ . '/../templates/flash-messages.php';
                        name="date_naissance" 
                        class="form-control flatpickr" 
                        required 
-                       placeholder="Sélectionnez une date"
+                       placeholder="JJ/MM/AAAA"
+                       autocomplete="off"
                        value="<?php 
                            $date_value = isset($_POST['date_naissance']) ? $_POST['date_naissance'] : '';
                            if (!empty($date_value) && $date_value !== '0000-00-00') {
@@ -89,12 +90,12 @@ include __DIR__ . '/../templates/flash-messages.php';
             <div class="form-group">
                 <label for="password">Mot de passe</label>
                 <div class="password-input-group">
-                    <input type="password" id="password" name="password" class="form-control" required minlength="6">
+                    <input type="password" id="password" name="password" class="form-control" required minlength="8">
                     <button type="button" class="password-toggle" onclick="togglePassword('password')">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
-                <small class="form-text text-muted">Le mot de passe doit contenir au moins 6 caractères.</small>
+                <small class="form-text text-muted">Le mot de passe doit contenir : au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*...).</small>
             </div>
 
             <div class="actu-btn-row">
@@ -126,10 +127,20 @@ include __DIR__ . '/../templates/flash-messages.php';
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
 <script>
+// Calcul des dates limites
+const today = new Date();
+const minDate = new Date();
+minDate.setFullYear(today.getFullYear() - 120); // Maximum 120 ans
+const maxDate = new Date();
+maxDate.setFullYear(today.getFullYear() - 3); // Minimum 3 ans
+
 flatpickr(".flatpickr", {
     locale: "fr",
     dateFormat: "d/m/Y",
-    allowInput: true
+    allowInput: true,
+    maxDate: maxDate, // Ne peut pas être plus récent que 3 ans
+    minDate: minDate, // Ne peut pas être plus ancien que 120 ans
+    defaultDate: new Date(today.getFullYear() - 30, today.getMonth(), today.getDate()) // Défaut: 30 ans
 });
 </script>
 

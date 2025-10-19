@@ -1,5 +1,7 @@
 <?php
-include __DIR__ . '/../templates/header.php'; ?>
+include __DIR__ . '/../templates/header.php';
+include __DIR__ . '/../templates/flash-messages.php';
+?>
 
 <!-- CSS spécifique à la page login -->
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/login.css">
@@ -47,8 +49,5 @@ include __DIR__ . '/../templates/header.php'; ?>
     </form>
   </section>
 </main>
-
-<!-- Script pour gérer l'affichage des alertes -->
-<script src="js/alerts.js"></script>
 
 <?php include __DIR__ . '/../templates/footer.php'; ?>

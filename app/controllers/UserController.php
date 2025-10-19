@@ -112,20 +112,52 @@ class UserController {
                 exit();
             }
 
+            // Validation de la cohérence des champs de mot de passe
+            if ($current_password || $new_password || $confirm_password) {
+                // Si au moins un champ de mot de passe est rempli, tous doivent l'être
+                if (empty($current_password) || empty($new_password) || empty($confirm_password)) {
+                    $_SESSION['error'] = "Pour modifier votre mot de passe, tous les champs (actuel, nouveau, confirmation) doivent être remplis";
+                    $_SESSION['form_data'] = $data;
+                    header('Location: index.php?page=user&action=edit');
+                    exit();
+                }
+            }
+
             // Met à jour le profil utilisateur
             $updateSuccess = $this->userModel->updateProfile($_SESSION['user_id'], $data);
 
+            // Variable pour tracker si le mot de passe a été modifié avec succès
+            $passwordSuccess = false;
+
             // Si l'utilisateur souhaite changer son mot de passe
-            if ($current_password && $new_password) {
+            if ($current_password && $new_password && $confirm_password) {
+                // ÉTAPE 1 : Vérifie l'ancien mot de passe en premier (sécurité)
+                if (!password_verify($current_password, $user['password_hash'])) {
+                    $_SESSION['error'] = "Le mot de passe actuel est incorrect";
+                    $_SESSION['form_data'] = $data;
+                    header('Location: index.php?page=user&action=edit');
+                    exit();
+                }
+                
+                // ÉTAPE 2 : Vérifie que les nouveaux mots de passe correspondent
                 if ($new_password !== $confirm_password) {
                     $_SESSION['error'] = "Les nouveaux mots de passe ne correspondent pas";
                     $_SESSION['form_data'] = $data;
                     header('Location: index.php?page=user&action=edit');
                     exit();
                 }
-                // Vérifie l'ancien mot de passe
-                if (!password_verify($current_password, $user['password_hash'])) {
-                    $_SESSION['error'] = "Le mot de passe actuel est incorrect";
+                
+                // ÉTAPE 3 : Validation de la force du nouveau mot de passe
+                $passwordValidation = \App\Core\Security::validatePasswordStrength($new_password);
+                if (!$passwordValidation['valid']) {
+                    $errorMessage = "Mot de passe trop faible. Il doit contenir :<br>";
+                    $errorMessage .= "• Au moins 8 caractères<br>";
+                    $errorMessage .= "• Une majuscule (A-Z)<br>";
+                    $errorMessage .= "• Une minuscule (a-z)<br>";
+                    $errorMessage .= "• Un chiffre (0-9)<br>";
+                    $errorMessage .= "• Un caractère spécial (!@#$%^&*...)";
+                    
+                    $_SESSION['error'] = $errorMessage;
                     $_SESSION['form_data'] = $data;
                     header('Location: index.php?page=user&action=edit');
                     exit();
@@ -145,7 +177,7 @@ class UserController {
                 $_SESSION['user_prenom'] = $data['prenom'];
                 $_SESSION['user_nom'] = $data['nom'];
                 $_SESSION['success'] = "Profil mis à jour avec succès" . 
-                    ($current_password ? " et mot de passe modifié" : "");
+                    ($passwordSuccess ? " et mot de passe modifié" : "");
                 header('Location: index.php?page=user&action=profile');
                 exit();
             } else {

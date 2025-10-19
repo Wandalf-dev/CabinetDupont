@@ -32,10 +32,8 @@ class CreneauxController {
     }
 
     public function toggleIndisponible() {
-        error_log("=== Début toggleIndisponible ===");
         
         if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'MEDECIN') {
-            error_log("Accès non autorisé");
             $this->jsonResponse(['success' => false, 'error' => 'Accès non autorisé'], 403);
         }
 
@@ -43,22 +41,18 @@ class CreneauxController {
         $headers = function_exists('getallheaders') ? getallheaders() : [];
         $token = $headers['X-CSRF-TOKEN'] ?? '';
         if (empty($token) || !\App\Core\Csrf::checkToken($token)) {
-            error_log("Token CSRF invalide");
             $this->jsonResponse(['success' => false, 'error' => 'Token CSRF invalide ou manquant'], 403);
         }
 
         $data = $this->jsonInput();
         $id   = isset($data['id']) ? (int)$data['id'] : 0;
-        error_log("ID reçu: " . $id);
 
         if ($id <= 0) {
-            error_log("ID invalide");
             $this->jsonResponse(['success' => false, 'error' => 'ID de créneau invalide'], 400);
         }
 
         try {
             $nouveauStatut = $this->creneauModel->toggleIndisponible($id);
-            error_log("Retour de toggleIndisponible: " . var_export($nouveauStatut, true));
 
             if ($nouveauStatut === true) {
                 $response = [
@@ -66,7 +60,6 @@ class CreneauxController {
                     'message' => 'Le créneau a été marqué comme indisponible.',
                     'estIndisponible' => true
                 ];
-                error_log("Envoi réponse indisponible: " . json_encode($response));
                 $this->jsonResponse($response, 200);
             } elseif ($nouveauStatut === false) {
                 $response = [
@@ -74,14 +67,11 @@ class CreneauxController {
                     'message' => 'Le créneau a été rendu disponible.',
                     'estIndisponible' => false
                 ];
-                error_log("Envoi réponse disponible: " . json_encode($response));
                 $this->jsonResponse($response, 200);
             } else {
-                error_log("Statut invalide retourné");
                 $this->jsonResponse(['success' => false, 'error' => 'Impossible de modifier le statut du créneau'], 400);
             }
         } catch (\Exception $e) {
-            error_log("Exception dans toggleIndisponible: " . $e->getMessage());
             $this->jsonResponse(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
@@ -250,8 +240,6 @@ class CreneauxController {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            error_log("Demande de génération de créneaux reçue");
-            error_log("Utilisateur ID: " . $_SESSION['user_id']);
 
             $agenda = $this->agendaModel->getAgendaByUtilisateur($_SESSION['user_id']);
             if (!$agenda) {
@@ -297,7 +285,6 @@ class CreneauxController {
                     ? "Les créneaux ont été générés avec succès"
                     : "Une erreur est survenue lors de la génération des créneaux";
             } catch (\Exception $e) {
-                error_log("Exception lors de la génération des créneaux : " . $e->getMessage());
                 $_SESSION['error'] = "Une erreur inattendue est survenue";
             }
 
@@ -369,7 +356,6 @@ class CreneauxController {
                 ], 500);
             }
         } catch (\Exception $e) {
-            error_log("Exception lors de la génération des créneaux : " . $e->getMessage());
             $this->jsonResponse([
                 'success' => false,
                 'error' => 'Une erreur inattendue est survenue : ' . $e->getMessage()
@@ -398,7 +384,6 @@ class CreneauxController {
     }
 
     public function loadCreneaux() {
-        error_log("=== Début loadCreneaux ===");
         
         if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'MEDECIN') {
             $this->jsonResponse(['success' => false, 'error' => 'Accès non autorisé'], 403);
@@ -410,7 +395,6 @@ class CreneauxController {
         }
 
         $date = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
-        error_log("Chargement des créneaux pour la date : " . $date);
 
         try {
             $creneaux = $this->creneauModel->getCreneauxPourDate($agenda['id'], $date);
@@ -424,7 +408,6 @@ class CreneauxController {
                 'html' => $html
             ], 200);
         } catch (\Exception $e) {
-            error_log("Erreur dans loadCreneaux: " . $e->getMessage());
             $this->jsonResponse([
                 'success' => false, 
                 'error' => 'Erreur lors du chargement des créneaux'
@@ -433,7 +416,6 @@ class CreneauxController {
     }
 
     public function liste() {
-        error_log("=== Début méthode liste() ===");
         header('Location: index.php?page=creneaux');
         exit();
     }

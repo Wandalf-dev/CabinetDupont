@@ -1,6 +1,7 @@
 <?php
 // Inclusion du header du site
-include __DIR__ . '/../templates/header.php'; 
+include __DIR__ . '/../templates/header.php';
+include __DIR__ . '/../templates/flash-messages.php';
 ?>
 
 <!-- CSS spécifique à la page profil -->

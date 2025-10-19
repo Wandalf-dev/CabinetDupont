@@ -1,6 +1,4 @@
 <?php
-error_log("Début du chargement du header.php");
-
 // Inclusion de la configuration pour avoir accès à BASE_URL
 if (!defined('BASE_URL')) {
     require_once __DIR__ . '/../../../config/config.php';

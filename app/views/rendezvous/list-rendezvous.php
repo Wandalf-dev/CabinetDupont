@@ -413,7 +413,6 @@ function showEmptyMessage() {
 document.addEventListener('DOMContentLoaded', function() {
     const confirmButton = document.getElementById('confirmAnnulation');
     if (!confirmButton) {
-        console.error('Bouton de confirmation non trouvé');
         return;
     }
 
@@ -433,13 +432,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Gestionnaire de clic sur le bouton de confirmation
     confirmButton.addEventListener('click', function() {
         if (!currentButton) {
-            console.error('Aucun rendez-vous sélectionné');
             return;
         }
 
         const rdvId = currentButton.getAttribute('data-rdv-id');
         if (!rdvId) {
-            console.error('ID du rendez-vous non trouvé');
             return;
         }
 
@@ -497,7 +494,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('Erreur:', error);
             closeModal();
             alert('Une erreur est survenue lors de l\'annulation du rendez-vous.');
         })

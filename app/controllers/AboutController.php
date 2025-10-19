@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 class AboutController extends \App\Core\Controller {
     public function index() {
-        error_log("Démarrage de AboutController::index()");
         // Données du Dr. Dupont
         $docteur = [
             'nom' => 'Dr. Christian Dupont',
@@ -53,9 +52,6 @@ class AboutController extends \App\Core\Controller {
             ]
         ];
 
-        error_log("Données préparées, appel de la vue about");
-        error_log("BASE_URL = " . BASE_URL);
         $this->view('about', compact('docteur', 'equipe'));
-        error_log("Vue about rendue");
     }
 }

@@ -148,8 +148,6 @@ class Calendar {
         // Vérifier si la date est dans la liste des dates disponibles
         const formattedDate = this.formatDate(date);
         const isAvailable = datesDisponibles.includes(formattedDate);
-        console.log('Vérification de la date:', formattedDate, '- Disponible:', isAvailable);
-        console.log('Liste complète des dates disponibles:', datesDisponibles);
         return !isAvailable;
     }
 

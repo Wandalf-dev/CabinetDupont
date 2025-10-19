@@ -71,6 +71,33 @@
 
 /* États des boutons */
 button:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
+    pointer-events: auto;
+}
+
+button:disabled:hover {
+    opacity: 0.5;
+    transform: none;
+}
+
+/* Tooltip pour les boutons désactivés */
+button:disabled[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    background-color: #333;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 13px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+button:disabled[title] {
+    position: relative;
 }

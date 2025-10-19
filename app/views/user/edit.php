@@ -7,7 +7,6 @@
 
 <script>
 // Vérification que les scripts sont bien chargés
-console.log('Scripts chargés');
 </script>
 
 <style>
@@ -160,7 +159,8 @@ console.log('Scripts chargés');
                                 }
                             }
                         ?>"
-                        placeholder="Sélectionnez votre date de naissance"
+                        placeholder="JJ/MM/AAAA"
+                        autocomplete="off"
                         required>
                 </div>
             </div>
@@ -211,17 +211,28 @@ console.log('Scripts chargés');
 <!-- JS: Flatpickr, Cleave, scripts applicatifs -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
-<script>
-flatpickr(".flatpickr", {
-    locale: "fr",
-    dateFormat: "d/m/Y",
-    allowInput: true
-});
-</script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
 <script src="/CabinetDupont/js/components/password-toggle.js"></script>
 <script src="/CabinetDupont/js/utils/phone-formatter.js"></script>
+<script src="/CabinetDupont/js/utils/date-formatter.js"></script>
+
+<script>
+// Calcul des dates limites
+const today = new Date();
+const minDate = new Date();
+minDate.setFullYear(today.getFullYear() - 120); // Maximum 120 ans
+const maxDate = new Date();
+maxDate.setFullYear(today.getFullYear() - 3); // Minimum 3 ans
+
+flatpickr(".flatpickr", {
+    locale: "fr",
+    dateFormat: "d/m/Y",
+    allowInput: true,
+    maxDate: maxDate, // Ne peut pas être plus récent que 3 ans
+    minDate: minDate, // Ne peut pas être plus ancien que 120 ans
+    defaultDate: new Date(today.getFullYear() - 30, today.getMonth(), today.getDate()) // Défaut: 30 ans
+});
+</script>
 
 <script>
 // Forcer la saisie du NOM en majuscules + première lettre du prénom en majuscule

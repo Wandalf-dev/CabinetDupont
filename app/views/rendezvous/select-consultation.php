@@ -18,9 +18,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                 <div class="service-card" data-service-id="<?= $service['id'] ?>">
                     <div class="service-image">
                         <img src="/CabinetDupont/public/uploads/<?= htmlspecialchars($service['image']) ?>" 
-                             alt="<?= htmlspecialchars($service['titre']) ?>"
-                             loading="lazy">
-                             loading="lazy">
+                             alt="<?= htmlspecialchars($service['titre']) ?>">
                     </div>
                     <div class="service-content">
                         <h3><?= htmlspecialchars($service['titre']) ?></h3>
@@ -41,14 +39,11 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 <script>
 // Récupérer le BASE_URL PHP dans une variable JavaScript
 const baseUrl = '<?php echo BASE_URL; ?>';
-console.log('Base URL:', baseUrl);
 
 document.querySelectorAll('.select-service-btn').forEach(button => {
     button.addEventListener('click', function() {
         const serviceId = this.closest('.service-card').dataset.serviceId;
         const url = `${baseUrl}/index.php?page=rendezvous&action=selectDate&service_id=${serviceId}`;
-        console.log('URL générée:', url);
-        console.log('Service ID:', serviceId);
         window.location.href = url;
     });
 });

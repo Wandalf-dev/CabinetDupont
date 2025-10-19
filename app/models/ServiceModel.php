@@ -83,8 +83,6 @@ class ServiceModel extends Model {
         $params[] = $id;
         
         // Log pour déboguer
-        error_log("SQL: " . $sql);
-        error_log("Params: " . print_r($params, true));
         
         $stmt = $this->db->prepare($sql);
         return $stmt->execute($params); // Met à jour le service
