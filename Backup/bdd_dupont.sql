@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : sam. 18 oct. 2025 à 20:23
+-- Généré le : dim. 19 oct. 2025 à 22:15
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -134,8 +134,8 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (808, 1, NULL, '2025-10-18 09:30:00', '2025-10-18 10:00:00', 0, 'disponible'),
 (809, 1, NULL, '2025-10-18 10:00:00', '2025-10-18 10:30:00', 0, 'disponible'),
 (810, 1, NULL, '2025-10-18 10:30:00', '2025-10-18 11:00:00', 0, 'disponible'),
-(811, 1, NULL, '2025-10-18 11:00:00', '2025-10-18 11:30:00', 0, 'disponible'),
-(812, 1, 1, '2025-10-18 11:30:00', '2025-10-18 12:00:00', 1, 'disponible'),
+(811, 1, 1, '2025-10-18 11:00:00', '2025-10-18 11:30:00', 1, 'disponible'),
+(812, 1, NULL, '2025-10-18 11:30:00', '2025-10-18 12:00:00', 0, 'disponible'),
 (813, 1, NULL, '2025-10-18 14:00:00', '2025-10-18 14:30:00', 0, 'disponible'),
 (814, 1, NULL, '2025-10-18 14:30:00', '2025-10-18 15:00:00', 0, 'disponible'),
 (815, 1, NULL, '2025-10-18 15:00:00', '2025-10-18 15:30:00', 0, 'disponible'),
@@ -153,14 +153,14 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (847, 1, NULL, '2025-10-21 09:00:00', '2025-10-21 09:30:00', 0, 'disponible'),
 (848, 1, NULL, '2025-10-21 09:30:00', '2025-10-21 10:00:00', 0, 'disponible'),
 (849, 1, NULL, '2025-10-21 10:00:00', '2025-10-21 10:30:00', 0, 'disponible'),
-(850, 1, 4, '2025-10-21 10:30:00', '2025-10-21 11:00:00', 1, 'disponible'),
+(850, 1, NULL, '2025-10-21 10:30:00', '2025-10-21 11:00:00', 0, 'disponible'),
 (851, 1, NULL, '2025-10-21 11:00:00', '2025-10-21 11:30:00', 0, 'disponible'),
 (852, 1, NULL, '2025-10-21 11:30:00', '2025-10-21 12:00:00', 0, 'disponible'),
 (853, 1, NULL, '2025-10-21 14:00:00', '2025-10-21 14:30:00', 0, 'disponible'),
 (854, 1, NULL, '2025-10-21 14:30:00', '2025-10-21 15:00:00', 0, 'disponible'),
 (855, 1, 3, '2025-10-21 15:00:00', '2025-10-21 15:30:00', 1, 'disponible'),
-(856, 1, 3, '2025-10-21 15:30:00', '2025-10-21 16:00:00', 1, 'disponible'),
-(857, 1, 3, '2025-10-21 16:00:00', '2025-10-21 16:30:00', 1, 'disponible'),
+(856, 1, NULL, '2025-10-21 15:30:00', '2025-10-21 16:00:00', 0, 'disponible'),
+(857, 1, NULL, '2025-10-21 16:00:00', '2025-10-21 16:30:00', 0, 'disponible'),
 (858, 1, NULL, '2025-10-21 16:30:00', '2025-10-21 17:00:00', 0, 'disponible'),
 (859, 1, NULL, '2025-10-21 17:00:00', '2025-10-21 17:30:00', 0, 'disponible'),
 (860, 1, NULL, '2025-10-21 17:30:00', '2025-10-21 18:00:00', 0, 'disponible'),
@@ -168,19 +168,19 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (862, 1, NULL, '2025-10-21 18:30:00', '2025-10-21 19:00:00', 0, 'disponible'),
 (863, 1, NULL, '2025-10-21 19:00:00', '2025-10-21 19:30:00', 0, 'disponible'),
 (864, 1, NULL, '2025-10-21 19:30:00', '2025-10-21 20:00:00', 0, 'disponible'),
-(865, 1, NULL, '2025-10-22 08:00:00', '2025-10-22 08:30:00', 0, 'disponible'),
+(865, 1, NULL, '2025-10-22 08:00:00', '2025-10-22 08:30:00', 0, 'indisponible'),
 (866, 1, NULL, '2025-10-22 08:30:00', '2025-10-22 09:00:00', 0, 'disponible'),
-(867, 1, 4, '2025-10-22 09:00:00', '2025-10-22 09:30:00', 1, 'disponible'),
+(867, 1, NULL, '2025-10-22 09:00:00', '2025-10-22 09:30:00', 0, 'disponible'),
 (868, 1, NULL, '2025-10-22 09:30:00', '2025-10-22 10:00:00', 0, 'disponible'),
-(869, 1, NULL, '2025-10-22 10:00:00', '2025-10-22 10:30:00', 0, 'disponible'),
+(869, 1, 4, '2025-10-22 10:00:00', '2025-10-22 10:30:00', 1, 'disponible'),
 (870, 1, NULL, '2025-10-22 10:30:00', '2025-10-22 11:00:00', 0, 'disponible'),
 (871, 1, NULL, '2025-10-22 11:00:00', '2025-10-22 11:30:00', 0, 'disponible'),
 (872, 1, NULL, '2025-10-22 11:30:00', '2025-10-22 12:00:00', 0, 'disponible'),
 (873, 1, NULL, '2025-10-22 14:00:00', '2025-10-22 14:30:00', 0, 'disponible'),
 (874, 1, 7, '2025-10-22 14:30:00', '2025-10-22 15:00:00', 1, 'disponible'),
-(875, 1, 7, '2025-10-22 15:00:00', '2025-10-22 15:30:00', 1, 'disponible'),
-(876, 1, 7, '2025-10-22 15:30:00', '2025-10-22 16:00:00', 1, 'disponible'),
-(877, 1, 7, '2025-10-22 16:00:00', '2025-10-22 16:30:00', 1, 'disponible'),
+(875, 1, NULL, '2025-10-22 15:00:00', '2025-10-22 15:30:00', 0, 'disponible'),
+(876, 1, NULL, '2025-10-22 15:30:00', '2025-10-22 16:00:00', 0, 'disponible'),
+(877, 1, NULL, '2025-10-22 16:00:00', '2025-10-22 16:30:00', 0, 'disponible'),
 (878, 1, NULL, '2025-10-22 16:30:00', '2025-10-22 17:00:00', 0, 'disponible'),
 (879, 1, NULL, '2025-10-22 17:00:00', '2025-10-22 17:30:00', 0, 'disponible'),
 (880, 1, NULL, '2025-10-22 17:30:00', '2025-10-22 18:00:00', 0, 'disponible'),
@@ -189,7 +189,7 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (883, 1, NULL, '2025-10-22 19:00:00', '2025-10-22 19:30:00', 0, 'disponible'),
 (884, 1, NULL, '2025-10-22 19:30:00', '2025-10-22 20:00:00', 0, 'disponible'),
 (885, 1, 8, '2025-10-23 08:00:00', '2025-10-23 08:30:00', 1, 'disponible'),
-(886, 1, 8, '2025-10-23 08:30:00', '2025-10-23 09:00:00', 1, 'disponible'),
+(886, 1, NULL, '2025-10-23 08:30:00', '2025-10-23 09:00:00', 0, 'disponible'),
 (887, 1, NULL, '2025-10-23 09:00:00', '2025-10-23 09:30:00', 0, 'disponible'),
 (888, 1, NULL, '2025-10-23 09:30:00', '2025-10-23 10:00:00', 0, 'disponible'),
 (889, 1, NULL, '2025-10-23 10:00:00', '2025-10-23 10:30:00', 0, 'disponible'),
@@ -218,9 +218,9 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (912, 1, NULL, '2025-10-24 11:30:00', '2025-10-24 12:00:00', 0, 'disponible'),
 (913, 1, NULL, '2025-10-24 14:00:00', '2025-10-24 14:30:00', 0, 'disponible'),
 (914, 1, 7, '2025-10-24 14:30:00', '2025-10-24 15:00:00', 1, 'disponible'),
-(915, 1, 7, '2025-10-24 15:00:00', '2025-10-24 15:30:00', 1, 'disponible'),
-(916, 1, 7, '2025-10-24 15:30:00', '2025-10-24 16:00:00', 1, 'disponible'),
-(917, 1, 7, '2025-10-24 16:00:00', '2025-10-24 16:30:00', 1, 'disponible'),
+(915, 1, NULL, '2025-10-24 15:00:00', '2025-10-24 15:30:00', 0, 'disponible'),
+(916, 1, NULL, '2025-10-24 15:30:00', '2025-10-24 16:00:00', 0, 'disponible'),
+(917, 1, NULL, '2025-10-24 16:00:00', '2025-10-24 16:30:00', 0, 'disponible'),
 (918, 1, 4, '2025-10-24 16:30:00', '2025-10-24 17:00:00', 1, 'disponible'),
 (919, 1, NULL, '2025-10-24 17:00:00', '2025-10-24 17:30:00', 0, 'disponible'),
 (920, 1, NULL, '2025-10-24 17:30:00', '2025-10-24 18:00:00', 0, 'disponible'),
@@ -230,7 +230,7 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (924, 1, NULL, '2025-10-24 19:30:00', '2025-10-24 20:00:00', 0, 'disponible'),
 (925, 1, NULL, '2025-10-25 08:00:00', '2025-10-25 08:30:00', 0, 'disponible'),
 (926, 1, 8, '2025-10-25 08:30:00', '2025-10-25 09:00:00', 1, 'disponible'),
-(927, 1, 8, '2025-10-25 09:00:00', '2025-10-25 09:30:00', 1, 'disponible'),
+(927, 1, NULL, '2025-10-25 09:00:00', '2025-10-25 09:30:00', 0, 'disponible'),
 (928, 1, NULL, '2025-10-25 09:30:00', '2025-10-25 10:00:00', 0, 'disponible'),
 (929, 1, NULL, '2025-10-25 10:00:00', '2025-10-25 10:30:00', 0, 'disponible'),
 (930, 1, NULL, '2025-10-25 10:30:00', '2025-10-25 11:00:00', 0, 'disponible'),
@@ -332,24 +332,24 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (1066, 1, NULL, '2025-10-20 08:30:00', '2025-10-20 09:00:00', 0, 'disponible'),
 (1067, 1, 2, '2025-10-20 09:00:00', '2025-10-20 09:30:00', 1, 'disponible'),
 (1068, 1, 1, '2025-10-20 09:30:00', '2025-10-20 10:00:00', 1, 'disponible'),
-(1069, 1, NULL, '2025-10-20 10:00:00', '2025-10-20 10:30:00', 1, 'disponible'),
+(1069, 1, NULL, '2025-10-20 10:00:00', '2025-10-20 10:30:00', 0, 'disponible'),
 (1070, 1, NULL, '2025-10-20 10:30:00', '2025-10-20 11:00:00', 0, 'disponible'),
 (1071, 1, 8, '2025-10-20 11:00:00', '2025-10-20 11:30:00', 1, 'disponible'),
-(1072, 1, 8, '2025-10-20 11:30:00', '2025-10-20 12:00:00', 1, 'disponible'),
-(1073, 1, 2, '2025-10-20 14:00:00', '2025-10-20 14:30:00', 1, 'disponible'),
+(1072, 1, NULL, '2025-10-20 11:30:00', '2025-10-20 12:00:00', 0, 'disponible'),
+(1073, 1, NULL, '2025-10-20 14:00:00', '2025-10-20 14:30:00', 0, 'disponible'),
 (1074, 1, NULL, '2025-10-20 14:30:00', '2025-10-20 15:00:00', 0, 'disponible'),
-(1075, 1, NULL, '2025-10-20 15:00:00', '2025-10-20 15:30:00', 0, 'disponible'),
+(1075, 1, 2, '2025-10-20 15:00:00', '2025-10-20 15:30:00', 1, 'disponible'),
 (1076, 1, NULL, '2025-10-20 15:30:00', '2025-10-20 16:00:00', 0, 'disponible'),
 (1077, 1, NULL, '2025-10-20 16:00:00', '2025-10-20 16:30:00', 0, 'disponible'),
 (1078, 1, NULL, '2025-10-20 16:30:00', '2025-10-20 17:00:00', 0, 'disponible'),
-(1079, 1, NULL, '2025-10-20 17:00:00', '2025-10-20 17:30:00', 0, 'disponible'),
+(1079, 1, 4, '2025-10-20 17:00:00', '2025-10-20 17:30:00', 1, 'disponible'),
 (1080, 1, NULL, '2025-10-20 17:30:00', '2025-10-20 18:00:00', 0, 'disponible'),
 (1081, 1, NULL, '2025-10-20 18:00:00', '2025-10-20 18:30:00', 0, 'disponible'),
 (1082, 1, NULL, '2025-10-20 18:30:00', '2025-10-20 19:00:00', 0, 'disponible'),
 (1083, 1, NULL, '2025-10-20 19:00:00', '2025-10-20 19:30:00', 0, 'disponible'),
 (1084, 1, NULL, '2025-10-20 19:30:00', '2025-10-20 20:00:00', 0, 'disponible'),
-(1085, 1, NULL, '2025-10-31 08:00:00', '2025-10-31 08:30:00', 0, 'disponible'),
-(1086, 1, NULL, '2025-10-31 08:30:00', '2025-10-31 09:00:00', 0, 'disponible'),
+(1085, 1, NULL, '2025-10-31 08:00:00', '2025-10-31 08:30:00', 0, 'indisponible'),
+(1086, 1, NULL, '2025-10-31 08:30:00', '2025-10-31 09:00:00', 0, 'indisponible'),
 (1087, 1, NULL, '2025-10-31 09:00:00', '2025-10-31 09:30:00', 0, 'disponible'),
 (1088, 1, NULL, '2025-10-31 09:30:00', '2025-10-31 10:00:00', 0, 'disponible'),
 (1089, 1, NULL, '2025-10-31 10:00:00', '2025-10-31 10:30:00', 0, 'disponible'),
@@ -364,7 +364,7 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (1098, 1, NULL, '2025-10-31 16:30:00', '2025-10-31 17:00:00', 0, 'disponible'),
 (1099, 1, NULL, '2025-10-31 17:00:00', '2025-10-31 17:30:00', 0, 'disponible'),
 (1100, 1, 8, '2025-10-31 17:30:00', '2025-10-31 18:00:00', 1, 'disponible'),
-(1101, 1, 8, '2025-10-31 18:00:00', '2025-10-31 18:30:00', 1, 'disponible'),
+(1101, 1, NULL, '2025-10-31 18:00:00', '2025-10-31 18:30:00', 0, 'disponible'),
 (1102, 1, 4, '2025-10-31 18:30:00', '2025-10-31 19:00:00', 1, 'disponible'),
 (1103, 1, NULL, '2025-10-31 19:00:00', '2025-10-31 19:30:00', 0, 'disponible'),
 (1104, 1, NULL, '2025-10-31 19:30:00', '2025-10-31 20:00:00', 0, 'disponible');
@@ -401,21 +401,6 @@ INSERT INTO `horaire_cabinet` (`id`, `cabinet_id`, `jour`, `ouverture_matin`, `f
 -- --------------------------------------------------------
 
 --
--- Structure de la table `notification`
---
-
-CREATE TABLE `notification` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `rendezvous_id` int(10) UNSIGNED DEFAULT NULL,
-  `destinataire_id` int(10) UNSIGNED NOT NULL,
-  `type` varchar(50) NOT NULL,
-  `contenu` text NOT NULL,
-  `date_envoi` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `rendezvous`
 --
 
@@ -426,6 +411,7 @@ CREATE TABLE `rendezvous` (
   `medecin_id` int(10) UNSIGNED NOT NULL,
   `secretaire_id` int(10) UNSIGNED DEFAULT NULL,
   `statut` enum('DEMANDE','CONFIRME','ANNULE','HONORE','ABSENT') NOT NULL DEFAULT 'DEMANDE',
+  `duree` int(10) UNSIGNED NOT NULL DEFAULT 30,
   `commentaire` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -433,36 +419,34 @@ CREATE TABLE `rendezvous` (
 -- Déchargement des données de la table `rendezvous`
 --
 
-INSERT INTO `rendezvous` (`id`, `creneau_id`, `patient_id`, `medecin_id`, `secretaire_id`, `statut`, `commentaire`) VALUES
-(67, 825, 6, 3, NULL, 'ANNULE', NULL),
-(68, 1069, 6, 3, NULL, 'ANNULE', NULL),
-(69, 1067, 6, 3, NULL, 'DEMANDE', NULL),
-(70, 807, 5, 3, NULL, 'CONFIRME', NULL),
-(71, 933, 5, 3, NULL, 'CONFIRME', NULL),
-(72, 850, 6, 3, NULL, 'CONFIRME', NULL),
-(73, 976, 6, 3, NULL, 'CONFIRME', NULL),
-(74, 957, 7, 3, NULL, 'CONFIRME', NULL),
-(75, 1068, 8, 3, NULL, 'CONFIRME', NULL),
-(76, 989, 8, 3, NULL, 'CONFIRME', NULL),
-(77, 874, 9, 3, NULL, 'CONFIRME', NULL),
-(78, 1011, 9, 3, NULL, 'CONFIRME', NULL),
-(79, 812, 10, 3, NULL, 'DEMANDE', NULL),
-(80, 918, 10, 3, NULL, 'CONFIRME', NULL),
-(81, 855, 11, 3, NULL, 'CONFIRME', NULL),
-(82, 885, 12, 3, NULL, 'CONFIRME', NULL),
-(83, 1014, 12, 3, NULL, 'DEMANDE', NULL),
-(84, 952, 13, 3, NULL, 'CONFIRME', NULL),
-(85, 1073, 14, 3, NULL, 'CONFIRME', NULL),
-(86, 970, 14, 3, NULL, 'CONFIRME', NULL),
-(87, 867, 15, 3, NULL, 'CONFIRME', NULL),
-(88, 995, 15, 3, NULL, 'CONFIRME', NULL),
-(89, 897, 16, 3, NULL, 'CONFIRME', NULL),
-(90, 926, 16, 3, NULL, 'CONFIRME', NULL),
-(91, 1071, 6, 3, NULL, 'DEMANDE', NULL),
-(92, 1102, 6, 3, NULL, 'DEMANDE', NULL),
-(93, 940, 6, 3, NULL, 'DEMANDE', NULL),
-(94, 1100, 6, 3, NULL, 'DEMANDE', NULL),
-(95, 914, 6, 3, NULL, 'DEMANDE', NULL);
+INSERT INTO `rendezvous` (`id`, `creneau_id`, `patient_id`, `medecin_id`, `secretaire_id`, `statut`, `duree`, `commentaire`) VALUES
+(69, 1067, 6, 3, NULL, 'CONFIRME', 30, NULL),
+(70, 807, 5, 3, NULL, 'HONORE', 30, NULL),
+(71, 933, 5, 3, NULL, 'CONFIRME', 30, NULL),
+(72, 1079, 6, 3, NULL, 'CONFIRME', 30, NULL),
+(73, 976, 6, 3, NULL, 'CONFIRME', 30, NULL),
+(74, 957, 7, 3, NULL, 'CONFIRME', 30, NULL),
+(75, 1068, 8, 3, NULL, 'CONFIRME', 30, NULL),
+(76, 989, 8, 3, NULL, 'CONFIRME', 30, NULL),
+(77, 874, 9, 3, NULL, 'CONFIRME', 120, NULL),
+(78, 1011, 9, 3, NULL, 'ABSENT', 30, NULL),
+(79, 811, 10, 3, NULL, 'ABSENT', 30, NULL),
+(80, 918, 10, 3, NULL, 'CONFIRME', 30, NULL),
+(81, 855, 11, 3, NULL, 'CONFIRME', 90, NULL),
+(82, 885, 12, 3, NULL, 'CONFIRME', 60, NULL),
+(83, 1014, 12, 3, NULL, 'HONORE', 30, NULL),
+(84, 952, 13, 3, NULL, 'CONFIRME', 30, NULL),
+(85, 1075, 14, 3, NULL, 'CONFIRME', 30, NULL),
+(86, 970, 14, 3, NULL, 'CONFIRME', 30, NULL),
+(87, 869, 15, 3, NULL, 'CONFIRME', 30, NULL),
+(88, 995, 15, 3, NULL, 'CONFIRME', 30, NULL),
+(89, 897, 16, 3, NULL, 'CONFIRME', 30, NULL),
+(90, 926, 16, 3, NULL, 'CONFIRME', 60, NULL),
+(91, 1071, 6, 3, NULL, 'CONFIRME', 60, NULL),
+(92, 1102, 6, 3, NULL, 'HONORE', 30, NULL),
+(93, 940, 6, 3, NULL, 'CONFIRME', 30, NULL),
+(94, 1100, 6, 3, NULL, 'HONORE', 60, NULL),
+(95, 914, 6, 3, NULL, 'CONFIRME', 120, NULL);
 
 -- --------------------------------------------------------
 
@@ -490,7 +474,7 @@ INSERT INTO `service` (`id`, `titre`, `description`, `statut`, `image`, `ordre`,
 (2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', '68e7d49939d82_19475 (1).jpg', 2, 30, '#2196f3'),
 (3, 'Implantologie', 'Pose d’implants pour remplacer les dents manquantes.', 'PUBLIE', '68e7d3d2412bf_5510224.jpg', 5, 90, '#9c27b0'),
 (4, 'Orthodontie', 'Alignement des dents : appareils fixes ou aligneurs transparents.', 'PUBLIE', '68e7d541958fd_17722.jpg', 1, 30, '#00c9cc'),
-(7, 'Parodontologie', 'Soins des gencives et traitement des maladies parodontales.', 'PUBLIE', '68ee48ae76743_5536487.jpg', 4, 120, '#e0ed2c'),
+(7, 'Parodontologie', 'Soins des gencives et traitement des maladies parodontales.', 'PUBLIE', '68ee48ae76743_5536487.jpg', 4, 120, '#a35f00'),
 (8, 'Urgences dentaires', 'Prise en charge rapide des douleurs et traumatismes dentaires.', 'PUBLIE', '68ee4d73cf020_ChatGPT Image 14 oct. 2025, 15_13_39.png', 0, 60, '#ed0202');
 
 -- --------------------------------------------------------
@@ -530,7 +514,10 @@ INSERT INTO `utilisateur` (`id`, `role`, `nom`, `prenom`, `email`, `telephone`, 
 (13, 'PATIENT', 'Girard', 'Julie', 'julie.girard@email.com', '+33-6-78-90-12-34', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1992-12-03'),
 (14, 'PATIENT', 'Roux', 'Pierre', 'pierre.roux@email.com', '+33-6-89-01-23-45', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1980-04-25'),
 (15, 'PATIENT', 'Blanc', 'Laura', 'laura.blanc@email.com', '+33-6-90-12-34-56', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1997-08-19'),
-(16, 'PATIENT', 'Faure', 'Antoine', 'antoine.faure@email.com', '+33-6-11-12-13-14', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1983-05-08');
+(16, 'PATIENT', 'Faure', 'Antoine', 'antoine.faure@email.com', '+33-6-11-12-13-14', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1983-05-08'),
+(17, 'PATIENT', 'WALK', 'James', 'walkjames@orange.fr', '6-66-66-66-66', NULL, '$2y$10$8.n08wayraozB/eITblyGO/pm15yTsJ0rNlrp25mktkSrKpq9e.Ma', '2025-10-19 18:10:28', '1995-10-19'),
+(18, 'PATIENT', 'BECHE', 'Jules', 'bechejules@orange.fr', '+33-7-78-88-88-78', NULL, '$2y$10$aG0M4EXt7Az/4Irk64jdA.MNQ2kZFkHnA48Pip7GaDOOBtDeOia6K', '2025-10-19 18:13:18', '1990-10-19'),
+(19, 'PATIENT', 'SAINT-LAURENT', 'Yves', 'ysl@gmail.com', '6-55-55-55-55', NULL, '$2y$10$Y5JEt7kBxE/Dst78jWNyNuepSqalNMpIhLqGH0i8qPQ2gy24chjna', '2025-10-19 18:39:28', '1991-11-11');
 
 --
 -- Index pour les tables déchargées
@@ -575,23 +562,15 @@ ALTER TABLE `horaire_cabinet`
   ADD UNIQUE KEY `unique_jour` (`cabinet_id`,`jour`);
 
 --
--- Index pour la table `notification`
---
-ALTER TABLE `notification`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_notif_dest` (`destinataire_id`),
-  ADD KEY `idx_notif_rdv` (`rendezvous_id`);
-
---
 -- Index pour la table `rendezvous`
 --
 ALTER TABLE `rendezvous`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uk_rdv_creneau` (`creneau_id`),
   ADD KEY `idx_rdv_patient` (`patient_id`),
   ADD KEY `idx_rdv_medecin` (`medecin_id`),
   ADD KEY `idx_rdv_secretaire` (`secretaire_id`),
-  ADD KEY `idx_rdv_statut` (`statut`);
+  ADD KEY `idx_rdv_statut` (`statut`),
+  ADD KEY `idx_creneau` (`creneau_id`);
 
 --
 -- Index pour la table `service`
@@ -642,12 +621,6 @@ ALTER TABLE `horaire_cabinet`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
 
 --
--- AUTO_INCREMENT pour la table `notification`
---
-ALTER TABLE `notification`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT pour la table `rendezvous`
 --
 ALTER TABLE `rendezvous`
@@ -663,7 +636,7 @@ ALTER TABLE `service`
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- Contraintes pour les tables déchargées
@@ -694,13 +667,6 @@ ALTER TABLE `creneau`
 --
 ALTER TABLE `horaire_cabinet`
   ADD CONSTRAINT `horaire_cabinet_ibfk_1` FOREIGN KEY (`cabinet_id`) REFERENCES `cabinet` (`id`) ON DELETE CASCADE;
-
---
--- Contraintes pour la table `notification`
---
-ALTER TABLE `notification`
-  ADD CONSTRAINT `fk_notif_dest` FOREIGN KEY (`destinataire_id`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_notif_rdv` FOREIGN KEY (`rendezvous_id`) REFERENCES `rendezvous` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `rendezvous`

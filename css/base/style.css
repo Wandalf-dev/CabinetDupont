@@ -1,4 +1,6 @@
-﻿* {
+﻿@import "../components/contact-card.css";
+
+* {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -783,70 +785,7 @@ body {
   color: #667;
 }
 
-/* Carte contact */
-.hours-aside {
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  padding: 24px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.hours-aside h3 {
-  font-size: 1.25rem;
-  color: var(--brand);
-  margin-bottom: 12px;
-}
-
-.hours-aside address {
-  font-style: normal;
-  color: #233;
-  margin-bottom: 16px;
-  line-height: 1.5;
-}
-
-.hours-aside a {
-  color: var(--brand);
-  text-decoration: none;
-}
-
-.hours-cta {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin: 10px 0 6px;
-}
-
-.btn-outline {
-  padding: 8px 14px;
-  border-radius: 6px;
-  border: 1px solid rgba(0,114,255,0.35);
-  color: var(--brand);
-  background: #fff;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.95rem;
-  transition: background .2s, color .2s, border-color .2s;
-}
-
-.btn-outline:hover {
-  background: rgba(0,114,255,0.06);
-  border-color: rgba(0,114,255,0.6);
-}
-
-.hours-badge {
-  display: inline-block;
-  margin-top: 8px;
-  font-size: 0.9rem;
-  color: #234;
-  background: rgba(0,198,255,0.10);
-  border: 1px solid rgba(0,114,255,0.20);
-  padding: 6px 10px;
-  border-radius: 999px;
-}
-
-
+/* Carte contact - Voir css/components/contact-card.css */
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 900px) {
@@ -890,7 +829,19 @@ body {
   
   .hours-card,
   .hours-aside {
-    padding: 20px;
+    padding: 24px;
+  }
+  
+  .contact-header h3 {
+    font-size: 1.3rem;
+  }
+  
+  .contact-actions {
+    flex-direction: column;
+  }
+  
+  .contact-btn {
+    width: 100%;
   }
   
   .hours-table {
@@ -974,8 +925,42 @@ body {
   
   .hours-card,
   .hours-aside {
-    padding: 16px;
-    border-radius: 12px;
+    padding: 20px;
+    border-radius: 16px;
+  }
+  
+  .contact-header {
+    gap: 12px;
+  }
+  
+  .contact-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+  }
+  
+  .contact-header h3 {
+    font-size: 1.2rem;
+  }
+  
+  .contact-item {
+    padding: 14px;
+  }
+  
+  .contact-item-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+  
+  .contact-btn {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+  
+  .contact-badge {
+    padding: 10px 14px;
+    font-size: 0.85rem;
   }
   
   .hours-table {
@@ -991,27 +976,9 @@ body {
     font-size: 0.9rem;
   }
   
-  .hours-aside h3 {
-    font-size: 1.15rem;
-  }
+  /* Anciens styles masqués */
   
-  .hours-cta {
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .hours-cta .btn,
-  .hours-cta .btn-outline {
-    width: 100%;
-    text-align: center;
-    justify-content: center;
-  }
-  
-  .hours-badge {
-    font-size: 0.85rem;
-    padding: 5px 8px;
-  }
-}
+  /* Galerie cabinet */
 
 @media (max-width: 560px) {
   .footer-grid {
@@ -1174,5 +1141,4 @@ body {
   }
 }
 */
-
-
+}

@@ -2,6 +2,17 @@
 *.tmp
 .DS_Store
 
+# Dépendances Composer
+/vendor/
+composer.lock
+
+# PHPUnit
+.phpunit.result.cache
+/coverage/
+
+# Base de données de test
+*.sql.backup
+
 # Dossier logs
 logs/
 logs/*.log
@@ -17,3 +28,21 @@ logs/*.txt
 config/config.php
 config/.htaccess
 .env
+
+# Fichiers uploadés (garder le dossier mais pas les fichiers)
+/public/uploads/*
+!/public/uploads/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Fichiers temporaires
+*.cache

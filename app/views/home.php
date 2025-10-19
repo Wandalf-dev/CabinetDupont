@@ -164,32 +164,50 @@ include __DIR__ . '/templates/flash-messages.php'; ?>
 
         <!-- Carte contact -->
         <aside class="hours-aside">
-          <h3>Contact & accès</h3>
-
-          <div class="hours-cta">
-            <!-- Bouton pour prendre rendez-vous -->
-            <a href="#" class="btn btn-small">Prendre rendez-vous</a>
-            <!-- Lien vers Google Maps pour l'itinéraire -->
-            <a
-              href="https://maps.google.com"
-              target="_blank"
-              rel="noopener"
-              class="btn-outline"
-            >Itinéraire</a>
+          <div class="contact-header">
+            <div class="contact-icon">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <h3>Nous contacter</h3>
           </div>
 
-          <div class="footer-map-block">
-            <div class="footer-contact-card">
-              <div class="footer-contact-icon">📍</div>
-              <div class="footer-contact-info">
-                <strong>Adresse :</strong><br>
-                12 rue du Sourire, 34000 Montpellier<br>
-                <strong>Tél :</strong> <a href="tel:+33400000000">04 00 00 00 00</a>
+          <div class="contact-info-grid">
+            <div class="contact-item">
+              <div class="contact-item-icon">
+                <i class="fas fa-map-pin"></i>
+              </div>
+              <div class="contact-item-content">
+                <span class="contact-label">Adresse</span>
+                <p>12 rue du Sourire<br>34000 Montpellier</p>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <div class="contact-item-icon">
+                <i class="fas fa-phone"></i>
+              </div>
+              <div class="contact-item-content">
+                <span class="contact-label">Téléphone</span>
+                <p><a href="tel:+33400000000">04 00 00 00 00</a></p>
               </div>
             </div>
           </div>
 
-          <p class="hours-badge">Urgences selon disponibilité</p>
+          <div class="contact-actions">
+            <a href="index.php?page=<?= isset($_SESSION['user_id']) ? 'rendezvous&action=selectConsultation' : 'auth&action=login' ?>" class="contact-btn contact-btn-primary">
+              <i class="fas fa-calendar-check"></i>
+              <span>Prendre rendez-vous</span>
+            </a>
+            <a href="https://maps.google.com" target="_blank" rel="noopener" class="contact-btn contact-btn-outline">
+              <i class="fas fa-route"></i>
+              <span>Itinéraire</span>
+            </a>
+          </div>
+
+          <div class="contact-badge">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>Urgences selon disponibilité</span>
+          </div>
         </aside>
       </div> <!-- /.hours-grid -->
     </div> <!-- /.container -->
