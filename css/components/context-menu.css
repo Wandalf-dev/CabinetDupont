@@ -36,3 +36,52 @@
     background-color: #e5e7eb;
     margin: 4px 0;
 }
+
+/* Overlay pour mobile */
+.context-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    display: none;
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+    .context-menu-overlay {
+        display: block;
+    }
+
+    .context-menu {
+        min-width: 240px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        padding: 12px 0;
+        position: fixed; /* Fixed pour centrer facilement */
+        z-index: 1001; /* Au-dessus de l'overlay */
+    }
+
+    .context-menu-item {
+        padding: 14px 20px;
+        font-size: 1rem;
+        gap: 12px;
+        /* Effet tactile sur mobile */
+        -webkit-tap-highlight-color: rgba(0,0,0,0.05);
+    }
+
+    .context-menu-item:active {
+        background-color: #e5e7eb;
+    }
+
+    .context-menu-item i {
+        width: 20px;
+        font-size: 1.1rem;
+    }
+
+    .context-menu-separator {
+        margin: 8px 0;
+    }
+}

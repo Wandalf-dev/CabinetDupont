@@ -3,7 +3,6 @@ include __DIR__ . '/templates/header.php';
 include __DIR__ . '/templates/flash-messages.php'; ?>
 
 <!-- CSS spécifique à la page d'accueil -->
-<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/home.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/cabinet-gallery.css">
 
 <main class="home-page">

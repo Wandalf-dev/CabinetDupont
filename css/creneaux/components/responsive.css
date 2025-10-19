@@ -1,0 +1,432 @@
+/* ===============================================
+   RESPONSIVE - Section Créneaux
+   =============================================== */
+
+/* Tablette (1024px et moins) */
+@media (max-width: 1024px) {
+    .creneaux-container {
+        padding: 15px;
+    }
+
+    .creneaux-toolbar {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .toolbar-left,
+    .toolbar-center,
+    .toolbar-right {
+        flex: 1 1 100%;
+    }
+
+    .toolbar-center {
+        justify-content: center;
+    }
+
+    .toolbar-right {
+        justify-content: space-between;
+    }
+
+    /* Vue liste adaptée */
+    .creneaux-view[data-view="list"] .creneau-card {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .creneaux-view[data-view="list"] .card-header {
+        width: auto;
+        min-width: auto;
+    }
+
+    .creneaux-view[data-view="list"] .card-body {
+        flex: 1 1 100%;
+    }
+
+    .creneaux-view[data-view="list"] .card-footer {
+        flex: 1 1 100%;
+    }
+}
+
+/* Mobile (768px et moins) */
+@media (max-width: 768px) {
+    .creneaux-container {
+        padding: 10px;
+        border-radius: 0;
+    }
+
+    /* Toolbar */
+    .creneaux-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-left .section-title {
+        font-size: 1.25rem;
+        margin-bottom: 10px;
+    }
+
+    .toolbar-right {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .toolbar-right .view-toggle {
+        width: 100%;
+        justify-content: center;
+        background: #f0f2f5;
+        padding: 4px;
+        border-radius: 10px;
+    }
+
+    .toolbar-right .view-toggle .btn-icon {
+        flex: 1;
+        padding: 10px;
+        border-radius: 8px;
+        background: transparent;
+        border: none;
+        color: #6c757d;
+        transition: all 0.2s ease;
+    }
+
+    .toolbar-right .view-toggle .btn-icon.active {
+        background: #3a6ea5;
+        color: white;
+        box-shadow: 0 2px 8px rgba(58, 110, 165, 0.3);
+    }
+
+    .toolbar-right .view-toggle .btn-icon:hover {
+        background: #e3f2fd;
+        color: #3a6ea5;
+    }
+
+    .toolbar-right .view-toggle .btn-icon.active:hover {
+        background: #2c5682;
+        color: white;
+    }
+
+    .toolbar-right #btn-generer-creneaux {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Forcer la vue grille sur mobile */
+    .creneaux-view[data-view="list"] {
+        display: block !important;
+    }
+
+    .creneaux-view {
+        display: block !important;
+    }
+
+    /* Barre de filtres */
+    .filters-bar {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .filter-options {
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .filter-options label {
+        width: 100%;
+    }
+
+    .filter-options select {
+        width: 100%;
+        padding: 10px;
+    }
+
+    /* Actions de sélection */
+    .selected-actions {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .selected-actions .selected-count {
+        flex: 1 1 100%;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+
+    .selected-actions button {
+        flex: 1;
+        min-width: 0;
+        font-size: 0.875rem;
+        padding: 8px 12px;
+    }
+
+    .selected-actions button i {
+        margin-right: 4px;
+    }
+
+    /* Stats du jour */
+    .day-stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .stat-item {
+        flex: 1 1 100%;
+        padding: 12px;
+        text-align: center;
+    }
+
+    /* === VUE GRILLE === */
+    .creneaux-view[data-view="grid"] .creneaux-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px;
+        padding: 1rem 0;
+    }
+
+    .creneaux-view[data-view="grid"] .creneau-card {
+        padding: 12px;
+    }
+
+    .creneaux-view[data-view="grid"] .card-header {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 1rem;
+    }
+
+    .creneaux-view[data-view="grid"] .card-body {
+        padding: 1rem;
+    }
+
+    .creneaux-view[data-view="grid"] .card-footer {
+        padding: 1rem;
+    }
+
+    .creneaux-view[data-view="grid"] .action-buttons {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+        justify-content: space-between;
+    }
+
+    .creneaux-view[data-view="grid"] .action-buttons button {
+        flex: 1;
+        padding: 10px;
+    }
+
+    /* === VUE LISTE === */
+    .creneaux-view[data-view="list"] .list-header {
+        display: none !important;
+    }
+
+    .creneaux-view[data-view="list"] .creneaux-grid {
+        gap: 12px;
+        padding: 1rem 0;
+    }
+
+    .creneaux-view[data-view="list"] .creneau-card {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .creneaux-view[data-view="list"] .card-header {
+        width: 100% !important;
+        min-width: auto !important;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 0 12px 0 !important;
+        border-bottom: 1px solid #e1e4e8;
+    }
+
+    .creneaux-view[data-view="list"] .checkbox-wrapper {
+        order: 1;
+    }
+
+    .creneaux-view[data-view="list"] .time-badge {
+        order: 2;
+        flex: 1;
+        justify-content: flex-end;
+    }
+
+    .creneaux-view[data-view="list"] .card-body {
+        width: 100% !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 0 !important;
+        gap: 10px;
+    }
+
+    .creneaux-view[data-view="list"] .status-info {
+        width: 100%;
+        padding: 8px 0;
+    }
+
+    .creneaux-view[data-view="list"] .reservation-info {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .creneaux-view[data-view="list"] .card-footer {
+        width: 100% !important;
+        min-width: auto !important;
+        padding: 12px 0 0 0 !important;
+        border-top: 1px solid #e1e4e8;
+        background: none !important;
+    }
+
+    .creneaux-view[data-view="list"] .action-buttons {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+    }
+
+    .creneaux-view[data-view="list"] .action-buttons button {
+        flex: 1;
+    }
+
+    .creneaux-view[data-view="list"] .btn-cancel,
+    .creneaux-view[data-view="list"] .btn-danger {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Boutons génériques */
+    .btn-cancel,
+    .btn-danger {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Modal */
+    .modal-content {
+        width: 95%;
+        max-width: 95%;
+        margin: 10px;
+        padding: 20px;
+    }
+
+    .modal-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .modal-header .btn-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+
+    .modal-body {
+        padding: 15px 0;
+    }
+
+    .modal-footer {
+        flex-direction: column-reverse;
+        gap: 8px;
+    }
+
+    .modal-footer button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Form groups dans la modale */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 1rem;
+        padding: 10px;
+    }
+
+    /* Date navigation */
+    .date-navigation {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .date-navigation .current-date {
+        flex: 1;
+        margin: 0 10px;
+    }
+
+    .date-navigation input[type="date"] {
+        width: 100%;
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Petit mobile (480px et moins) */
+@media (max-width: 480px) {
+    .creneaux-container {
+        padding: 8px;
+    }
+
+    .toolbar-left .section-title {
+        font-size: 1.1rem;
+    }
+
+    .creneau-card {
+        padding: 10px;
+    }
+
+    .time-badge {
+        font-size: 0.875rem;
+        padding: 6px 10px;
+    }
+
+    .status-info,
+    .reservation-info {
+        font-size: 0.875rem;
+    }
+
+    .action-buttons button {
+        padding: 8px;
+        font-size: 0.875rem;
+    }
+
+    .btn-cancel,
+    .btn-danger {
+        padding: 10px;
+        font-size: 0.875rem;
+    }
+
+    .stat-item .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .stat-item .stat-label {
+        font-size: 0.875rem;
+    }
+
+    .modal-content {
+        padding: 15px;
+    }
+
+    .modal-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+}

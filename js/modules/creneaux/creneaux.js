@@ -123,8 +123,18 @@ document.addEventListener('DOMContentLoaded', function () {
         setupViewToggle() {
             if (!this.viewButtons || this.viewButtons.length === 0 || !this.creneauxView) return;
             
-            // Charger la préférence depuis sessionStorage
-            const savedView = sessionStorage.getItem('creneaux-view') || 'list';
+            // Fonction pour détecter si on est sur mobile
+            const isMobile = () => window.innerWidth <= 768;
+            
+            // Charger la préférence depuis sessionStorage ou définir selon l'écran
+            let savedView;
+            if (isMobile()) {
+                // Sur mobile, forcer la vue grille
+                savedView = 'grid';
+            } else {
+                // Sur desktop, utiliser la préférence sauvegardée ou 'list' par défaut
+                savedView = sessionStorage.getItem('creneaux-view') || 'list';
+            }
             this.setView(savedView);
 
             // Gérer les clics sur les boutons de vue
@@ -132,9 +142,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 button.addEventListener('click', () => {
                     const view = button.dataset.view;
                     this.setView(view);
-                    // Sauvegarder la préférence
-                    sessionStorage.setItem('creneaux-view', view);
+                    // Sauvegarder la préférence uniquement sur desktop
+                    if (!isMobile()) {
+                        sessionStorage.setItem('creneaux-view', view);
+                    }
                 });
+            });
+
+            // Gérer le changement de taille d'écran
+            window.addEventListener('resize', () => {
+                if (isMobile() && this.creneauxView.dataset.view !== 'grid') {
+                    this.setView('grid');
+                }
             });
         },
 

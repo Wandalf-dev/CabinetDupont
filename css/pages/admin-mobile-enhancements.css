@@ -1,0 +1,251 @@
+/* ===============================================
+   AMÉLIORATIONS VISUELLES MOBILE - ADMIN
+   =============================================== */
+
+@media (max-width: 768px) {
+  /* Animation d'apparition des cartes */
+  .admin-table tr {
+    animation: slideInCard 0.3s ease-out forwards;
+    opacity: 0;
+  }
+
+  .admin-table tr:nth-child(1) { animation-delay: 0.05s; }
+  .admin-table tr:nth-child(2) { animation-delay: 0.1s; }
+  .admin-table tr:nth-child(3) { animation-delay: 0.15s; }
+  .admin-table tr:nth-child(4) { animation-delay: 0.2s; }
+  .admin-table tr:nth-child(5) { animation-delay: 0.25s; }
+  .admin-table tr:nth-child(n+6) { animation-delay: 0.3s; }
+
+  @keyframes slideInCard {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Effet de pression sur les cartes */
+  .admin-table tr:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+
+  /* Badge de statut stylisé */
+  .admin-table td.status-cell[data-status="publié"],
+  .admin-table td.status-cell[data-status="actif"] {
+    position: relative;
+  }
+
+  .admin-table td.status-cell[data-status="publié"]::after,
+  .admin-table td.status-cell[data-status="actif"]::after {
+    content: '✓';
+    position: absolute;
+    right: 20px;
+    background: #2e7d32;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+
+  .admin-table td.status-cell[data-status="brouillon"],
+  .admin-table td.status-cell[data-status="inactif"] {
+    position: relative;
+  }
+
+  .admin-table td.status-cell[data-status="brouillon"]::after,
+  .admin-table td.status-cell[data-status="inactif"]::after {
+    content: '⏸';
+    position: absolute;
+    right: 20px;
+    background: #f57c00;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+  }
+
+  /* Amélioration du toolbar */
+  .admin-toolbar {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(58, 110, 165, 0.08);
+    margin-bottom: 20px;
+  }
+
+  /* Champ de recherche stylisé */
+  .admin-filter input {
+    border: 2px solid #e3f2fd;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+  }
+
+  .admin-filter input:focus {
+    border-color: #3a6ea5;
+    box-shadow: 0 0 0 3px rgba(58, 110, 165, 0.1);
+    outline: none;
+  }
+
+  /* Boutons avec ombre */
+  .admin-actions .btn-admin {
+    box-shadow: 0 3px 10px rgba(58, 110, 165, 0.2);
+  }
+
+  .admin-actions .btn-admin:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(58, 110, 165, 0.2);
+  }
+
+  /* Indicateur de scroll pour les onglets */
+  .tabs-nav {
+    position: relative;
+  }
+
+  .tabs-nav::after {
+    content: '→';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg, transparent 0%, white 30%, white 100%);
+    padding: 10px 15px 10px 30px;
+    color: #3a6ea5;
+    font-weight: bold;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .tabs-nav.has-scroll::after {
+    opacity: 1;
+  }
+
+  /* Message vide stylisé */
+  .admin-table tbody:empty::before {
+    content: 'Aucune donnée disponible';
+    display: block;
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+    font-size: 1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(58, 110, 165, 0.08);
+  }
+
+  /* Séparateur entre cartes plus subtil */
+  .admin-table tr + tr {
+    margin-top: 20px;
+  }
+
+  /* Effet de chargement (skeleton) pour amélioration future */
+  .admin-table.loading tr {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+
+  @keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Amélioration des durées dans le tableau services */
+  .admin-table td[data-label*="Durée"],
+  .admin-table td[data-label*="durée"] {
+    font-weight: 600;
+    color: #3a6ea5;
+  }
+
+  /* Amélioration des emails dans le tableau patients */
+  .admin-table td[data-label*="Email"],
+  .admin-table td[data-label*="email"] {
+    word-break: break-all;
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  /* Amélioration des téléphones */
+  .admin-table td[data-label*="Téléphone"],
+  .admin-table td[data-label*="téléphone"] {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #3a6ea5;
+    letter-spacing: 0.5px;
+  }
+
+  /* Amélioration des dates */
+  .admin-table td[data-label*="Date"],
+  .admin-table td[data-label*="date"] {
+    font-weight: 600;
+    color: #555;
+  }
+
+  /* Icône devant certains types de données */
+  .admin-table td[data-label*="Email"]::before,
+  .admin-table td[data-label*="email"]::before {
+    content: '📧 ' attr(data-label);
+  }
+
+  .admin-table td[data-label*="Téléphone"]::before,
+  .admin-table td[data-label*="téléphone"]::before {
+    content: '📱 ' attr(data-label);
+  }
+
+  .admin-table td[data-label*="Date"]::before {
+    content: '📅 ' attr(data-label);
+  }
+
+  /* Touch feedback pour les boutons */
+  .admin-table .actions-cell .btn-admin {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  .admin-table .actions-cell .btn-admin:active {
+    transform: scale(0.97);
+  }
+
+  /* Espacement amélioré dans les cellules avec beaucoup de texte */
+  .admin-table td[data-label*="Description"],
+  .admin-table td[data-label*="description"] {
+    line-height: 1.5;
+    color: #555;
+  }
+
+  /* Style pour les titres mis en avant */
+  .admin-table td:first-child {
+    font-size: 1.05rem !important;
+    letter-spacing: 0.3px;
+  }
+}
+
+/* Améliorations spécifiques pour très petits écrans */
+@media (max-width: 480px) {
+  /* Réduction des animations pour économiser les performances */
+  .admin-table tr {
+    animation-duration: 0.2s;
+  }
+
+  /* Emojis plus petits sur petits écrans */
+  .admin-table td[data-label*="Email"]::before,
+  .admin-table td[data-label*="Téléphone"]::before,
+  .admin-table td[data-label*="Date"]::before {
+    font-size: 0.7rem;
+  }
+}

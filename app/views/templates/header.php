@@ -138,6 +138,23 @@ use App\Core\Seo;
                                     <span>À propos</span>
                                 </a>
                                 <div class="dropdown-divider mobile-nav-divider"></div>
+                                
+                                <?php if (isset($_SESSION['user_role']) && ($_SESSION['user_role'] === 'MEDECIN' || $_SESSION['user_role'] === 'SECRETAIRE')): ?>
+                                    <a href="index.php?page=admin" class="dropdown-item mobile-nav-item">
+                                        <i class="fas fa-cog"></i>
+                                        <span>Administration</span>
+                                    </a>
+                                    
+                                    <?php if ($_SESSION['user_role'] === 'MEDECIN'): ?>
+                                        <a href="index.php?page=agenda&action=planning" class="dropdown-item mobile-nav-item">
+                                            <i class="fas fa-calendar-alt"></i>
+                                            <span>Agenda</span>
+                                        </a>
+                                    <?php endif; ?>
+                                    
+                                    <div class="dropdown-divider mobile-nav-divider"></div>
+                                <?php endif; ?>
+                                
                                 <a href="index.php?page=user&action=profile" class="dropdown-item">
                                     <i class="fas fa-user"></i>
                                     <span>Mon profil</span>

@@ -171,4 +171,17 @@ class AgendaModel extends Model {
         $stmt->execute([$date, $heureDebut, $heureFin, $heureDebut, $heureFin]);
         return $stmt->fetchColumn() == 0;
     }
+
+    /**
+     * Récupère les horaires d'ouverture du cabinet
+     */
+    public function getHorairesCabinet() {
+        $sql = "SELECT jour, ouverture_matin, fermeture_matin, ouverture_apresmidi, fermeture_apresmidi 
+                FROM horaire_cabinet 
+                ORDER BY FIELD(jour, 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche')";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

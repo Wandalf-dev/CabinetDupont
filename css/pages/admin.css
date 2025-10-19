@@ -298,20 +298,473 @@
   border-top: 1px solid #eaf6ff;
 }
 
-@media (max-width: 700px) {
-  .admin-section {
-    padding: 24px 2px 32px 2px;
+/* ========================================
+   RESPONSIVE - TABLETTES ET MOBILES
+   ======================================== */
+
+@media (max-width: 1024px) {
+  .admin-form-container {
+    padding: 24px;
+    margin: 24px 16px;
   }
+
+  .admin-toolbar {
+    gap: 12px;
+  }
+
   .admin-table th,
   .admin-table td {
-    padding: 10px 4px;
-    font-size: 0.98rem;
+    padding: 12px 14px;
+    font-size: 0.95rem;
   }
+}
+
+@media (max-width: 768px) {
+  /* Container et sections */
+  .admin-section {
+    padding: 16px 8px 24px 8px;
+  }
+
+  .admin-form-container {
+    padding: 20px;
+    margin: 16px 8px;
+    border-radius: 12px;
+  }
+
+  .admin-form-container h1,
+  .section-title {
+    font-size: 1.5rem !important;
+    margin: 1rem 0;
+  }
+
+  /* Toolbar responsive */
+  .admin-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
   .admin-filter {
+    width: 100%;
     flex: 1 1 100%;
   }
+
+  .admin-filter input {
+    width: 100%;
+    min-width: 0;
+  }
+
   .admin-actions {
     width: 100%;
-    justify-content: flex-start;
+    justify-content: stretch;
+    flex-direction: column;
+  }
+
+  .btn-admin {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    padding: 12px 16px;
+  }
+
+  /* ===================================================
+     TABLEAUX EN MODE RESPONSIVE - CARTES ÉLÉGANTES
+     =================================================== */
+  
+  .table-responsive {
+    overflow-x: visible !important;
+    -webkit-overflow-scrolling: auto;
+    padding: 0;
+  }
+
+  /* Transformation du tableau en cartes */
+  .admin-table {
+    border: none !important;
+    box-shadow: none !important;
+    display: block !important;
+    background: transparent !important;
+  }
+
+  .admin-table thead {
+    display: none !important;
+  }
+
+  .admin-table tbody {
+    display: block !important;
+  }
+
+  /* Carte individuelle pour chaque ligne */
+  .admin-table tr {
+    display: block !important;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%) !important;
+    border-radius: 16px;
+    padding: 0;
+    box-shadow: 0 4px 20px rgba(58, 110, 165, 0.1) !important;
+    border: 2px solid #e3f2fd !important;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .admin-table tr:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(58, 110, 165, 0.15) !important;
+    border-color: #bbdefb !important;
+  }
+
+  /* Masquer le grip et colonnes desktop en mobile */
+  .admin-table td.grip-cell,
+  .admin-table td.desktop-only,
+  .admin-table td[data-label=""] {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+  }
+
+  .admin-table td.grip-cell *,
+  .admin-table td.desktop-only *,
+  .admin-table td[data-label=""] * {
+    display: none !important;
+  }
+
+  /* En-tête de carte (cellule titre avec bordure colorée) */
+  .admin-table tbody tr td.title-cell {
+    display: flex !important;
+    flex-direction: column;
+    background: linear-gradient(90deg, #3a6ea5 0%, #4a8fc7 100%) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    font-size: 1.15rem !important;
+    padding: 16px 20px !important;
+    border-bottom: none !important;
+    order: -10 !important;
+    gap: 6px;
+    line-height: 1.3;
+    min-height: auto !important;
+  }
+
+  .admin-table tbody tr td.title-cell::before {
+    content: attr(data-label) !important;
+    display: block !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500 !important;
+    font-size: 0.7rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin-bottom: 2px !important;
+  }
+
+  /* Si pas de title-cell, utiliser le premier td visible */
+  .admin-table tr:not(:has(.title-cell)) td:first-child:not(.grip-cell):not(.desktop-only) {
+    background: linear-gradient(90deg, #3a6ea5 0%, #4a8fc7 100%);
+    color: white !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+    padding: 16px 20px !important;
+    border-bottom: none !important;
+  }
+
+  .admin-table tr:not(:has(.title-cell)) td:first-child:not(.grip-cell):not(.desktop-only)::before {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500 !important;
+  }
+
+  /* Cellules de données */
+  .admin-table td {
+    display: flex !important;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 20px !important;
+    border: none !important;
+    border-bottom: 1px solid rgba(58, 110, 165, 0.08) !important;
+    text-align: left !important;
+    font-size: 0.95rem;
+    background: white;
+  }
+
+  .admin-table td:last-child {
+    border-bottom: none !important;
+    padding-bottom: 20px !important;
+  }
+
+  /* Label de la cellule */
+  .admin-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: 700;
+    color: #3a6ea5;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 4px;
+  }
+
+  /* Valeur de la cellule */
+  .admin-table td::after {
+    content: '';
+    display: none;
+  }
+
+  /* Cellule de statut avec badge */
+  .admin-table td.status-cell {
+    grid-template-columns: 110px 1fr;
+  }
+
+  .admin-table td.status-cell[data-status="publié"],
+  .admin-table td.status-cell[data-status="actif"] {
+    color: #2e7d32 !important;
+    font-weight: 600;
+  }
+
+  .admin-table td.status-cell[data-status="brouillon"],
+  .admin-table td.status-cell[data-status="inactif"] {
+    color: #f57c00 !important;
+    font-weight: 600;
+  }
+
+  /* Cellule d'actions - style spécial */
+  .admin-table td.actions-cell {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px;
+    padding: 16px 20px 20px 20px !important;
+    background: #f8fbff;
+    grid-template-columns: none !important;
+    text-align: center !important;
+  }
+
+  .admin-table td.actions-cell::before {
+    display: none !important;
+  }
+
+  /* Séparateur visuel avant les actions */
+  .admin-table td.actions-cell::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #3a6ea5 50%, transparent 100%);
+    margin-bottom: 12px;
+    opacity: 0.3;
+  }
+
+  /* Boutons d'action */
+  .admin-table .actions-cell .btn-admin,
+  .admin-table .actions-cell form {
+    width: 100% !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+
+  .admin-table .actions-cell form {
+    margin: 0 !important;
+  }
+
+  .admin-table .actions-cell .btn-admin {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px;
+    padding: 14px 20px !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    text-transform: none;
+    letter-spacing: 0.3px;
+    width: 100% !important;
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .admin-table .actions-cell .btn-admin.edit {
+    background: #3a6ea5 !important;
+    border: none;
+    color: white !important;
+  }
+
+  .admin-table .actions-cell .btn-admin.edit:hover {
+    background: #2c5682 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(58, 110, 165, 0.3);
+  }
+
+  .admin-table .actions-cell .btn-admin.delete {
+    background: #e53935 !important;
+    border: none;
+    color: white !important;
+  }
+
+  .admin-table .actions-cell .btn-admin.delete:hover {
+    background: #c62828 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(229, 57, 53, 0.3);
+  }
+
+  .admin-table .actions-cell form {
+    display: block !important;
+  }
+
+  .admin-table .actions-cell form .btn-admin {
+    width: 100% !important;
+  }
+
+  /* Icônes dans les boutons */
+  .admin-table .actions-cell .btn-admin i {
+    font-size: 1rem;
+  }
+
+  /* Amélioration visuelle des icônes dans les boutons */
+  .admin-table .actions-cell .btn-admin.edit i {
+    color: white;
+  }
+
+  .admin-table .actions-cell .btn-admin.delete i {
+    color: white;
+  }
+
+  /* Espacement entre les boutons - PAS DE MARGIN */
+  .admin-table .actions-cell .btn-admin + form,
+  .admin-table .actions-cell form + .btn-admin,
+  .admin-table .actions-cell .btn-admin + button,
+  .admin-table .actions-cell a + form {
+    margin-top: 0 !important;
+  }
+
+  /* Les formulaires dans actions-cell */
+  .admin-table .actions-cell form {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .admin-table .actions-cell form .btn-admin {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* Formulaires */
+  .admin-form {
+    gap: 16px;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .form-actions .btn-admin {
+    width: 100%;
+  }
+
+  /* Onglets responsive */
+  .tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tabs .tab {
+    min-width: auto;
+    white-space: nowrap;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* ===================================================
+     TRÈS PETITS ÉCRANS - OPTIMISATION MAXIMALE
+     =================================================== */
+  
+  .admin-section {
+    padding: 8px 4px 16px 4px;
+  }
+
+  .admin-form-container {
+    padding: 14px;
+    margin: 10px 4px;
+  }
+
+  .admin-form-container h1,
+  .section-title {
+    font-size: 1.2rem !important;
+  }
+
+  /* Cartes encore plus compactes */
+  .admin-table tr {
+    margin-bottom: 16px;
+    border-radius: 12px;
+  }
+
+  .admin-table td:first-child {
+    padding: 14px 16px !important;
+    font-size: 0.9rem;
+  }
+
+  .admin-table td {
+    grid-template-columns: 95px 1fr;
+    gap: 10px;
+    font-size: 0.9rem;
+    padding: 12px 16px !important;
+  }
+
+  .admin-table td::before {
+    font-size: 0.75rem;
+  }
+
+  .admin-table td.actions-cell {
+    padding: 14px 16px 16px 16px !important;
+  }
+
+  .admin-table .actions-cell .btn-admin {
+    padding: 11px 16px !important;
+    font-size: 0.9rem !important;
+  }
+
+  .admin-table .actions-cell .btn-admin i {
+    font-size: 0.9rem;
+  }
+
+  /* Toolbar compact */
+  .admin-toolbar {
+    gap: 10px;
+  }
+
+  .btn-admin {
+    font-size: 0.9rem;
+    padding: 10px 14px;
+  }
+
+  /* Formulaires */
+  .form-group {
+    margin-bottom: 10px;
+  }
+
+  .form-group label {
+    font-size: 0.9rem;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 0.95rem;
+    padding: 10px 12px;
+  }
+
+  /* Onglets */
+  .tabs .tab {
+    font-size: 0.85rem;
+    padding: 10px 12px;
   }
 }

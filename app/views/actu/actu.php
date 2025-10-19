@@ -27,7 +27,7 @@ include __DIR__ . '/../templates/flash-messages.php';
             <?php if (!empty($latestActu['image'])): ?>
               <div class="actu-featured-image">
                 <!-- Affiche l'image de l'actualité si elle existe -->
-                <img src="/cabinetdupont/public/uploads/<?php echo htmlspecialchars($latestActu['image']); ?>" alt="Image de l'actualité">
+                <img src="/cabinetdupont/public/uploads/<?php echo htmlspecialchars($latestActu['image']); ?>" alt="Image de l'actualité" loading="lazy">
               </div>
               <?php 
               error_log("Affichage de l'image : /cabinetdupont/public/uploads/" . $latestActu['image']);

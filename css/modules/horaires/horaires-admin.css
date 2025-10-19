@@ -93,12 +93,82 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
+/* ===============================================
+   RESPONSIVE - Horaires Admin
+   =============================================== */
+
 @media (max-width: 768px) {
     .admin-section .horaires-form {
         grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 0 8px;
     }
     
+    .admin-section .horaire-edit-card {
+        padding: 16px;
+        border-radius: 8px;
+    }
+
     .admin-section .horaire-edit-card.dimanche {
         max-width: 100%;
+    }
+
+    .admin-section .horaire-edit-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+
+    .admin-section .horaire-section {
+        margin-bottom: 12px;
+    }
+
+    .admin-section .horaire-section h4 {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+    }
+
+    .admin-section .horaire-inputs {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .admin-section .time-input label {
+        font-size: 0.85rem;
+    }
+
+    .admin-section .time-input input[type="time"] {
+        padding: 10px 12px;
+        font-size: 1rem;
+    }
+
+    .admin-section .form-actions {
+        padding-top: 16px;
+    }
+
+    .admin-section .btn-admin.save {
+        width: 100%;
+        padding: 14px 30px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-section .horaires-form {
+        gap: 12px;
+        padding: 0 4px;
+    }
+
+    .admin-section .horaire-edit-card {
+        padding: 12px;
+    }
+
+    .admin-section .horaire-edit-card h3 {
+        font-size: 1rem;
+    }
+
+    .admin-section .time-input input[type="time"] {
+        padding: 12px;
+        font-size: 1rem;
     }
 }

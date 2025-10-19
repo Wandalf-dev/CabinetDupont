@@ -6,6 +6,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Supprimer tout menu contextuel existant
         removeContextMenu();
 
+        // Sur mobile, créer un overlay
+        if (isMobile()) {
+            const overlay = document.createElement('div');
+            overlay.className = 'context-menu-overlay';
+            overlay.addEventListener('click', removeContextMenu);
+            document.body.appendChild(overlay);
+        }
+
         // Créer le nouveau menu
         contextMenu = document.createElement('div');
         contextMenu.className = 'context-menu';
@@ -42,18 +50,27 @@ document.addEventListener('DOMContentLoaded', function() {
         const menuWidth = contextMenu.offsetWidth;
         const menuHeight = contextMenu.offsetHeight;
         
-        // Calculer la position en fonction du curseur
-        let x = e.clientX + 2; // Légèrement décalé du curseur
-        let y = e.clientY + 2;
+        // Calculer la position en fonction du curseur/touch
+        let x, y;
         
-        // Ajuster si le menu dépasse à droite
-        if (x + menuWidth > window.innerWidth) {
-            x = e.clientX - menuWidth;
-        }
-        
-        // Ajuster si le menu dépasse en bas
-        if (y + menuHeight > window.innerHeight) {
-            y = e.clientY - menuHeight;
+        // Sur mobile, centrer le menu sur l'écran
+        if (isMobile()) {
+            x = Math.max(10, (window.innerWidth - menuWidth) / 2);
+            y = Math.max(10, (window.innerHeight - menuHeight) / 2);
+        } else {
+            // Sur desktop, près du curseur
+            x = e.clientX + 2;
+            y = e.clientY + 2;
+            
+            // Ajuster si le menu dépasse à droite
+            if (x + menuWidth > window.innerWidth) {
+                x = e.clientX - menuWidth;
+            }
+            
+            // Ajuster si le menu dépasse en bas
+            if (y + menuHeight > window.innerHeight) {
+                y = e.clientY - menuHeight;
+            }
         }
         
         // Appliquer la position finale avec le scroll
@@ -79,6 +96,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (contextMenu) {
             contextMenu.remove();
             contextMenu = null;
+        }
+        // Supprimer l'overlay mobile
+        const overlay = document.querySelector('.context-menu-overlay');
+        if (overlay) {
+            overlay.remove();
         }
     }
 
@@ -137,6 +159,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Écouter le clic droit sur les rendez-vous
+    // Détection du mode mobile
+    function isMobile() {
+        return window.innerWidth <= 768 || 'ontouchstart' in window;
+    }
+
+    // Gestion du clic droit (desktop)
     document.addEventListener('contextmenu', function(e) {
         console.log('Target:', e.target);
         const appointment = e.target.closest('.slot-cell.reserved');
@@ -151,9 +179,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Fermer le menu au clic ailleurs
+    // Gestion du clic/tap (mobile et desktop)
     document.addEventListener('click', function(e) {
-        if (!e.target.closest('.context-menu')) {
+        // Si on clique sur le menu contextuel, ne rien faire
+        if (e.target.closest('.context-menu')) {
+            return;
+        }
+
+        // Si on clique sur un rendez-vous
+        const appointment = e.target.closest('.slot-cell.reserved');
+        if (appointment) {
+            // Sur mobile, ouvrir le menu contextuel
+            if (isMobile()) {
+                e.preventDefault();
+                const appointmentId = appointment.getAttribute('data-id');
+                if (appointmentId) {
+                    createContextMenu(e, appointmentId);
+                }
+            }
+            // Sur desktop, ne rien faire (le clic droit gère ça)
+        } else {
+            // Fermer le menu si on clique ailleurs
             removeContextMenu();
         }
     });

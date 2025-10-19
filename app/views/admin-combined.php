@@ -55,12 +55,12 @@ include __DIR__ . '/templates/flash-messages.php';
                         <tbody>
                             <?php foreach ($servicesAdmin as $service): ?>
                             <tr data-id="<?= htmlspecialchars($service['id']) ?>" draggable="true">
-                                <td class="grip-cell"><span class="grip-icon" title="Glisser pour réorganiser">⋮⋮</span></td>
-                                <td><?= htmlspecialchars($service['titre']) ?></td>
-                                <td><?= htmlspecialchars(substr($service['description'], 0, 100)) ?>...</td>
-                                <td><?= htmlspecialchars($service['duree']) ?> min</td>
-                                <td class="status-cell" data-status="<?= htmlspecialchars($service['statut']) ?>"><?= htmlspecialchars($service['statut']) ?></td>
-                                <td class="actions-cell">
+                                <td class="grip-cell desktop-only" data-label=""><span class="grip-icon" title="Glisser pour réorganiser">⋮⋮</span></td>
+                                <td class="title-cell" data-label="Titre"><?= htmlspecialchars($service['titre']) ?></td>
+                                <td data-label="Description"><?= htmlspecialchars(substr($service['description'], 0, 100)) ?>...</td>
+                                <td data-label="Durée"><?= htmlspecialchars($service['duree']) ?> min</td>
+                                <td class="status-cell" data-label="Statut" data-status="<?= htmlspecialchars($service['statut']) ?>"><?= htmlspecialchars($service['statut']) ?></td>
+                                <td class="actions-cell" data-label="Actions">
                                     <!-- Bouton pour modifier le service -->
                                     <a href="index.php?page=services&action=edit&id=<?= $service['id'] ?>" class="btn-admin edit">
                                         <i class="fas fa-edit"></i>&nbsp;Modifier
@@ -106,10 +106,10 @@ include __DIR__ . '/templates/flash-messages.php';
                         <tbody>
                             <?php foreach ($actusAdmin as $actu): ?>
                             <tr data-id="<?= htmlspecialchars($actu['id']) ?>">
-                                <td><?= htmlspecialchars($actu['titre']) ?></td>
-                                <td><?= htmlspecialchars(date('d/m/Y', strtotime($actu['date_publication']))) ?></td>
-                                <td class="status-cell" data-status="<?= htmlspecialchars($actu['statut']) ?>"><?= htmlspecialchars($actu['statut']) ?></td>
-                                <td class="actions-cell">
+                                <td data-label="Titre"><?= htmlspecialchars($actu['titre']) ?></td>
+                                <td data-label="Date"><?= htmlspecialchars(date('d/m/Y', strtotime($actu['date_publication']))) ?></td>
+                                <td class="status-cell" data-label="Statut" data-status="<?= htmlspecialchars($actu['statut']) ?>"><?= htmlspecialchars($actu['statut']) ?></td>
+                                <td class="actions-cell" data-label="Actions">
                                     <!-- Bouton pour modifier l'actualité -->
                                     <a href="index.php?page=actus&action=edit&id=<?= $actu['id'] ?>" class="btn-admin edit">
                                         <i class="fas fa-edit"></i>&nbsp;Modifier
@@ -267,10 +267,10 @@ include __DIR__ . '/templates/flash-messages.php';
                         <tbody>
                             <?php foreach ($patientsAdmin as $patient): ?>
                             <tr data-id="<?= htmlspecialchars($patient['id']) ?>" data-creation="<?= htmlspecialchars($patient['date_creation']) ?>">
-                                <td><?= htmlspecialchars($patient['nom']) ?></td>
-                                <td><?= htmlspecialchars($patient['prenom']) ?></td>
-                                <td><?= htmlspecialchars($patient['email']) ?></td>
-                                <td>
+                                <td data-label="Nom"><?= htmlspecialchars($patient['nom']) ?></td>
+                                <td data-label="Prénom"><?= htmlspecialchars($patient['prenom']) ?></td>
+                                <td data-label="Email"><?= htmlspecialchars($patient['email']) ?></td>
+                                <td data-label="Téléphone">
                                     <?php
                                     $tel = $patient['telephone'];
                                     if ($tel && strpos($tel, '+33') !== 0) {
@@ -284,7 +284,7 @@ include __DIR__ . '/templates/flash-messages.php';
                                     echo htmlspecialchars($tel);
                                     ?>
                                 </td>
-                                <td>
+                                <td data-label="Date de naissance">
                                     <?php
                                     $date = $patient['date_naissance'];
                                     $timestamp = strtotime($date);
@@ -296,7 +296,7 @@ include __DIR__ . '/templates/flash-messages.php';
                                     }
                                     ?>
                                 </td>
-                                <td class="actions-cell">
+                                <td class="actions-cell" data-label="Actions">
                                     <!-- Bouton pour modifier le patient -->
                                     <a href="index.php?page=admin&action=editPatient&id=<?= $patient['id'] ?>" class="btn-admin edit">
                                         <i class="fas fa-edit"></i>&nbsp;Modifier
@@ -321,6 +321,10 @@ include __DIR__ . '/templates/flash-messages.php';
 
 <!-- Styles spécifiques pour l'interface admin -->
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/admin.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/admin-cell-order.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/admin-grip-fix.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/admin-buttons-fix.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/admin-mobile-enhancements.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/confirmation-popup.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/agenda/notifications.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/utils/drag-drop.css">
@@ -333,6 +337,7 @@ include __DIR__ . '/templates/flash-messages.php';
 <script src="<?php echo BASE_URL; ?>/js/components/tabs.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/modules/service/service-order.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/pages/admin-tables.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/pages/admin-mobile-enhancements.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/modules/creneaux/creneaux.js"></script>
 
     </div> <!-- Fermeture de tabs-container -->

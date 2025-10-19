@@ -20,6 +20,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
                         <img src="/CabinetDupont/public/uploads/<?= htmlspecialchars($service['image']) ?>" 
                              alt="<?= htmlspecialchars($service['titre']) ?>"
                              loading="lazy">
+                             loading="lazy">
                     </div>
                     <div class="service-content">
                         <h3><?= htmlspecialchars($service['titre']) ?></h3>

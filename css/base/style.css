@@ -56,6 +56,47 @@ main {
   --accent-2: #0072ff;
   --text: #1e2936;
   --white: #fff;
+  --focus-ring: #0072ff;
+  --focus-ring-offset: 2px;
+}
+
+/* ========== ACCESSIBILITÉ ========== */
+
+/* Focus visible amélioré pour tous les éléments interactifs */
+*:focus {
+  outline: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: 4px;
+}
+
+/* Focus spécifique pour les boutons */
+.btn:focus-visible,
+.btn-primary:focus-visible,
+.btn-outline:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px rgba(0, 114, 255, 0.2);
+}
+
+/* Respecter la préférence utilisateur pour les animations réduites */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Style de base pour .container qui est utilisÃ© dans tout le site */
@@ -1007,5 +1048,131 @@ body {
   }
 }
 
+/* ========== ÉCORESPONSABILITÉ - MODE SOMBRE ========== */
+/* Mode sombre désactivé par défaut - À activer manuellement si souhaité */
+
+/*
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1f2e;
+    --brand: #5a9fd7;
+    --accent: #00d4ff;
+    --accent-2: #0088ff;
+    --text: #e4e7eb;
+    --white: #2a2f3e;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .home-page .hero {
+    background: linear-gradient(135deg, #1a1f2e 0%, #2a3445 100%);
+  }
+
+  .home-page .hero-title,
+  .home-page .hero-subtitle {
+    color: var(--text);
+  }
+
+  .home-page .hero-subtitle strong {
+    color: var(--text);
+  }
+
+  .home-page .hero-badge {
+    background: rgba(90, 159, 215, 0.2);
+    color: var(--brand);
+  }
+
+  .home-page .doctor-section {
+    background: linear-gradient(135deg, #2a2f3e 0%, #1a1f2e 100%);
+    border-color: rgba(90, 159, 215, 0.2);
+  }
+
+  .home-page .doctor-name,
+  .home-page .doctor-title {
+    color: var(--brand);
+  }
+
+  .home-page .doctor-description p {
+    background: #1a1f2e;
+    color: var(--text);
+  }
+
+  .services {
+    background: var(--white);
+  }
+
+  .service-card {
+    background: #1a1f2e;
+    border-color: rgba(90, 159, 215, 0.15);
+  }
+
+  .service-card h3 {
+    color: var(--brand);
+  }
+
+  .service-card p {
+    color: var(--text);
+  }
+
+  .hours {
+    background: var(--white);
+  }
+
+  .hours-card {
+    background: #1a1f2e;
+  }
+
+  .hours-table th {
+    color: var(--text);
+  }
+
+  .hours-aside {
+    background: #1a1f2e;
+  }
+
+  .hours-aside h3 {
+    color: var(--brand);
+  }
+
+  .btn-outline {
+    background: transparent;
+    border-color: rgba(0, 212, 255, 0.5);
+    color: var(--accent);
+  }
+
+  .btn-outline:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: var(--accent);
+  }
+
+  .cabinet-gallery {
+    background: var(--white);
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    background: #1a1f2e;
+    color: var(--text);
+    border-color: rgba(90, 159, 215, 0.3);
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: var(--brand);
+  }
+
+  .card,
+  .actu-card,
+  .actu-featured {
+    background: #1a1f2e;
+    border-color: rgba(90, 159, 215, 0.15);
+  }
+}
+*/
 
 

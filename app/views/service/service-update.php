@@ -59,7 +59,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
             <?php if (!empty($service['image'])): ?>
                 <!-- Affichage de l'image actuelle du service -->
                 <div style="margin-top:1em;">
-                    <img src="/cabinetdupont/public/uploads/<?php echo htmlspecialchars($service['image']); ?>" alt="Image actuelle" style="max-width:320px;max-height:240px;border-radius:8px;box-shadow:0 2px 8px #0001;">
+                    <img src="/cabinetdupont/public/uploads/<?php echo htmlspecialchars($service['image']); ?>" alt="Image actuelle" loading="lazy" style="max-width:320px;max-height:240px;border-radius:8px;box-shadow:0 2px 8px #0001;">
                     <br><small>Image actuelle</small>
                 </div>
                 <!-- Champ caché pour conserver l'image actuelle -->

@@ -1,0 +1,48 @@
+/* ===============================================
+   ORDRE DES CELLULES EN MOBILE - ADMIN
+   Affichage du titre en premier
+   =============================================== */
+
+@media (max-width: 768px) {
+    /* Flexbox pour réorganiser l'ordre */
+    .admin-table tbody {
+        display: block;
+    }
+
+    .admin-table tr {
+        display: flex !important;
+        flex-direction: column;
+    }
+
+    /* Masquer complètement les colonnes desktop (grip) */
+    .admin-table td.grip-cell,
+    .admin-table td.desktop-only,
+    .admin-table td[data-label=""] {
+        display: none !important;
+        position: absolute !important;
+        width: 0 !important;
+        height: 0 !important;
+        visibility: hidden !important;
+    }
+
+    /* Le titre (title-cell) en premier */
+    .admin-table td.title-cell {
+        order: -10;
+    }
+
+    /* Cellules normales */
+    .admin-table td:not(.title-cell):not(.actions-cell):not(.grip-cell):not(.desktop-only) {
+        order: 0;
+    }
+
+    /* Actions en dernier */
+    .admin-table td.actions-cell {
+        order: 100;
+    }
+
+    /* Pour les tables sans title-cell explicite (comme actualités et patients),
+       on met la première cellule visible en premier */
+    .admin-table tr:not(:has(.title-cell)) td:first-of-type:not(.grip-cell):not(.desktop-only) {
+        order: -10 !important;
+    }
+}

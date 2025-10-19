@@ -37,7 +37,7 @@ include __DIR__ . '/../templates/header.php';
         <?php if (!empty($actu['image'])): ?>
           <!-- Affichage de l'image actuelle de l'actualité -->
           <div style="margin-top:0.5em;">
-            <img src="/cabinetdupont/public/uploads/<?php echo htmlspecialchars($actu['image']); ?>" alt="Image actuelle" style="max-width:180px;max-height:120px;border-radius:8px;box-shadow:0 2px 8px #0001;">
+            <img src="/cabinetdupont/public/uploads/<?php echo htmlspecialchars($actu['image']); ?>" alt="Image actuelle" loading="lazy" style="max-width:180px;max-height:120px;border-radius:8px;box-shadow:0 2px 8px #0001;">
             <br><small>Image actuelle</small>
           </div>
         <?php endif; ?>

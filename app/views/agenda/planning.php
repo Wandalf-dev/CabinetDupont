@@ -10,10 +10,8 @@ require_once __DIR__ . '/../templates/flash-messages.php';
 <link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/agenda-grid.css">
 <link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/agenda-slots.css">
 <link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/agenda-day-view.css">
-<link rel="stylesheet" href="/CabinetDupont/css/modules/creneaux/unavailable-slots.css">
 <link rel="stylesheet" href="/CabinetDupont/css/components/context-menu.css">
 <link rel="stylesheet" href="/CabinetDupont/css/components/confirmation-popup.css">
-<link rel="stylesheet" href="/CabinetDupont/css/modules/creneaux/creneaux-alerts.css">
 <link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/edit-appointment.css">
 
 <main class="calendar-container">
@@ -253,7 +251,6 @@ require_once __DIR__ . '/../templates/flash-messages.php';
     </div>
 </div>
 
-<script src="<?php echo BASE_URL; ?>/js/modules/agenda/notifications.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/modules/agenda/agenda-unavailable.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/modules/agenda/agenda.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/modules/agenda/agenda-appointments.js"></script>

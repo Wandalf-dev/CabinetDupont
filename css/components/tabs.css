@@ -94,3 +94,91 @@
         transform: translateY(0);
     }
 }
+
+/* ===============================================
+   RESPONSIVE - Tabs
+   =============================================== */
+
+/* Mobile (768px et moins) */
+@media (max-width: 768px) {
+    .tabs-nav {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        overflow: visible;
+        margin-bottom: 1rem;
+        border-bottom: none;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 12px;
+    }
+
+    .tab-button {
+        padding: 10px 8px;
+        font-size: 0.8rem;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.2;
+        border-radius: 8px;
+        background: white;
+        border: 2px solid transparent;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .tab-button.active {
+        background: #3a6ea5;
+        color: white !important;
+        border-color: #3a6ea5;
+        font-weight: 700;
+    }
+
+    .tab-button.active::after {
+        display: none;
+    }
+
+    .tab-button:hover {
+        background: #e3f2fd;
+        border-color: #3a6ea5;
+    }
+
+    .tab-button.active:hover {
+        background: #2c5682;
+        color: white !important;
+    }
+}
+
+/* Petit mobile (480px et moins) */
+@media (max-width: 480px) {
+    .tabs-container {
+        margin-bottom: 1rem;
+    }
+
+    .tabs-nav {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        padding: 8px;
+    }
+
+    .tab-button {
+        padding: 8px 6px;
+        font-size: 0.75rem;
+        min-height: 45px;
+    }
+}
+
+/* Très petit mobile (390px et moins - iPhone 14 Pro) */
+@media (max-width: 390px) {
+    .tabs-nav {
+        gap: 5px;
+        padding: 6px;
+    }
+
+    .tab-button {
+        padding: 7px 5px;
+        font-size: 0.7rem;
+        min-height: 42px;
+    }
+}

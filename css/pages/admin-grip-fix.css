@@ -1,0 +1,56 @@
+/* ===============================================
+   CORRECTION GRIP MOBILE - ADMIN
+   Masquage complet du grip en responsive
+   =============================================== */
+
+@media (max-width: 768px) {
+    /* SOLUTION RADICALE - Retirer du flux et masquer */
+    
+    /* Cibler spécifiquement le premier td de chaque tr dans services */
+    #services-table tbody tr td:first-of-type,
+    #services-table tbody tr td.grip-cell,
+    #services-table tbody tr td.desktop-only {
+        display: none !important;
+    }
+
+    /* Pour tous les tableaux admin */
+    .admin-table tbody tr td.grip-cell,
+    .admin-table tbody tr td.desktop-only,
+    .admin-table tbody tr td[data-label=""] {
+        display: none !important;
+    }
+
+    /* Empêcher ::before de s'afficher */
+    .admin-table tbody tr td.grip-cell::before,
+    .admin-table tbody tr td.desktop-only::before,
+    .admin-table tbody tr td[data-label=""]::before {
+        display: none !important;
+        content: '' !important;
+    }
+
+    /* Masquer le contenu */
+    .grip-icon {
+        display: none !important;
+    }
+
+    /* Le titre doit être le premier élément VISIBLE */
+    .admin-table tr {
+        position: relative;
+    }
+
+    /* S'assurer que title-cell s'affiche correctement */
+    .admin-table td.title-cell {
+        display: grid !important;
+        order: -10 !important;
+    }
+
+    /* Alternative: si le tr est en flex, ne pas compter le grip */
+    .admin-table tr[draggable="true"] {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .admin-table tr[draggable="true"] > td:first-child {
+        display: none !important;
+    }
+}

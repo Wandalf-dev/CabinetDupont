@@ -319,4 +319,34 @@ class AgendaController extends Controller {
         header('Content-Type: application/json');
         echo json_encode(['success' => $success]);
     }
+
+    /**
+     * Récupère les horaires du cabinet (accessible via le routeur)
+     */
+    public function getcabinethoraires() {
+        header('Content-Type: application/json');
+        
+        try {
+            // Log pour debug
+            error_log('[getCabinetHoraires] Appel de la méthode');
+            
+            // Récupère les horaires depuis le modèle
+            $horaires = $this->agendaModel->getHorairesCabinet();
+            
+            error_log('[getCabinetHoraires] Horaires récupérés: ' . json_encode($horaires));
+            
+            echo json_encode([
+                'success' => true,
+                'horaires' => $horaires
+            ]);
+        } catch (\Exception $e) {
+            error_log('[getCabinetHoraires] Erreur: ' . $e->getMessage());
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'error' => 'Erreur lors de la récupération des horaires',
+                'details' => $e->getMessage()
+            ]);
+        }
+    }
 }

@@ -40,7 +40,7 @@ $equipe = [
                 <h2><?= htmlspecialchars($docteur['titre']) ?></h2>
             </div>
             <div class="doctor-image">
-                <img src="<?php echo BASE_URL; ?>/assets/fzeWvCJcOm.png" alt="Dr. Dupont" class="profile-image">
+                <img src="<?php echo BASE_URL; ?>/assets/fzeWvCJcOm.png" alt="Dr. Dupont" class="profile-image" loading="lazy">
             </div>
         </div>
 
@@ -77,7 +77,7 @@ $equipe = [
         <div class="team-grid">
             <div class="team-member">
                 <div class="member-image">
-                    <img src="<?php echo BASE_URL; ?>/assets/2148396205.jpg" alt="Sophie Martin" onerror="this.src='<?php echo BASE_URL; ?>/public/uploads/team/default-profile.jpg'">
+                    <img src="<?php echo BASE_URL; ?>/assets/2148396205.jpg" alt="Sophie Martin" loading="lazy" onerror="this.src='<?php echo BASE_URL; ?>/public/uploads/team/default-profile.jpg'">
                 </div>
                 <div class="member-info">
                     <h3>Sophie Martin</h3>
@@ -87,7 +87,7 @@ $equipe = [
             </div>
             <div class="team-member">
                 <div class="member-image">
-                    <img src="<?php echo BASE_URL; ?>/assets/20753.jpg" alt="Laura Bernard" onerror="this.src='<?php echo BASE_URL; ?>/public/uploads/team/default-profile.jpg'">
+                    <img src="<?php echo BASE_URL; ?>/assets/20753.jpg" alt="Laura Bernard" loading="lazy" onerror="this.src='<?php echo BASE_URL; ?>/public/uploads/team/default-profile.jpg'">
                 </div>
                 <div class="member-info">
                     <h3>Laura Bernard</h3>
@@ -97,7 +97,7 @@ $equipe = [
             </div>
             <div class="team-member">
                 <div class="member-image">
-                    <img src="<?php echo BASE_URL; ?>/assets/7678.jpg" alt="Thomas Dubois" onerror="this.src='<?php echo BASE_URL; ?>/public/uploads/team/default-profile.jpg'">
+                    <img src="<?php echo BASE_URL; ?>/assets/7678.jpg" alt="Thomas Dubois" loading="lazy" onerror="this.src='<?php echo BASE_URL; ?>/public/uploads/team/default-profile.jpg'">
                 </div>
                 <div class="member-info">
                     <h3>Thomas Dubois</h3>
