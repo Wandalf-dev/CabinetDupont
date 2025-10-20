@@ -37,9 +37,26 @@ class CreneauxController {
             $this->jsonResponse(['success' => false, 'error' => 'Accès non autorisé'], 403);
         }
 
-        // CSRF check
-        $headers = function_exists('getallheaders') ? getallheaders() : [];
-        $token = $headers['X-CSRF-TOKEN'] ?? '';
+        // CSRF check - vérifier plusieurs sources pour le token
+        $token = '';
+        
+        // 1. Essayer getallheaders() si disponible
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+            $token = $headers['X-CSRF-TOKEN'] ?? $headers['X-Csrf-Token'] ?? '';
+        }
+        
+        // 2. Fallback: vérifier $_SERVER
+        if (empty($token)) {
+            $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+        }
+        
+        // 3. Dernière option: vérifier le POST
+        if (empty($token)) {
+            $data = $this->jsonInput();
+            $token = $data['csrf_token'] ?? '';
+        }
+        
         if (empty($token) || !\App\Core\Csrf::checkToken($token)) {
             $this->jsonResponse(['success' => false, 'error' => 'Token CSRF invalide ou manquant'], 403);
         }
@@ -81,9 +98,26 @@ class CreneauxController {
             $this->jsonResponse(['success' => false, 'error' => 'Accès non autorisé'], 403);
         }
 
-        // CSRF check
-        $headers = function_exists('getallheaders') ? getallheaders() : [];
-        $token = $headers['X-CSRF-TOKEN'] ?? '';
+        // CSRF check - vérifier plusieurs sources pour le token
+        $token = '';
+        
+        // 1. Essayer getallheaders() si disponible
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+            $token = $headers['X-CSRF-TOKEN'] ?? $headers['X-Csrf-Token'] ?? '';
+        }
+        
+        // 2. Fallback: vérifier $_SERVER
+        if (empty($token)) {
+            $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+        }
+        
+        // 3. Dernière option: vérifier le POST
+        if (empty($token)) {
+            $data = $this->jsonInput();
+            $token = $data['csrf_token'] ?? '';
+        }
+        
         if (empty($token) || !\App\Core\Csrf::checkToken($token)) {
             $this->jsonResponse(['success' => false, 'error' => 'Token CSRF invalide ou manquant'], 403);
         }
@@ -150,9 +184,26 @@ class CreneauxController {
             $this->jsonResponse(['success' => false, 'error' => 'Accès non autorisé'], 403);
         }
 
-        // CSRF check
-        $headers = function_exists('getallheaders') ? getallheaders() : [];
-        $token = $headers['X-CSRF-TOKEN'] ?? '';
+        // CSRF check - vérifier plusieurs sources pour le token
+        $token = '';
+        
+        // 1. Essayer getallheaders() si disponible
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+            $token = $headers['X-CSRF-TOKEN'] ?? $headers['X-Csrf-Token'] ?? '';
+        }
+        
+        // 2. Fallback: vérifier $_SERVER
+        if (empty($token)) {
+            $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+        }
+        
+        // 3. Dernière option: vérifier le POST
+        if (empty($token)) {
+            $data = $this->jsonInput();
+            $token = $data['csrf_token'] ?? '';
+        }
+        
         if (empty($token) || !\App\Core\Csrf::checkToken($token)) {
             $this->jsonResponse(['success' => false, 'error' => 'Token CSRF invalide ou manquant'], 403);
         }
@@ -220,9 +271,26 @@ class CreneauxController {
             $this->jsonResponse(['error' => 'Accès non autorisé'], 403);
         }
 
-        // CSRF check
-        $headers = function_exists('getallheaders') ? getallheaders() : [];
-        $token = $headers['X-CSRF-TOKEN'] ?? '';
+        // CSRF check - vérifier plusieurs sources pour le token
+        $token = '';
+        
+        // 1. Essayer getallheaders() si disponible
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+            $token = $headers['X-CSRF-TOKEN'] ?? $headers['X-Csrf-Token'] ?? '';
+        }
+        
+        // 2. Fallback: vérifier $_SERVER
+        if (empty($token)) {
+            $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+        }
+        
+        // 3. Dernière option: vérifier le POST
+        if (empty($token)) {
+            $data = $this->jsonInput();
+            $token = $data['csrf_token'] ?? '';
+        }
+        
         if (empty($token) || !\App\Core\Csrf::checkToken($token)) {
             $this->jsonResponse(['success' => false, 'error' => 'Token CSRF invalide ou manquant'], 403);
         }
@@ -365,9 +433,26 @@ class CreneauxController {
             $this->jsonResponse(['success' => false, 'error' => 'Accès non autorisé'], 403);
         }
 
-        // CSRF check
-        $headers = function_exists('getallheaders') ? getallheaders() : [];
-        $token = $headers['X-CSRF-TOKEN'] ?? '';
+        // CSRF check - vérifier plusieurs sources pour le token
+        $token = '';
+        
+        // 1. Essayer getallheaders() si disponible
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+            $token = $headers['X-CSRF-TOKEN'] ?? $headers['X-Csrf-Token'] ?? '';
+        }
+        
+        // 2. Fallback: vérifier $_SERVER
+        if (empty($token)) {
+            $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+        }
+        
+        // 3. Dernière option: vérifier le POST
+        if (empty($token)) {
+            $data = $this->jsonInput();
+            $token = $data['csrf_token'] ?? '';
+        }
+        
         if (empty($token) || !\App\Core\Csrf::checkToken($token)) {
             $this->jsonResponse(['success' => false, 'error' => 'Token CSRF invalide ou manquant'], 403);
         }

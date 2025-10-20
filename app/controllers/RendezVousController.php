@@ -361,12 +361,6 @@ class RendezVousController extends Controller {
         header('Content-Type: application/json');
         
         try {
-            // Log pour debug
-            error_log("=== ANNULATION RDV ===");
-            error_log("SESSION user_id: " . ($_SESSION['user_id'] ?? 'NON DÉFINI'));
-            error_log("POST data: " . print_r($_POST, true));
-            error_log("php://input: " . file_get_contents('php://input'));
-            
             if (!isset($_SESSION['user_id'])) {
                 http_response_code(401);
                 echo json_encode(['success' => false, 'message' => 'Vous devez être connecté pour effectuer cette action']);
