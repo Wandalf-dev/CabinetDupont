@@ -2,7 +2,6 @@
 namespace App\Models;
 
 use App\Core\Model;
-;
 use PDO;
 
 class CreneauModel extends Model
@@ -191,57 +190,78 @@ class CreneauModel extends Model
     /** Créneaux pour une date */
     public function getCreneauxPourDate(int $agendaId, string $date): array
     {
+        // D'abord récupérer tous les créneaux
         $sql = "SELECT c.*,
                        s.titre AS service_titre,
                        s.duree AS service_duree,
-                       r.id AS rdv_id,
-                       r.duree AS rdv_duree,
-                       r.statut AS rdv_statut,
-                       CASE 
-                           WHEN c.statut = 'indisponible' THEN true
-                           WHEN EXISTS (
-                               SELECT 1 
-                               FROM rendezvous r2
-                               JOIN creneau c2 ON r2.creneau_id = c2.id
-                               WHERE DATE(c2.debut) = DATE(c.debut)
-                                 AND r2.statut != :annule
-                                 AND c2.debut <= c.debut
-                                 AND DATE_ADD(c2.debut, INTERVAL r2.duree MINUTE) > c.debut
-                           ) THEN true 
-                           ELSE false 
-                       END AS est_reserve,
-                       c.statut,
-                       GROUP_CONCAT(DISTINCT r.id) AS reservations
+                       c.statut
                 FROM creneau c
                 LEFT JOIN service s ON c.service_id = s.id
-                LEFT JOIN rendezvous r ON c.id = r.creneau_id AND r.statut != :annule2
                 WHERE c.agenda_id = :agendaId
                   AND DATE(c.debut) = :date
-                GROUP BY c.id
                 ORDER BY c.debut ASC";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
-            ':annule'    => self::STATUT_ANNULE,
-            ':annule2'   => self::STATUT_ANNULE,
             ':agendaId'  => $agendaId,
             ':date'      => $date,
         ]);
 
         $creneaux = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
-        $logFile = __DIR__ . '/../../logs/debug_creneaux.log';
-        @file_put_contents($logFile, "=== Créneaux pour le {$date} ===\n", FILE_APPEND);
-        foreach ($creneaux as $cr) {
-            $msg = sprintf(
-                "Créneau: %s - %s | ID: %d | Réservé: %s\n",
-                date('H:i', strtotime($cr['debut'])),
-                date('H:i', strtotime($cr['fin'])),
-                (int)$cr['id'],
-                !empty($cr['est_reserve']) ? 'Oui' : 'Non'
-            );
-            @file_put_contents($logFile, $msg, FILE_APPEND);
+        // Ensuite, récupérer tous les rendez-vous actifs de la date
+        $sqlRdv = "SELECT r.id, r.creneau_id, r.duree, r.statut,
+                          c2.debut, c2.service_id, s.titre AS service_titre
+                   FROM rendezvous r
+                   JOIN creneau c2 ON r.creneau_id = c2.id
+                   LEFT JOIN service s ON c2.service_id = s.id
+                   WHERE r.statut != :annule
+                     AND DATE(c2.debut) = :date";
+
+        $stmtRdv = $this->db->prepare($sqlRdv);
+        $stmtRdv->execute([
+            ':annule' => self::STATUT_ANNULE,
+            ':date'   => $date,
+        ]);
+
+        $rdvs = $stmtRdv->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+        // Enrichir les créneaux avec les infos de rdv
+        foreach ($creneaux as &$creneau) {
+            $creneau['est_reserve'] = false;
+            $creneau['rdv_id'] = null;
+            $creneau['rdv_duree'] = null;
+            $creneau['rdv_statut'] = null;
+
+            // Vérifier si indisponible
+            if ($creneau['statut'] === 'indisponible') {
+                $creneau['est_reserve'] = true;
+                continue;
+            }
+
+            // Vérifier si un rdv chevauche ce créneau
+            $creneauDebut = strtotime($creneau['debut']);
+            $creneauFin = strtotime($creneau['fin']);
+
+            foreach ($rdvs as $rdv) {
+                $rdvDebut = strtotime($rdv['debut']);
+                $rdvFin = $rdvDebut + ($rdv['duree'] * 60);
+
+                // Si le rdv chevauche le créneau
+                if ($rdvDebut <= $creneauDebut && $rdvFin > $creneauDebut) {
+                    $creneau['est_reserve'] = true;
+                    $creneau['rdv_id'] = $rdv['id'];
+                    $creneau['rdv_duree'] = $rdv['duree'];
+                    $creneau['rdv_statut'] = $rdv['statut'];
+                    // Utiliser le service du rdv au lieu du service du créneau
+                    if (!empty($rdv['service_titre'])) {
+                        $creneau['service_titre'] = $rdv['service_titre'];
+                    }
+                    break;
+                }
+            }
         }
+
         return $creneaux;
     }
 
@@ -658,8 +678,6 @@ class CreneauModel extends Model
             return true;
         } catch (\Exception $e) {
             if ($this->db->inTransaction()) $this->db->rollBack();
-            $this->logDebug("Erreur createRendezVous", ['error' => $e->getMessage()]);
-            error_log("Erreur createRendezVous: " . $e->getMessage());
             return false;
         }
     }

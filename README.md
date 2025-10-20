@@ -1,4 +1,4 @@
-# 🦷 Cabinet Dupont - Système de Gestion de Cabinet Dentaire
+# 🦷 Cabinet Dupont - Dental Practice Management System
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![PHP](https://img.shields.io/badge/PHP-8.2-purple.svg)
@@ -7,117 +7,117 @@
 ![Status](https://img.shields.io/badge/status-stable-success.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-Application web complète de gestion de cabinet dentaire développée en PHP natif avec architecture MVC.
+Complete web application for dental practice management developed in native PHP with MVC architecture.
 
-## 🌐 Site en ligne
+## 🌐 Live Website
 
-Le site est actuellement **déployé et accessible en ligne** à l'adresse :
+The website is currently **deployed and accessible online** at:
 
 ### 🔗 **[https://dupontcare.wuaze.com](https://dupontcare.wuaze.com)**
 
-**Hébergement :** InfinityFree (hébergement gratuit)  
-**Statut :** ✅ En production  
-**SSL/HTTPS :** ✅ Certificat SSL actif  
-**Base de données :** MySQL (sql210.infinityfree.com)
+**Hosting:** InfinityFree (free hosting)  
+**Status:** ✅ In production  
+**SSL/HTTPS:** ✅ Active SSL certificate  
+**Database:** MySQL (sql210.infinityfree.com)
 
-> **Note :** Le site a été migré avec succès depuis un environnement local (XAMPP) vers InfinityFree en octobre 2025. Toutes les fonctionnalités sont opérationnelles en production.
+> **Note:** The website was successfully migrated from a local environment (XAMPP) to InfinityFree in October 2025. All features are operational in production.
 
-## 📋 Table des matières
+## 📋 Table of Contents
 
-- [Aperçu](#-aperçu)
-- [Fonctionnalités](#-fonctionnalités)
-- [Technologies utilisées](#-technologies-utilisées)
-- [Prérequis](#-prérequis)
+- [Overview](#-overview)
+- [Features](#-features)
+- [Technologies Used](#-technologies-used)
+- [Prerequisites](#-prerequisites)
 - [Installation](#-installation)
 - [Configuration](#-configuration)
-- [Structure du projet](#-structure-du-projet)
-- [Utilisation](#-utilisation)
-- [Comptes de test](#-comptes-de-test)
-- [Qualité et tests](#-qualité-et-tests)
-- [Contribuer](#-contribuer)
-- [Liens](#-liens)
+- [Project Structure](#-project-structure)
+- [Usage](#-usage)
+- [Test Accounts](#-test-accounts)
+- [Quality and Testing](#-quality-and-testing)
+- [Contributing](#-contributing)
+- [Links](#-links)
 - [Support](#-support)
 
-## 🎯 Aperçu
+## 🎯 Overview
 
-Cabinet Dupont est une solution moderne et intuitive pour la gestion complète d'un cabinet dentaire. Elle permet de gérer les rendez-vous, les patients, les services, les actualités et les horaires d'ouverture via une interface web responsive.
+Cabinet Dupont is a modern and intuitive solution for comprehensive dental practice management. It allows managing appointments, patients, services, news, and opening hours through a responsive web interface.
 
-### Captures d'écran
+### Screenshots
 
-- **Page d'accueil** : Présentation du cabinet, services, horaires
-- **Espace patient** : Prise de rendez-vous en ligne
-- **Espace administrateur** : Gestion complète du cabinet
-- **Planning** : Vue calendrier interactive avec drag & drop
+- **Homepage**: Practice presentation, services, hours
+- **Patient area**: Online appointment booking
+- **Admin area**: Complete practice management
+- **Schedule**: Interactive calendar view with drag & drop
 
-## ✨ Fonctionnalités
+## ✨ Features
 
-### Pour les patients
-- 📅 **Prise de rendez-vous en ligne** avec sélection du service
-- 👤 **Gestion de profil** (informations personnelles, historique)
-- 📰 **Consultation des actualités** du cabinet
-- 🕐 **Visualisation des horaires** d'ouverture
-- 📱 **Interface responsive** (mobile, tablette, desktop)
+### For Patients
+- 📅 **Online appointment booking** with service selection
+- 👤 **Profile management** (personal information, history)
+- 📰 **News consultation** from the practice
+- 🕐 **Opening hours visualization**
+- 📱 **Responsive interface** (mobile, tablet, desktop)
 
-### Pour l'administrateur
-- 📊 **Tableau de bord administratif** centralisé
-- 🗓️ **Planning interactif** avec vue hebdomadaire/mensuelle
-- 👥 **Gestion des patients** (CRUD complet)
-- 💼 **Gestion des services** (tarifs, durée, couleurs)
-- 📝 **Gestion des actualités** (création, modification, publication)
-- ⏰ **Configuration des horaires** du cabinet
-- 🎨 **Génération de créneaux** automatique
-- 📋 **Actions en masse** sur les créneaux
+### For Administrator
+- 📊 **Centralized admin dashboard**
+- 🗓️ **Interactive planning** with weekly/monthly view
+- 👥 **Patient management** (complete CRUD)
+- 💼 **Service management** (pricing, duration, colors)
+- 📝 **News management** (creation, modification, publication)
+- ⏰ **Practice hours configuration**
+- 🎨 **Automatic slot generation**
+- 📋 **Bulk actions** on slots
 
-### Fonctionnalités avancées
-- 🔐 **Système d'authentification** sécurisé (CSRF, sessions)
-- 🎨 **Thème personnalisable** par service (couleurs)
-- 📧 **Validation des données** côté client et serveur
-- 🔍 **Recherche et tri** dans les tableaux
-- 💾 **Sauvegarde automatique** de la base de données
-- ♿ **Accessibilité** (ARIA, focus visible, navigation clavier)
+### Advanced Features
+- 🔐 **Secure authentication system** (CSRF, sessions)
+- 🎨 **Customizable theme** per service (colors)
+- 📧 **Data validation** client and server-side
+- 🔍 **Search and sort** in tables
+- 💾 **Automatic database backup**
+- ♿ **Accessibility** (ARIA, visible focus, keyboard navigation)
 
-## 🛠️ Technologies utilisées
+## 🛠️ Technologies Used
 
 ### Backend
-- **PHP 8.2** - Langage serveur
-- **MySQL 10.4** (MariaDB) - Base de données
-- **PDO** - Connexion sécurisée à la base de données
-- **Architecture MVC** - Organisation du code
+- **PHP 8.2** - Server language
+- **MySQL 10.4** (MariaDB) - Database
+- **PDO** - Secure database connection
+- **MVC Architecture** - Code organization
 
 ### Frontend
-- **HTML5** - Structure sémantique
-- **CSS3** - Styles modernes (Grid, Flexbox, animations)
-- **JavaScript ES6+** - Interactivité
-- **Lottie** - Animations vectorielles
-- **FontAwesome 6** - Icônes
+- **HTML5** - Semantic structure
+- **CSS3** - Modern styles (Grid, Flexbox, animations)
+- **JavaScript ES6+** - Interactivity
+- **Lottie** - Vector animations
+- **FontAwesome 6** - Icons
 
-### Outils
-- **XAMPP** - Environnement de développement
-- **Git** - Gestion de versions
-- **phpMyAdmin** - Administration de la base de données
+### Tools
+- **XAMPP** - Development environment
+- **Git** - Version control
+- **phpMyAdmin** - Database administration
 
-## 📦 Prérequis
+## 📦 Prerequisites
 
-- **XAMPP** (ou équivalent) avec :
+- **XAMPP** (or equivalent) with:
   - PHP >= 8.2
   - MySQL/MariaDB >= 10.4
   - Apache >= 2.4
-- **Git** (pour cloner le projet)
-- Navigateur web moderne (Chrome, Firefox, Edge, Safari)
+- **Git** (to clone the project)
+- Modern web browser (Chrome, Firefox, Edge, Safari)
 
 ## 🚀 Installation
 
-### 1. Cloner le projet
+### 1. Clone the project
 
 ```bash
 # Via HTTPS
 git clone https://github.com/Wandalf-dev/CabinetDupont.git
 
-# Via SSH (si configuré)
+# Via SSH (if configured)
 git clone git@github.com:Wandalf-dev/CabinetDupont.git
 ```
 
-### 2. Placer le projet dans le dossier XAMPP
+### 2. Place the project in XAMPP folder
 
 ```bash
 # Windows
@@ -127,24 +127,24 @@ C:\xampp\htdocs\CabinetDupont
 /opt/lampp/htdocs/CabinetDupont
 ```
 
-### 3. Démarrer les services XAMPP
+### 3. Start XAMPP services
 
-1. Ouvrir le **XAMPP Control Panel**
-2. Démarrer **Apache**
-3. Démarrer **MySQL**
+1. Open **XAMPP Control Panel**
+2. Start **Apache**
+3. Start **MySQL**
 
-### 4. Créer la base de données
+### 4. Create the database
 
-**Option A : Via phpMyAdmin (Interface graphique)**
+**Option A: Via phpMyAdmin (Graphical interface)**
 
-1. Accéder à [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
-2. Créer une nouvelle base de données nommée `bdd_dupont`
-3. Sélectionner la base de données
-4. Cliquer sur **Importer**
-5. Choisir le fichier `Backup/bdd_dupont.sql`
-6. Cliquer sur **Exécuter**
+1. Access [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
+2. Create a new database named `bdd_dupont`
+3. Select the database
+4. Click **Import**
+5. Choose the file `Backup/bdd_dupont.sql`
+6. Click **Execute**
 
-**Option B : Via ligne de commande**
+**Option B: Via command line**
 
 ```bash
 # Windows (PowerShell)
@@ -156,9 +156,9 @@ mysql -u root -e "CREATE DATABASE IF NOT EXISTS bdd_dupont CHARACTER SET utf8mb4
 mysql -u root bdd_dupont < Backup/bdd_dupont.sql
 ```
 
-### 5. Configurer la connexion à la base de données
+### 5. Configure database connection
 
-Vérifier le fichier `app/config/database.php` :
+Check the file `app/config/database.php`:
 
 ```php
 <?php
@@ -166,56 +166,56 @@ return [
     'host' => 'localhost',
     'dbname' => 'bdd_dupont',
     'username' => 'root',
-    'password' => '', // Laisser vide par défaut avec XAMPP
+    'password' => '', // Leave empty by default with XAMPP
     'charset' => 'utf8mb4'
 ];
 ```
 
-### 6. Accéder à l'application
+### 6. Access the application
 
-Ouvrir un navigateur et accéder à :
-- **Page d'accueil** : [http://localhost/CabinetDupont](http://localhost/CabinetDupont)
-- **Connexion** : [http://localhost/CabinetDupont/auth/login](http://localhost/CabinetDupont/auth/login)
+Open a browser and go to:
+- **Homepage**: [http://localhost/CabinetDupont](http://localhost/CabinetDupont)
+- **Login**: [http://localhost/CabinetDupont/auth/login](http://localhost/CabinetDupont/auth/login)
 
 ## ⚙️ Configuration
 
-### Configuration de la base URL
+### Base URL Configuration
 
-Le fichier `config/config.php` détecte automatiquement l'environnement (local vs production) :
+The file `config/config.php` automatically detects the environment (local vs production):
 
 ```php
 <?php
-// Détection automatique
+// Automatic detection
 $isLocal = ($host === 'localhost' || strpos($host, '127.0.0.1') !== false);
 
 if ($isLocal) {
-    // En local (XAMPP)
+    // Local (XAMPP)
     define('BASE_URL', $protocol . '://' . $host . '/cabinetdupont-1');
 } else {
-    // En production (InfinityFree)
+    // Production (InfinityFree)
     define('BASE_URL', $protocol . '://' . $host);
 }
 ```
 
-Si votre dossier local a un nom différent, ajustez la ligne `BASE_URL` en local.
+If your local folder has a different name, adjust the `BASE_URL` line for local.
 
-## 🚀 Déploiement en production (Migration vers InfinityFree)
+## 🚀 Production Deployment (Migration to InfinityFree)
 
-Le site a été migré avec succès depuis un environnement local vers l'hébergement gratuit InfinityFree. Voici le processus complet :
+The site was successfully migrated from a local environment to InfinityFree free hosting. Here's the complete process:
 
-### Étape 1 : Préparation de l'hébergement
+### Step 1: Hosting Preparation
 
-1. **Créer un compte sur [InfinityFree](https://infinityfree.com)**
-2. **Créer un site web** avec le sous-domaine choisi (ex: `dupontcare.wuaze.com`)
-3. **Créer une base de données MySQL** via le panneau de contrôle
-   - Nom : `if0_40207543_bdd_dupont`
-   - Hôte : `sql210.infinityfree.com`
-   - Utilisateur : Fourni par InfinityFree
-   - Mot de passe : Fourni par InfinityFree
+1. **Create an account on [InfinityFree](https://infinityfree.com)**
+2. **Create a website** with chosen subdomain (e.g., `dupontcare.wuaze.com`)
+3. **Create a MySQL database** via control panel
+   - Name: `if0_40207543_bdd_dupont`
+   - Host: `sql210.infinityfree.com`
+   - User: Provided by InfinityFree
+   - Password: Provided by InfinityFree
 
-### Étape 2 : Configuration des fichiers
+### Step 2: File Configuration
 
-1. **Mettre à jour `app/config/database.php`** avec les credentials de production :
+1. **Update `app/config/database.php`** with production credentials:
 ```php
 <?php
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
@@ -234,197 +234,197 @@ if ($isLocal) {
         'host' => 'sql210.infinityfree.com',
         'dbname' => 'if0_40207543_bdd_dupont',
         'username' => 'if0_40207543',
-        'password' => 'VOTRE_MOT_DE_PASSE',
+        'password' => 'YOUR_PASSWORD',
         'charset' => 'utf8mb4'
     ];
 }
 ```
 
-2. **Vérifier `config/config.php`** pour la détection automatique de l'environnement
+2. **Check `config/config.php`** for automatic environment detection
 
-### Étape 3 : Upload des fichiers
+### Step 3: File Upload
 
-1. **Se connecter via FTP** (FileZilla recommandé)
-   - Hôte : `ftpupload.net`
-   - Utilisateur : Compte InfinityFree
-   - Port : 21
-2. **Uploader tous les fichiers** dans le dossier `htdocs/`
-3. **Vérifier les permissions** du dossier `public/uploads/` (chmod 755)
+1. **Connect via FTP** (FileZilla recommended)
+   - Host: `ftpupload.net`
+   - User: InfinityFree account
+   - Port: 21
+2. **Upload all files** to `htdocs/` folder
+3. **Check permissions** of `public/uploads/` folder (chmod 755)
 
-### Étape 4 : Import de la base de données
+### Step 4: Database Import
 
-1. **Accéder à phpMyAdmin** depuis le panneau InfinityFree
-2. **Sélectionner la base de données**
-3. **Importer le fichier** `Backup/if0_40207543_bdd_dupont.sql`
-4. **Vérifier** que toutes les tables sont créées
+1. **Access phpMyAdmin** from InfinityFree panel
+2. **Select the database**
+3. **Import the file** `Backup/if0_40207543_bdd_dupont.sql`
+4. **Verify** that all tables are created
 
-### Étape 5 : Tests post-migration
+### Step 5: Post-migration Tests
 
-- ✅ Page d'accueil accessible
-- ✅ Connexion administrateur fonctionnelle
-- ✅ Chargement des CSS/JS
-- ✅ Animations Lottie affichées
-- ✅ Images chargées depuis `/assets/`
-- ✅ Système de réservation opérationnel
-- ✅ Planning agenda fonctionnel
-- ✅ Upload d'images opérationnel
+- ✅ Homepage accessible
+- ✅ Admin login functional
+- ✅ CSS/JS loading
+- ✅ Lottie animations displayed
+- ✅ Images loaded from `/assets/`
+- ✅ Booking system operational
+- ✅ Schedule agenda functional
+- ✅ Image upload operational
 
-### Problèmes courants et solutions
+### Common Issues and Solutions
 
-#### Problème 1 : Chemin sensible à la casse
-**Symptôme :** Erreur "Class App\Core\App not found"  
-**Solution :** Les serveurs Linux sont sensibles à la casse. Vérifier que :
-- Les noms de fichiers correspondent exactement aux noms de classes
-- `Database.php` (pas `database.php`)
-- Chemins en minuscules : `app/core/App.php`
+#### Issue 1: Case-sensitive paths
+**Symptom:** Error "Class App\Core\App not found"  
+**Solution:** Linux servers are case-sensitive. Verify that:
+- File names exactly match class names
+- `Database.php` (not `database.php`)
+- Lowercase paths: `app/core/App.php`
 
-#### Problème 2 : Images/CSS ne se chargent pas
-**Symptôme :** Affichage cassé, images manquantes  
-**Solution :** Vérifier que tous les chemins utilisent `<?php echo BASE_URL; ?>` au lieu de chemins en dur
+#### Issue 2: Images/CSS not loading
+**Symptom:** Broken display, missing images  
+**Solution:** Verify all paths use `<?php echo BASE_URL; ?>` instead of hardcoded paths
 
-#### Problème 3 : Erreur de connexion base de données
-**Symptôme :** "Connection failed: Access denied"  
-**Solution :** Vérifier les credentials dans `app/config/database.php`
+#### Issue 3: Database connection error
+**Symptom:** "Connection failed: Access denied"  
+**Solution:** Verify credentials in `app/config/database.php`
 
-### Performances et limitations InfinityFree
+### InfinityFree Performance and Limitations
 
-- ✅ **SSL/HTTPS gratuit** (Let's Encrypt)
-- ✅ **Espace disque illimité**
-- ✅ **Bande passante illimitée**
-- ⚠️ **Limite de 50 000 hits/jour**
-- ⚠️ **Temps d'inactivité** : Le site peut être suspendu après plusieurs jours d'inactivité
-- ⚠️ **Performance** : Plus lent qu'un hébergement payant
+- ✅ **Free SSL/HTTPS** (Let's Encrypt)
+- ✅ **Unlimited disk space**
+- ✅ **Unlimited bandwidth**
+- ⚠️ **50,000 hits/day limit**
+- ⚠️ **Inactivity timeout**: Site may be suspended after several days of inactivity
+- ⚠️ **Performance**: Slower than paid hosting
 
-### Configuration des chemins
+### Path Configuration
 
-Les chemins sont configurés automatiquement dans `config.php`. Vérifier que :
+Paths are automatically configured in `config.php`. Verify that:
 
 ```php
 define('BASE_URL', '/CabinetDupont');
 define('ROOT_PATH', __DIR__);
 ```
 
-### Permissions des dossiers
+### Folder Permissions
 
-Assurer que le dossier `public/uploads/` est accessible en écriture :
+Ensure the `public/uploads/` folder is writable:
 
 ```bash
 # Linux/Mac
 chmod -R 755 public/uploads
 
-# Windows : Propriétés > Sécurité > Modifier les autorisations
+# Windows: Properties > Security > Edit permissions
 ```
 
-## 📁 Structure du projet
+## 📁 Project Structure
 
 ```
 CabinetDupont/
 ├── app/
-│   ├── config/              # Configuration (base de données)
-│   ├── controllers/         # Contrôleurs MVC
-│   ├── core/               # Classes core (App, Controller, Model, Csrf, Utils)
-│   ├── models/             # Modèles de données
-│   └── views/              # Vues (templates HTML/PHP)
-│       ├── actu/           # Actualités
+│   ├── config/              # Configuration (database)
+│   ├── controllers/         # MVC Controllers
+│   ├── core/               # Core classes (App, Controller, Model, Csrf, Utils)
+│   ├── models/             # Data models
+│   └── views/              # Views (HTML/PHP templates)
+│       ├── actu/           # News
 │       ├── admin/          # Administration
-│       ├── agenda/         # Planning
-│       ├── auth/           # Authentification
-│       ├── creneaux/       # Créneaux
-│       ├── error/          # Pages d'erreur
-│       ├── horaires/       # Horaires
+│       ├── agenda/         # Schedule
+│       ├── auth/           # Authentication
+│       ├── creneaux/       # Time slots
+│       ├── error/          # Error pages
+│       ├── horaires/       # Hours
 │       ├── patient/        # Patients
-│       ├── rendezvous/     # Rendez-vous
+│       ├── rendezvous/     # Appointments
 │       ├── service/        # Services
-│       ├── templates/      # Templates réutilisables (header, footer)
-│       └── user/           # Profil utilisateur
-├── assets/                 # Ressources (JSON Lottie)
-├── Backup/                 # Sauvegardes SQL
-├── css/                    # Feuilles de style
-│   ├── base/              # Styles de base
-│   ├── components/        # Composants réutilisables
+│       ├── templates/      # Reusable templates (header, footer)
+│       └── user/           # User profile
+├── assets/                 # Resources (Lottie JSON)
+├── Backup/                 # SQL backups
+├── css/                    # Stylesheets
+│   ├── base/              # Base styles
+│   ├── components/        # Reusable components
 │   ├── layouts/           # Layouts (header, footer)
-│   ├── modules/           # Modules spécifiques
-│   ├── pages/             # Pages spécifiques
-│   └── utils/             # Utilitaires
-├── js/                     # Scripts JavaScript
-│   ├── components/        # Composants JS
-│   ├── modules/           # Modules JS (agenda, créneaux, etc.)
-│   ├── pages/             # Scripts par page
-│   └── utils/             # Fonctions utilitaires
+│   ├── modules/           # Specific modules
+│   ├── pages/             # Specific pages
+│   └── utils/             # Utilities
+├── js/                     # JavaScript scripts
+│   ├── components/        # JS components
+│   ├── modules/           # JS modules (agenda, slots, etc.)
+│   ├── pages/             # Scripts per page
+│   └── utils/             # Utility functions
 ├── public/
-│   └── uploads/           # Images uploadées (services, actualités)
-├── .htaccess              # Configuration Apache
-├── config.php             # Configuration globale
-├── index.php              # Point d'entrée
-└── README.md              # Ce fichier
+│   └── uploads/           # Uploaded images (services, news)
+├── .htaccess              # Apache configuration
+├── config.php             # Global configuration
+├── index.php              # Entry point
+└── README.md              # This file
 ```
 
-## 📖 Utilisation
+## 📖 Usage
 
-### Connexion
+### Login
 
-#### En tant que Patient
-1. Accéder à [/auth/login](http://localhost/CabinetDupont/auth/login)
-2. Créer un compte ou utiliser un compte de test
-3. Accéder à l'espace patient
+#### As Patient
+1. Go to [/auth/login](http://localhost/CabinetDupont/auth/login)
+2. Create an account or use a test account
+3. Access patient area
 
-#### En tant qu'Administrateur
-1. Se connecter avec un compte administrateur
-2. Accéder au panneau d'administration via le menu
+#### As Administrator
+1. Log in with an administrator account
+2. Access admin panel via menu
 
-### Prise de rendez-vous (Patient)
+### Appointment Booking (Patient)
 
-1. **Connexion** → Se connecter ou créer un compte
-2. **Sélectionner un service** → Choisir le type de consultation
-3. **Choisir une date** → Sélectionner un créneau disponible
-4. **Confirmer** → Valider le rendez-vous
+1. **Login** → Log in or create account
+2. **Select service** → Choose consultation type
+3. **Choose date** → Select available slot
+4. **Confirm** → Validate appointment
 
-### Gestion du planning (Administrateur)
+### Schedule Management (Administrator)
 
-1. **Accéder au planning** → Menu "Planning"
-2. **Générer des créneaux** → Créneaux > Générer
-3. **Visualiser les RDV** → Vue hebdomadaire/mensuelle
-4. **Actions sur RDV** → Clic droit pour modifier/annuler
-5. **Marquer indisponible** → Sélectionner créneaux + actions en masse
+1. **Access schedule** → "Schedule" menu
+2. **Generate slots** → Slots > Generate
+3. **View appointments** → Weekly/monthly view
+4. **Appointment actions** → Right-click to edit/cancel
+5. **Mark unavailable** → Select slots + bulk actions
 
-### Gestion des services (Administrateur)
+### Service Management (Administrator)
 
-1. **Admin** → Onglet "Services"
-2. **Ajouter** → Remplir le formulaire (nom, durée, tarif, couleur)
-3. **Modifier** → Cliquer sur l'icône d'édition
-4. **Supprimer** → Cliquer sur l'icône de suppression
+1. **Admin** → "Services" tab
+2. **Add** → Fill form (name, duration, price, color)
+3. **Edit** → Click edit icon
+4. **Delete** → Click delete icon
 
-### Gestion des actualités (Administrateur)
+### News Management (Administrator)
 
-1. **Admin** → Onglet "Actualités"
-2. **Créer** → Rédiger l'article avec image
-3. **Publier** → Changer le statut à "PUBLIE"
-4. **Modifier/Supprimer** → Actions disponibles dans la liste
+1. **Admin** → "News" tab
+2. **Create** → Write article with image
+3. **Publish** → Change status to "PUBLISHED"
+4. **Edit/Delete** → Actions available in list
 
-### Configuration des horaires (Administrateur)
+### Hours Configuration (Administrator)
 
-1. **Admin** → Onglet "Horaires"
-2. **Configurer par jour** → Ajouter plages horaires (matin/après-midi)
-3. **Fermeture** → Laisser vide pour un jour fermé
-4. **Sauvegarder** → Les horaires s'affichent sur la page d'accueil
+1. **Admin** → "Hours" tab
+2. **Configure by day** → Add time slots (morning/afternoon)
+3. **Closed** → Leave empty for closed day
+4. **Save** → Hours display on homepage
 
-## 👥 Comptes de test
+## 👥 Test Accounts
 
-### Administrateur
-- **Email** : `admin@cabinetdupont.fr`
-- **Mot de passe** : `Admin123!`
-- **Rôle** : `MEDECIN`
+### Administrator
+- **Email**: `admin@cabinetdupont.fr`
+- **Password**: `Admin123!`
+- **Role**: `MEDECIN`
 
 ### Patient
-- **Email** : `patient@test.fr`
-- **Mot de passe** : `Patient123!`
-- **Rôle** : `PATIENT`
+- **Email**: `patient@test.fr`
+- **Password**: `Patient123!`
+- **Role**: `PATIENT`
 
-## ✅ Qualité et tests
+## ✅ Quality and Testing
 
-Le projet a été **entièrement testé** avec **PHPUnit** et **Composer** pour garantir sa stabilité et sa fiabilité en production.
+The project has been **fully tested** with **PHPUnit** and **Composer** to guarantee its stability and reliability in production.
 
-### Résultats des tests
+### Test Results
 
 ```
 PHPUnit 10.5.58 by Sebastian Bergmann and contributors.
@@ -439,179 +439,230 @@ Time: 00:06.049, Memory: 8.00 MB
 OK (18 tests, 38 assertions)
 ```
 
-### Tests réalisés
+### Tests Performed
 
-#### ✅ Tests Unitaires
-- **Modèle Utilisateur** : Création, recherche, validation, mise à jour, suppression, hashage des mots de passe
-- **Modèle Service** : Création, récupération, validation des données
+#### ✅ Unit Tests
+- **User Model**: Creation, search, validation, update, deletion, password hashing
+- **Service Model**: Creation, retrieval, data validation
 
-#### ✅ Tests Fonctionnels
-- **Authentification** : Connexion valide/invalide, vérification des rôles
-- **Rendez-vous** : Flux complet de prise de rendez-vous, annulation, récupération
+#### ✅ Functional Tests
+- **Authentication**: Valid/invalid login, role verification
+- **Appointments**: Complete appointment booking flow, cancellation, retrieval
 
 ### Validation
 
-- ✅ **18 tests passés** sur 18 (100% de réussite)
-- ✅ **38 assertions validées**
-- ✅ Transmission Frontend ↔ Backend vérifiée
-- ✅ Validation des données côté serveur testée
-- ✅ Cohérence de la base de données confirmée
+- ✅ **18 tests passed** out of 18 (100% success)
+- ✅ **38 assertions validated**
+- ✅ Frontend ↔ Backend transmission verified
+- ✅ Server-side data validation tested
+- ✅ Database consistency confirmed
 
-> **Note** : Les fichiers de tests ont été retirés du projet de production pour alléger le code déployé. Le code a été validé et est **stable en production**.
+> **Note**: Test files have been removed from the production project to lighten the deployed code. The code has been validated and is **stable in production**.
 
-## 🗃️ Base de données
+## 🗃️ Database
 
-### Tables principales
+### Main Tables
 
 | Table | Description |
 |-------|-------------|
-| `utilisateur` | Utilisateurs (patients, médecins, administrateurs) |
-| `agenda` | Agendas des praticiens |
-| `creneau` | Créneaux horaires disponibles |
-| `rendezvous` | Rendez-vous confirmés |
-| `service` | Services proposés par le cabinet |
-| `actualite` | Actualités du cabinet |
-| `horaire_cabinet` | Horaires d'ouverture du cabinet |
-| `cabinet` | Informations du cabinet |
+| `utilisateur` | Users (patients, doctors, administrators) |
+| `agenda` | Practitioner schedules |
+| `creneau` | Available time slots |
+| `rendezvous` | Confirmed appointments |
+| `service` | Services offered by the practice |
+| `actualite` | Practice news |
+| `horaire_cabinet` | Practice opening hours |
+| `cabinet` | Practice information |
 
-### Relations
-- Un **utilisateur** peut avoir un **agenda**
-- Un **agenda** contient plusieurs **créneaux**
-- Un **créneau** peut avoir un **rendez-vous**
-- Un **rendez-vous** est lié à un **patient** et un **service**
+### Relationships
+- A **user** can have a **schedule**
+- A **schedule** contains multiple **slots**
+- A **slot** can have an **appointment**
+- An **appointment** is linked to a **patient** and a **service**
 
-## 🔒 Sécurité
+## 🔒 Security
 
-- ✅ Protection CSRF sur tous les formulaires
-- ✅ Validation des données côté serveur
-- ✅ Requêtes préparées (PDO) contre les injections SQL
-- ✅ Hashage des mots de passe (bcrypt)
-- ✅ Gestion des sessions sécurisée
-- ✅ Protection des routes (middleware)
-- ✅ Validation des types de fichiers uploadés
-- ✅ Échappement des données affichées (XSS)
+- ✅ CSRF protection on all forms
+- ✅ Server-side data validation
+- ✅ Prepared statements (PDO) against SQL injection
+- ✅ Password hashing (bcrypt)
+- ✅ Secure session management
+- ✅ Route protection (middleware)
+- ✅ Uploaded file type validation
+- ✅ Display data escaping (XSS)
 
-## 🎨 Personnalisation
+## 🎨 Customization
 
-### Modifier les couleurs du thème
+### Change Theme Colors
 
-Éditer `css/base/style.css` :
+Edit `css/base/style.css`:
 
 ```css
 :root {
   --bg: #f4f6fb;
-  --brand: #3a6ea5;        /* Couleur principale */
-  --accent: #00c6ff;       /* Couleur d'accent 1 */
-  --accent-2: #0072ff;     /* Couleur d'accent 2 */
-  --text: #1e2936;         /* Couleur du texte */
+  --brand: #3a6ea5;        /* Main color */
+  --accent: #00c6ff;       /* Accent color 1 */
+  --accent-2: #0072ff;     /* Accent color 2 */
+  --text: #1e2936;         /* Text color */
   --white: #fff;
 }
 ```
 
-### Modifier les informations du cabinet
+### Change Practice Information
 
-Éditer directement dans les vues ou via la base de données :
+Edit directly in views or via database:
 
 ```sql
-UPDATE cabinet SET nom = 'Votre Cabinet', adresse = 'Votre Adresse' WHERE id = 1;
+UPDATE cabinet SET nom = 'Your Practice', adresse = 'Your Address' WHERE id = 1;
 ```
 
-## 🤝 Contribuer
+## 🤝 Contributing
 
-Les contributions sont les bienvenues ! Pour contribuer :
+Contributions are welcome! To contribute:
 
-1. **Fork** le projet
-2. Créer une branche (`git checkout -b feature/AmazingFeature`)
-3. Commit les changements (`git commit -m 'Add AmazingFeature'`)
-4. Push vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrir une **Pull Request**
+1. **Fork** the project
+2. Create a branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open a **Pull Request**
 
 ### Guidelines
-- Respecter l'architecture MVC
-- Commenter le code en français
-- Tester les fonctionnalités avant de push
-- Suivre les conventions de nommage existantes
+- Respect MVC architecture
+- Comment code in French
+- Test features before pushing
+- Follow existing naming conventions
 
 ## 📝 Changelog
 
-### Version 1.0.0 (Octobre 2025)
-- ✅ Système de gestion des rendez-vous
-- ✅ Planning interactif avec drag & drop
-- ✅ Gestion des patients, services et actualités
-- ✅ Interface responsive
-- ✅ Système d'authentification sécurisé
-- ✅ Configuration des horaires d'ouverture
-- ✅ Génération automatique de créneaux
-- ✅ Actions en masse sur les créneaux
-- ✅ Tableau de bord administrateur
+### Version 1.0.0 (October 2025)
+- ✅ Appointment management system
+- ✅ Interactive schedule with drag & drop
+- ✅ Patient, service, and news management
+- ✅ Responsive interface
+- ✅ Secure authentication system
+- ✅ Opening hours configuration
+- ✅ Automatic slot generation
+- ✅ Bulk slot actions
+- ✅ Admin dashboard
 
 ## 🔮 Roadmap
 
-### Futures fonctionnalités
-- [ ] Système de notifications par email
-- [ ] Export des données (PDF, Excel)
-- [ ] Statistiques et rapports avancés
-- [ ] Intégration calendrier (Google Calendar, Outlook)
-- [ ] Application mobile
-- [ ] Paiement en ligne
-- [ ] SMS de rappel
-- [ ] Téléconsultation
+### Future Features
+- [ ] Email notification system
+- [ ] Data export (PDF, Excel)
+- [ ] Advanced statistics and reports
+- [ ] Calendar integration (Google Calendar, Outlook)
+- [ ] Mobile application
+- [ ] Online payment
+- [ ] SMS reminders
+- [ ] Telemedicine
 
-## 🔗 Liens
+## 🔗 Links
 
-- **🌐 Site en production** : [https://dupontcare.wuaze.com](https://dupontcare.wuaze.com)
-- **💻 Dépôt GitHub** : [https://github.com/Wandalf-dev/CabinetDupont](https://github.com/Wandalf-dev/CabinetDupont)
-- **🐛 Signaler un bug** : [GitHub Issues](https://github.com/Wandalf-dev/CabinetDupont/issues)
-- **📖 Documentation** : Ce README
-- **🏠 Version locale** : [http://localhost/cabinetdupont-1](http://localhost/cabinetdupont-1)
+- **🌐 Production site**: [https://dupontcare.wuaze.com](https://dupontcare.wuaze.com)
+- **💻 GitHub Repository**: [https://github.com/Wandalf-dev/CabinetDupont](https://github.com/Wandalf-dev/CabinetDupont)
+- **🐛 Report a bug**: [GitHub Issues](https://github.com/Wandalf-dev/CabinetDupont/issues)
+- **📖 Documentation**: This README
+- **🏠 Local version**: [http://localhost/cabinetdupont-1](http://localhost/cabinetdupont-1)
 
 ## 📞 Support
 
-Pour toute question ou problème :
+For any questions or issues:
 
-1. Consulter la [documentation](#-utilisation)
-2. Vérifier les [issues GitHub](https://github.com/Wandalf-dev/CabinetDupont/issues)
-3. Créer une nouvelle issue si nécessaire
-4. Contacter l'équipe de développement
+1. Consult the [documentation](#-usage)
+2. Check [GitHub issues](https://github.com/Wandalf-dev/CabinetDupont/issues)
+3. Create a new issue if necessary
+4. Contact the development team
 
-## 👨‍💻 Auteur
+## 👨‍💻 Author
 
 **Wandalf-dev**
-- GitHub : [@Wandalf-dev](https://github.com/Wandalf-dev)
-- Projet : Cabinet Dupont
+- GitHub: [@Wandalf-dev](https://github.com/Wandalf-dev)
+- Project: Cabinet Dupont
 
-## � Changelog
+## 📋 Detailed Changelog
 
-### Version 1.0.0 - Octobre 2025
+### Version 1.0.0 - October 2025
 
-#### 🎉 Mise en production
-- ✅ **Migration vers InfinityFree** : Site déployé sur https://dupontcare.wuaze.com
-- ✅ **Certificat SSL** : HTTPS activé automatiquement
-- ✅ **Base de données en production** : MySQL sur sql210.infinityfree.com
+#### 🎉 Production Release
+- ✅ **Migration to InfinityFree**: Site deployed at https://dupontcare.wuaze.com
+- ✅ **SSL Certificate**: HTTPS enabled automatically
+- ✅ **Production database**: MySQL on sql210.infinityfree.com
 
-#### 🐛 Corrections post-migration
-- ✅ **Chemins dynamiques** : Remplacement des chemins en dur par `BASE_URL`
-- ✅ **Case-sensitivity** : Correction des noms de fichiers pour compatibilité Linux
-- ✅ **Autoloader** : Conversion des namespaces en chemins minuscules
-- ✅ **Encodage CSS** : Correction du fichier `agenda-grid.css` corrompu
-- ✅ **Animations Lottie** : Remplacement de `Dentist.json` par `Doctor.json`
-- ✅ **Système de réservation** : 
-  - Correction de la vérification des créneaux consécutifs
-  - Ajout de la validation de consécutivité (espacés de 30 min exactement)
-  - Correction de la vérification du délai de 4h
-  - Amélioration des messages d'erreur pour le diagnostic
+#### 🐛 Post-migration Fixes
+- ✅ **Dynamic paths**: Replaced hardcoded paths with `BASE_URL`
+- ✅ **Case-sensitivity**: Fixed file names for Linux compatibility
+- ✅ **Autoloader**: Namespace conversion to lowercase paths
+- ✅ **CSS encoding**: Fixed corrupted `agenda-grid.css` file
+- ✅ **Lottie animations**: Replaced `Dentist.json` with `Doctor.json`
+- ✅ **Booking system**: 
+  - Fixed consecutive slots verification
+  - Added consecutivity validation (exactly 30 min spacing)
+  - Fixed 4-hour advance delay verification
+  - Improved error messages for diagnostics
 
-#### 🎨 Améliorations UI/UX
-- ✅ **Responsive** : Réduction de l'écart entre animation et titre sur mobile
-- ✅ **Taille animation** : Réduction de l'animation Lottie (500px → mobile optimisé)
-- ✅ **Toggle mot de passe** : Ajout de l'icône œil sur la page de connexion
-- ✅ **CSS Grid** : Correction de l'affichage des bordures de l'agenda
+#### 🎨 UI/UX Improvements
+- ✅ **Responsive**: Reduced gap between animation and title on mobile
+- ✅ **Animation size**: Reduced Lottie animation (500px → mobile optimized)
+- ✅ **Password toggle**: Added eye icon on login page
+- ✅ **CSS Grid**: Fixed schedule border display
 
-#### 🔧 Optimisations techniques
-- ✅ **Détection automatique environnement** : Local vs Production
-- ✅ **Suppression des logs debug** : Nettoyage du code de production
-- ✅ **Gestion d'erreurs** : Amélioration des messages d'erreur en production
-- ✅ **Vérification chevauchement RDV** : Utilisation de la vraie durée des RDV existants
+#### 🔧 Technical Optimizations
+- ✅ **Auto environment detection**: Local vs Production
+- ✅ **Debug logs removal**: Cleaned production code
+- ✅ **Error handling**: Improved production error messages
+- ✅ **Appointment overlap check**: Using real duration of existing appointments
+
+## 📄 License
+
+This project is under MIT license. See the `LICENSE` file for more details.
+
+---
+
+## 🚨 Troubleshooting
+
+### Issue: Blank page
+
+**Solution**:
+1. Verify Apache and MySQL are started
+2. Check PHP error logs in `C:\xampp\apache\logs\error.log`
+3. Enable error display in `php.ini`: `display_errors = On`
+
+### Issue: Database connection error
+
+**Solution**:
+1. Verify database `bdd_dupont` exists
+2. Check credentials in `app/config/database.php`
+3. Verify MySQL is running
+
+### Issue: Images not displaying
+
+**Solution**:
+1. Verify folder `public/uploads/` exists
+2. Check folder permissions (755)
+3. Verify path in code (relative or absolute)
+
+### Issue: CSS/JS not loading
+
+**Solution**:
+1. Check `BASE_URL` in `config.php`
+2. Clear browser cache (Ctrl + F5)
+3. Check browser console for 404 errors
+
+### Issue: 404 error on routes
+
+**Solution**:
+1. Verify `.htaccess` file is present at root
+2. Verify `mod_rewrite` is enabled in Apache
+3. Check `BASE_URL` in `config.php`
+
+---
+
+## 🎉 Acknowledgments
+
+Thank you for using Cabinet Dupont! Don't hesitate to ⭐ the project on GitHub if you appreciate it.
+
+**Happy coding! 🚀**
 
 ## �📄 License
 

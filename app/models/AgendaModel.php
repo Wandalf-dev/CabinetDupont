@@ -127,20 +127,88 @@ class AgendaModel extends Model {
      * Reprogramme un rendez-vous
      */
     public function reprogrammerRendezVous($id, $date, $heureDebut, $heureFin) {
-        $sql = "UPDATE agenda 
-                SET date = ?, heure_debut = ?, heure_fin = ? 
-                WHERE id = ?";
+        error_log("=== REPROGRAMMER RDV ===");
+        error_log("ID: $id, Date: $date, Debut: $heureDebut, Fin: $heureFin");
+        
+        // 1. Récupérer les infos du rendez-vous actuel
+        $sql = "SELECT r.*, c.debut, c.service_id, s.duree, c.agenda_id
+                FROM rendezvous r
+                JOIN creneau c ON r.creneau_id = c.id
+                LEFT JOIN service s ON c.service_id = s.id
+                WHERE r.id = ?";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([$date, $heureDebut, $heureFin, $id]);
+        $stmt->execute([$id]);
+        $rdv = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        if (!$rdv) {
+            error_log("RDV introuvable");
+            return false;
+        }
+        
+        error_log("RDV trouvé - Durée: " . ($rdv['duree'] ?? 'NULL') . ", Agenda: " . $rdv['agenda_id']);
+        
+        $duree = $rdv['duree'] ?? 30; // Durée du RDV en minutes
+        
+        // 2. Trouver le nouveau créneau de départ
+        $nouveauDebut = $date . ' ' . $heureDebut;
+        error_log("Nouveau debut: $nouveauDebut");
+        
+        $sql = "SELECT id FROM creneau 
+                WHERE agenda_id = ? 
+                AND debut = ?
+                AND statut = 'disponible'";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$rdv['agenda_id'], $nouveauDebut]);
+        $nouveauCreneau = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        if (!$nouveauCreneau) {
+            error_log("Créneau de départ introuvable ou indisponible");
+            throw new \Exception("Créneau de départ introuvable ou indisponible");
+        }
+        
+        error_log("Nouveau créneau trouvé - ID: " . $nouveauCreneau['id']);
+        
+        // 3. Vérifier que tous les créneaux nécessaires sont disponibles
+        $sql = "SELECT COUNT(*) as nb_creneaux_libres
+                FROM creneau c
+                WHERE c.agenda_id = ?
+                AND c.debut >= ?
+                AND c.debut < DATE_ADD(?, INTERVAL ? MINUTE)
+                AND c.statut = 'disponible'
+                AND NOT EXISTS (
+                    SELECT 1 FROM rendezvous r2
+                    WHERE r2.creneau_id = c.id
+                    AND r2.statut != 'ANNULE'
+                    AND r2.id != ?
+                )";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$rdv['agenda_id'], $nouveauDebut, $nouveauDebut, $duree, $id]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        $creneauxNecessaires = ceil($duree / 30);
+        error_log("Créneaux libres: " . $result['nb_creneaux_libres'] . ", Nécessaires: $creneauxNecessaires");
+        
+        if ($result['nb_creneaux_libres'] < $creneauxNecessaires) {
+            error_log("Pas assez de créneaux disponibles");
+            throw new \Exception("Un autre rendez-vous chevauche cet horaire");
+        }
+        
+        // 4. Mettre à jour le rendez-vous avec le nouveau créneau
+        $sql = "UPDATE rendezvous SET creneau_id = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        $success = $stmt->execute([$nouveauCreneau['id'], $id]);
+        error_log("Update result: " . ($success ? 'OK' : 'FAIL'));
+        return $success;
     }
 
     /**
      * Annule un rendez-vous
      */
     public function annulerRendezVous($id) {
-        $sql = "UPDATE agenda SET statut = 'annule' WHERE id = ?";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([$id]);
+        // Utiliser le modèle RendezVousModel pour annuler correctement
+        require_once __DIR__ . '/RendezVousModel.php';
+        $rendezVousModel = new \App\Models\RendezVousModel();
+        return $rendezVousModel->annulerRendezVous($id);
     }
 
     /**
@@ -154,17 +222,12 @@ class AgendaModel extends Model {
 
     /**
      * Vérifie les disponibilités pour une plage horaire
+     * @param int|null $excludeRdvId ID du rendez-vous à exclure de la vérification (pour modification)
      */
-    public function verifierDisponibilite($date, $heureDebut, $heureFin) {
-        $sql = "SELECT COUNT(*) FROM agenda 
-                WHERE date = ? 
-                AND ((heure_debut BETWEEN ? AND ?) 
-                     OR (heure_fin BETWEEN ? AND ?))
-                AND statut != 'annule'";
-        
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$date, $heureDebut, $heureFin, $heureDebut, $heureFin]);
-        return $stmt->fetchColumn() == 0;
+    public function verifierDisponibilite($date, $heureDebut, $heureFin, $excludeRdvId = null) {
+        // Cette méthode n'est plus utilisée car la vérification se fait dans reprogrammerRendezVous
+        // On la garde pour compatibilité mais elle retourne toujours true
+        return true;
     }
 
     /**

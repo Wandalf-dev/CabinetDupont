@@ -145,6 +145,71 @@ class CreneauxController {
         $this->jsonResponse($response, 200);
     }
 
+    public function markAvailableBulk() {
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'MEDECIN') {
+            $this->jsonResponse(['success' => false, 'error' => 'Accès non autorisé'], 403);
+        }
+
+        // CSRF check
+        $headers = function_exists('getallheaders') ? getallheaders() : [];
+        $token = $headers['X-CSRF-TOKEN'] ?? '';
+        if (empty($token) || !\App\Core\Csrf::checkToken($token)) {
+            $this->jsonResponse(['success' => false, 'error' => 'Token CSRF invalide ou manquant'], 403);
+        }
+
+        $data = $this->jsonInput();
+        if (!isset($data['ids']) || !is_array($data['ids'])) {
+            $this->jsonResponse(['success' => false, 'error' => 'Données invalides'], 400);
+        }
+
+        $creneauxIds = array_map('intval', $data['ids']);
+        if (empty($creneauxIds)) {
+            $this->jsonResponse(['success' => false, 'error' => 'Aucun créneau sélectionné'], 400);
+        }
+
+        $modifies = 0;
+        $erreurs = [];
+
+        foreach ($creneauxIds as $id) {
+            try {
+                $creneau = $this->creneauModel->getCreneauById($id);
+                if (!$creneau) {
+                    $erreurs[] = "Créneau $id introuvable";
+                    continue;
+                }
+                
+                // Vérifier si le créneau est indisponible
+                $isIndisponible = ($creneau['statut'] ?? '') === 'indisponible';
+                
+                // Si déjà disponible (pas indisponible), on compte quand même comme succès
+                if (!$isIndisponible) {
+                    $modifies++;
+                } else {
+                    // Sinon, le basculer vers disponible
+                    $result = $this->creneauModel->toggleIndisponible($id);
+                    if ($result === false) { // false signifie maintenant disponible
+                        $modifies++;
+                    } else {
+                        $erreurs[] = "Erreur lors de la modification du créneau $id";
+                    }
+                }
+            } catch (\Exception $e) {
+                $erreurs[] = "Erreur créneau $id: " . $e->getMessage();
+            }
+        }
+
+        $response = [
+            'success' => $modifies > 0,
+            'message' => $modifies > 0 ? "$modifies créneau(x) marqué(s) comme disponible(s)" : "Aucun créneau n'a pu être modifié",
+            'modifiedCount' => $modifies
+        ];
+        if (!empty($erreurs)) {
+            $response['errors'] = $erreurs;
+        }
+
+        $this->jsonResponse($response, 200);
+    }
+
     public function deleteCreneauxBulk() {
         // Alias pour deleteMultiple() pour compatibilité avec le JavaScript
         $this->deleteMultiple();

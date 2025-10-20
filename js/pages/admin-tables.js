@@ -60,20 +60,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Fonctions de suppression
-    window.deleteService = function(id) {
-        if (confirm('Êtes-vous sûr de vouloir supprimer ce service ?')) {
+    window.deleteService = async function(id) {
+        const confirmed = await showConfirmationPopup('Êtes-vous sûr de vouloir supprimer ce service ?');
+        if (confirmed) {
             window.location.href = `index.php?page=services&action=delete&id=${id}`;
         }
     }
 
-    window.deleteActu = function(id) {
-        if (confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?')) {
+    window.deleteActu = async function(id) {
+        const confirmed = await showConfirmationPopup('Êtes-vous sûr de vouloir supprimer cette actualité ?');
+        if (confirmed) {
             window.location.href = `index.php?page=actus&action=delete&id=${id}`;
         }
     }
 
-    window.deletePatient = function(id) {
-        if (confirm('Êtes-vous sûr de vouloir supprimer ce patient ?')) {
+    window.deletePatient = async function(id) {
+        const confirmed = await showConfirmationPopup('Êtes-vous sûr de vouloir supprimer ce patient ?');
+        if (confirmed) {
             window.location.href = `index.php?page=admin&action=deletePatient&id=${id}`;
         }
     }
@@ -84,19 +87,40 @@ document.addEventListener('DOMContentLoaded', function() {
     window.filterServices = function() {
         const serviceInput = document.getElementById('service-filter-input');
         const serviceTable = document.getElementById('services-table');
+        
         if (serviceInput && serviceTable) {
             const filter = serviceInput.value.toLowerCase();
-            const rows = serviceTable.tBodies[0] ? serviceTable.tBodies[0].rows : serviceTable.rows;
-            for (const row of rows) {
-                if (row.cells.length < 3) continue;
-                const titre = row.cells[1].textContent.toLowerCase();
-                const desc = row.cells[2].textContent.toLowerCase();
-                if (filter === '' || titre.includes(filter) || desc.includes(filter)) {
-                    row.style.display = '';
+            const tbody = serviceTable.querySelector('tbody');
+            const rows = tbody ? tbody.querySelectorAll('tr') : serviceTable.querySelectorAll('tr');
+            
+            rows.forEach((row) => {
+                // Chercher dans la cellule titre (class="title-cell") et description
+                const titleCell = row.querySelector('.title-cell, td[data-label="Titre"]');
+                const descCell = row.querySelector('td[data-label="Description"]');
+                
+                let shouldShow = false;
+                
+                if (titleCell && descCell) {
+                    const titre = titleCell.textContent.toLowerCase();
+                    const desc = descCell.textContent.toLowerCase();
+                    shouldShow = (filter === '' || titre.includes(filter) || desc.includes(filter));
                 } else {
-                    row.style.display = 'none';
+                    // Fallback: chercher dans tout le texte de la ligne (sauf les actions)
+                    const actionsCell = row.querySelector('.actions-cell');
+                    let searchText = row.textContent.toLowerCase();
+                    if (actionsCell) {
+                        searchText = searchText.replace(actionsCell.textContent.toLowerCase(), '');
+                    }
+                    shouldShow = (filter === '' || searchText.includes(filter));
                 }
-            }
+                
+                // Utiliser une classe au lieu de style.display
+                if (shouldShow) {
+                    row.classList.remove('filtered-hidden');
+                } else {
+                    row.classList.add('filtered-hidden');
+                }
+            });
         }
     }
 
@@ -117,22 +141,46 @@ document.addEventListener('DOMContentLoaded', function() {
     if (patientInput && patientsTable) {
         patientInput.addEventListener('input', function() {
             const filter = patientInput.value.toLowerCase();
-            const rows = patientsTable.tBodies[0].rows;
-            for (const row of rows) {
-                const nom = row.cells[0].textContent.toLowerCase();
-                const prenom = row.cells[1].textContent.toLowerCase();
-                const email = row.cells[2].textContent.toLowerCase();
-                const tel = row.cells[3].textContent.toLowerCase();
-                if (filter === '' || 
-                    nom.includes(filter) || 
-                    prenom.includes(filter) || 
-                    email.includes(filter) || 
-                    tel.includes(filter)) {
-                    row.style.display = '';
+            const tbody = patientsTable.querySelector('tbody');
+            const rows = tbody ? tbody.querySelectorAll('tr') : patientsTable.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                // Utiliser data-label pour trouver les bonnes cellules
+                const nomCell = row.querySelector('td[data-label="Nom"]');
+                const prenomCell = row.querySelector('td[data-label="Prénom"]');
+                const emailCell = row.querySelector('td[data-label="Email"]');
+                const telCell = row.querySelector('td[data-label="Téléphone"]');
+                
+                let shouldShow = false;
+                
+                if (nomCell && prenomCell && emailCell && telCell) {
+                    const nom = nomCell.textContent.toLowerCase();
+                    const prenom = prenomCell.textContent.toLowerCase();
+                    const email = emailCell.textContent.toLowerCase();
+                    const tel = telCell.textContent.toLowerCase();
+                    
+                    shouldShow = (filter === '' || 
+                        nom.includes(filter) || 
+                        prenom.includes(filter) || 
+                        email.includes(filter) || 
+                        tel.includes(filter));
                 } else {
-                    row.style.display = 'none';
+                    // Fallback: chercher dans tout le texte de la ligne (sauf les actions)
+                    const actionsCell = row.querySelector('.actions-cell');
+                    let searchText = row.textContent.toLowerCase();
+                    if (actionsCell) {
+                        searchText = searchText.replace(actionsCell.textContent.toLowerCase(), '');
+                    }
+                    shouldShow = (filter === '' || searchText.includes(filter));
                 }
-            }
+                
+                // Utiliser une classe au lieu de style.display
+                if (shouldShow) {
+                    row.classList.remove('filtered-hidden');
+                } else {
+                    row.classList.add('filtered-hidden');
+                }
+            });
         });
     }
 
@@ -142,16 +190,35 @@ document.addEventListener('DOMContentLoaded', function() {
     if (actusInput && actusTable) {
         actusInput.addEventListener('input', function() {
             const filter = actusInput.value.toLowerCase();
-            const rows = actusTable.tBodies[0] ? actusTable.tBodies[0].rows : actusTable.rows;
-            for (const row of rows) {
-                if (row.cells.length < 1) continue;
-                const text = row.cells[0].textContent.toLowerCase();
-                if (filter === '' || text.includes(filter)) {
-                    row.style.display = '';
+            const tbody = actusTable.querySelector('tbody');
+            const rows = tbody ? tbody.querySelectorAll('tr') : actusTable.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                // Chercher dans la cellule titre
+                const titreCell = row.querySelector('td[data-label="Titre"]');
+                
+                let shouldShow = false;
+                
+                if (titreCell) {
+                    const text = titreCell.textContent.toLowerCase();
+                    shouldShow = (filter === '' || text.includes(filter));
                 } else {
-                    row.style.display = 'none';
+                    // Fallback: chercher dans tout le texte de la ligne (sauf les actions)
+                    const actionsCell = row.querySelector('.actions-cell');
+                    let searchText = row.textContent.toLowerCase();
+                    if (actionsCell) {
+                        searchText = searchText.replace(actionsCell.textContent.toLowerCase(), '');
+                    }
+                    shouldShow = (filter === '' || searchText.includes(filter));
                 }
-            }
+                
+                // Utiliser une classe au lieu de style.display
+                if (shouldShow) {
+                    row.classList.remove('filtered-hidden');
+                } else {
+                    row.classList.add('filtered-hidden');
+                }
+            });
         });
     }
 

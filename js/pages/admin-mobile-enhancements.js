@@ -151,38 +151,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { passive: false });
     }
 
-    // ===== CORRECTION GRIP EN MOBILE =====
-    // Supprimer complètement les cellules grip sur mobile
-    if (window.innerWidth <= 768) {
-        const removeGripCells = () => {
-            // Sélectionner UNIQUEMENT les cellules grip (plus sûr)
-            const gripCells = document.querySelectorAll('.grip-cell, .desktop-only');
-            
-            gripCells.forEach(cell => {
-                // Vérifier si c'est bien une cellule grip avant de supprimer
-                if (cell.classList.contains('grip-cell') || cell.classList.contains('desktop-only')) {
-                    // Ne pas supprimer si c'est une title-cell
-                    if (!cell.classList.contains('title-cell')) {
-                        cell.remove(); // Supprimer complètement du DOM
-                    }
-                }
-            });
-
-            // Alternative: supprimer uniquement les td avec grip-icon
-            document.querySelectorAll('td .grip-icon').forEach(icon => {
-                const cell = icon.closest('td');
-                if (cell && !cell.classList.contains('title-cell')) {
-                    cell.remove();
-                }
-            });
-        };
-
-        // Exécuter au chargement
-        removeGripCells();
-
-        // Réexécuter UNE SEULE fois après un court délai
-        setTimeout(removeGripCells, 200);
-    }
+    // ===== NOTE: Les cellules grip sont désormais cachées via CSS en mobile =====
+    // Le CSS gère automatiquement l'affichage/masquage des cellules grip
+    // Pas besoin de code JavaScript pour les supprimer du DOM
 
 });
 

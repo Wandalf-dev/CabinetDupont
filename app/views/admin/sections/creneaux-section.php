@@ -76,7 +76,7 @@ $csrf_token = \App\Core\Csrf::generateToken();
             <i class="fas fa-check-square"></i>
             Tout sélectionner
         </button>
-        <button class="btn-warning" id="btn-mark-unavailable" type="button" disabled>
+        <button class="btn-warning" id="btn-mark-unavailable" type="button">
             <i class="fas fa-ban"></i>
             Marquer indisponible
         </button>
@@ -168,7 +168,7 @@ $csrf_token = \App\Core\Csrf::generateToken();
 
                         <div class="card-footer">
                             <?php if ($isReserved): ?>
-                                <button type="button" class="btn-danger btn-cancel" data-id="<?php echo (int)$creneau['id']; ?>">
+                                <button type="button" class="btn-danger btn-cancel" data-id="<?php echo (int)($creneau['rdv_id'] ?? $creneau['id']); ?>">
                                     <i class="fas fa-times"></i>
                                     Annuler
                                 </button>

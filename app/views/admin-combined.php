@@ -9,6 +9,7 @@ include __DIR__ . '/templates/flash-messages.php';
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/tabs.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/table-sort.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/table-actions.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/tooltip.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/horaires/horaires.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/horaires/horaires-admin.css">
 
@@ -57,7 +58,10 @@ include __DIR__ . '/templates/flash-messages.php';
                             <tr data-id="<?= htmlspecialchars($service['id']) ?>" draggable="true">
                                 <td class="grip-cell desktop-only" data-label=""><span class="grip-icon" title="Glisser pour réorganiser">⋮⋮</span></td>
                                 <td class="title-cell" data-label="Titre"><?= htmlspecialchars($service['titre']) ?></td>
-                                <td data-label="Description"><?= htmlspecialchars(substr($service['description'], 0, 100)) ?>...</td>
+                                <td data-label="Description"><?php 
+                                    $desc = $service['description'];
+                                    echo htmlspecialchars(strlen($desc) > 100 ? substr($desc, 0, 100) . '...' : $desc);
+                                ?></td>
                                 <td data-label="Durée"><?= htmlspecialchars($service['duree']) ?> min</td>
                                 <td class="status-cell" data-label="Statut" data-status="<?= htmlspecialchars($service['statut']) ?>"><?= htmlspecialchars($service['statut']) ?></td>
                                 <td class="actions-cell" data-label="Actions">
@@ -114,13 +118,10 @@ include __DIR__ . '/templates/flash-messages.php';
                                     <a href="index.php?page=actus&action=edit&id=<?= $actu['id'] ?>" class="btn-admin edit">
                                         <i class="fas fa-edit"></i>&nbsp;Modifier
                                     </a>
-                                    <!-- Formulaire pour supprimer l'actualité avec protection CSRF -->
-                                    <form method="post" action="index.php?page=actus&action=delete&id=<?= $actu['id'] ?>" style="display:inline;">
-                                        <input type="hidden" name="csrf_token" value="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>">
-                                        <button type="submit" class="btn-admin delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?');">
-                                            <i class="fas fa-trash"></i>&nbsp;Supprimer
-                                        </button>
-                                    </form>
+                                    <!-- Bouton pour supprimer l'actualité -->
+                                    <button onclick="deleteActu(<?= $actu['id'] ?>)" class="btn-admin delete">
+                                        <i class="fas fa-trash"></i>&nbsp;Supprimer
+                                    </button>
                                 </td>
                             </tr>
                             <?php endforeach; ?>

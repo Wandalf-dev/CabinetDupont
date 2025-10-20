@@ -360,24 +360,41 @@ class RendezVousController extends Controller {
     public function annuler() {
         header('Content-Type: application/json');
         
-        
         try {
+            // Log pour debug
+            error_log("=== ANNULATION RDV ===");
+            error_log("SESSION user_id: " . ($_SESSION['user_id'] ?? 'NON DÉFINI'));
+            error_log("POST data: " . print_r($_POST, true));
+            error_log("php://input: " . file_get_contents('php://input'));
+            
             if (!isset($_SESSION['user_id'])) {
                 http_response_code(401);
                 echo json_encode(['success' => false, 'message' => 'Vous devez être connecté pour effectuer cette action']);
                 return;
             }
 
-            if (!isset($_POST['rdv_id'])) {
+            // Lire les données JSON si présentes
+            $input = json_decode(file_get_contents('php://input'), true);
+            $rdvId = null;
+            
+            // Accepter 'id' ou 'rdv_id' depuis JSON ou POST
+            if (isset($input['id'])) {
+                $rdvId = (int)$input['id'];
+            } elseif (isset($input['rdv_id'])) {
+                $rdvId = (int)$input['rdv_id'];
+            } elseif (isset($_POST['rdv_id'])) {
+                $rdvId = (int)$_POST['rdv_id'];
+            } elseif (isset($_POST['id'])) {
+                $rdvId = (int)$_POST['id'];
+            }
+
+            if (!$rdvId) {
                 http_response_code(400);
                 echo json_encode(['success' => false, 'message' => 'ID de rendez-vous manquant']);
                 return;
             }
 
-            $rdvId = (int)$_POST['rdv_id'];
-
-        // Vérifier que le rendez-vous existe et que l'utilisateur a les droits
-        try {
+            // Vérifier que le rendez-vous existe et que l'utilisateur a les droits
             $rdv = $this->rendezVousModel->getRendezVousById($rdvId);
             
             if (!$rdv) {
@@ -386,23 +403,23 @@ class RendezVousController extends Controller {
                 return;
             }
             
-            
-            // Vérifier si l'utilisateur est le patient, le médecin ou un secrétaire
-            if ($rdv['patient_id'] == $_SESSION['user_id'] || 
+            // Vérifier si l'utilisateur est le patient, le médecin ou un secrétaire/médecin
+            $isAuthorized = (
+                $rdv['patient_id'] == $_SESSION['user_id'] || 
                 $rdv['medecin_id'] == $_SESSION['user_id'] || 
-                isset($_SESSION['role']) && $_SESSION['role'] === 'secretaire') {
-                
-            } else {
+                (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'MEDECIN')
+            );
+            
+            if (!$isAuthorized) {
                 http_response_code(403);
                 echo json_encode(['success' => false, 'message' => 'Vous n\'êtes pas autorisé à annuler ce rendez-vous']);
                 return;
             }
-        } catch (\Exception $e) {
-            http_response_code(500);
-            echo json_encode(['success' => false, 'message' => 'Erreur lors de la vérification du rendez-vous']);
-            return;
-        }            // Annuler le rendez-vous
-            if ($this->rendezVousModel->annulerRendezVous($rdvId)) {
+            
+            // Annuler le rendez-vous
+            $result = $this->rendezVousModel->annulerRendezVous($rdvId);
+            
+            if ($result) {
                 echo json_encode(['success' => true, 'message' => 'Rendez-vous annulé avec succès']);
             } else {
                 http_response_code(500);

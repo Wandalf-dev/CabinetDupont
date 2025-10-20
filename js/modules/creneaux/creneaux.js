@@ -81,7 +81,46 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Événements des actions en masse
             if (this.bulkActions.markUnavailable) {
-                this.bulkActions.markUnavailable.addEventListener('click', () => this.markSelectedUnavailable());
+                this.bulkActions.markUnavailable.addEventListener('click', (e) => {
+                    // Empêcher le clic si désactivé
+                    if (this.bulkActions.markUnavailable.getAttribute('aria-disabled') === 'true') {
+                        e.preventDefault();
+                        return;
+                    }
+                    this.markSelectedUnavailable();
+                });
+                
+                // Tooltip custom pour les messages d'erreur
+                this.bulkActions.markUnavailable.addEventListener('mouseenter', function(e) {
+                    const tooltipText = this.getAttribute('data-tooltip');
+                    console.log('Mouseenter sur bouton, tooltip text:', tooltipText);
+                    if (!tooltipText) return;
+                    // Empêcher les doublons
+                    const existing = document.querySelector('.custom-tooltip');
+                    if (existing) {
+                        existing.remove();
+                    }
+                    let tooltip = document.createElement('div');
+                    tooltip.className = 'custom-tooltip';
+                    tooltip.textContent = tooltipText;
+                    document.body.appendChild(tooltip);
+                    const rect = this.getBoundingClientRect();
+                    const tooltipRect = tooltip.getBoundingClientRect();
+                    tooltip.style.left = `${rect.left + (rect.width / 2) - (tooltipRect.width / 2)}px`;
+                    tooltip.style.top = `${rect.top - tooltipRect.height - 5}px`;
+                    console.log('Tooltip créé, position:', tooltip.style.left, tooltip.style.top);
+                    requestAnimationFrame(() => {
+                        tooltip.classList.add('show');
+                        console.log('Classe show ajoutée au tooltip');
+                    });
+                });
+                this.bulkActions.markUnavailable.addEventListener('mouseleave', function(e) {
+                    const tooltip = document.querySelector('.custom-tooltip');
+                    if (tooltip) {
+                        console.log('Suppression tooltip');
+                        tooltip.remove();
+                    }
+                });
             }
             if (this.bulkActions.delete) {
                 this.bulkActions.delete.addEventListener('click', () => this.deleteSelected());
@@ -344,22 +383,58 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
             
-            // Gérer le bouton "Marquer indisponible"
+            // Gérer le bouton "Marquer indisponible/disponible"
             if (this.bulkActions.markUnavailable) {
-                // Désactiver si aucune sélection OU si au moins un créneau est déjà indisponible
-                const shouldDisable = !hasSelection || hasUnavailable;
-                this.bulkActions.markUnavailable.disabled = shouldDisable;
+                const allUnavailable = hasSelection && hasUnavailable && !hasAvailable;
+                const mixedSelection = hasSelection && hasAvailable && hasUnavailable;
                 
-                // Changer le texte et le titre selon le cas
-                if (hasUnavailable && hasAvailable) {
-                    // Mélange de disponibles et indisponibles
-                    this.bulkActions.markUnavailable.title = 'Impossible : la sélection contient des créneaux déjà indisponibles';
-                } else if (hasUnavailable && !hasAvailable) {
-                    // Que des indisponibles
-                    this.bulkActions.markUnavailable.title = 'Créneaux déjà indisponibles';
+                if (allUnavailable) {
+                    // Tous indisponibles → Bouton "Marquer disponible"
+                    this.bulkActions.markUnavailable.removeAttribute('aria-disabled');
+                    this.bulkActions.markUnavailable.style.pointerEvents = '';
+                    this.bulkActions.markUnavailable.style.opacity = '';
+                    this.bulkActions.markUnavailable.innerHTML = '<i class="fas fa-check"></i> Marquer disponible';
+                    this.bulkActions.markUnavailable.classList.remove('btn-warning');
+                    this.bulkActions.markUnavailable.classList.add('btn-success');
+                    this.bulkActions.markUnavailable.removeAttribute('title');
+                    this.bulkActions.markUnavailable.setAttribute('data-tooltip', 'Rendre ces créneaux disponibles');
+                    this.bulkActions.markUnavailable.dataset.action = 'available';
+                } else if (mixedSelection) {
+                    // Mélange → Désactiver visuellement mais permettre le survol
+                    this.bulkActions.markUnavailable.setAttribute('aria-disabled', 'true');
+                    this.bulkActions.markUnavailable.style.pointerEvents = 'auto';
+                    this.bulkActions.markUnavailable.style.opacity = '0.5';
+                    this.bulkActions.markUnavailable.style.cursor = 'not-allowed';
+                    this.bulkActions.markUnavailable.innerHTML = '<i class="fas fa-ban"></i> Marquer indisponible';
+                    this.bulkActions.markUnavailable.classList.remove('btn-success');
+                    this.bulkActions.markUnavailable.classList.add('btn-warning');
+                    this.bulkActions.markUnavailable.removeAttribute('title');
+                    this.bulkActions.markUnavailable.setAttribute('data-tooltip', 'Impossible : la sélection contient des créneaux avec un statut différent');
+                    this.bulkActions.markUnavailable.dataset.action = 'unavailable';
+                } else if (hasAvailable) {
+                    // Tous disponibles → Bouton "Marquer indisponible"
+                    this.bulkActions.markUnavailable.removeAttribute('aria-disabled');
+                    this.bulkActions.markUnavailable.style.pointerEvents = '';
+                    this.bulkActions.markUnavailable.style.opacity = '';
+                    this.bulkActions.markUnavailable.innerHTML = '<i class="fas fa-ban"></i> Marquer indisponible';
+                    this.bulkActions.markUnavailable.classList.remove('btn-success');
+                    this.bulkActions.markUnavailable.classList.add('btn-warning');
+                    this.bulkActions.markUnavailable.removeAttribute('title');
+                    this.bulkActions.markUnavailable.removeAttribute('data-tooltip');
+                    this.bulkActions.markUnavailable.dataset.action = 'unavailable';
                 } else {
-                    this.bulkActions.markUnavailable.title = '';
+                    // Aucune sélection
+                    this.bulkActions.markUnavailable.setAttribute('aria-disabled', 'true');
+                    this.bulkActions.markUnavailable.style.pointerEvents = 'none';
+                    this.bulkActions.markUnavailable.style.opacity = '0.5';
+                    this.bulkActions.markUnavailable.innerHTML = '<i class="fas fa-ban"></i> Marquer indisponible';
+                    this.bulkActions.markUnavailable.classList.remove('btn-success');
+                    this.bulkActions.markUnavailable.classList.add('btn-warning');
+                    this.bulkActions.markUnavailable.removeAttribute('title');
+                    this.bulkActions.markUnavailable.removeAttribute('data-tooltip');
+                    this.bulkActions.markUnavailable.dataset.action = 'unavailable';
                 }
+                
             }
             
             if (this.bulkActions.delete) {
@@ -493,11 +568,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
         async markSelectedUnavailable() {
             const count = this.selectedCreneaux.size;
-            const ok = await this.confirm({ action: 'statut', count, type: 'indisponible' });
+            const action = this.bulkActions.markUnavailable.dataset.action || 'unavailable';
+            
+            let confirmMessage, apiAction, successMessage;
+            
+            if (action === 'available') {
+                confirmMessage = `Êtes-vous sûr de vouloir marquer ${count} créneau(x) comme disponible(s) ?`;
+                apiAction = 'markAvailableBulk';
+                successMessage = 'Créneaux marqués comme disponibles';
+            } else {
+                confirmMessage = `Êtes-vous sûr de vouloir marquer ${count} créneau(x) comme indisponible(s) ?`;
+                apiAction = 'markUnavailableBulk';
+                successMessage = 'Créneaux marqués comme indisponibles';
+            }
+            
+            const ok = await this.confirm(confirmMessage);
             if (!ok) return;
 
             try {
-                const response = await fetch('index.php?page=creneaux&action=markUnavailableBulk', {
+                const response = await fetch(`index.php?page=creneaux&action=${apiAction}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -511,7 +600,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 await this.loadCreneaux();
                 this.selectedCreneaux.clear();
                 this.updateSelectionUI();
-                this.showSuccess('Créneaux marqués comme indisponibles');
+                this.showSuccess(successMessage);
             } catch (error) {
                 this.showError('Erreur lors de la modification des créneaux');
             }

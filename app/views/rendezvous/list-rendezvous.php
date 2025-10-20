@@ -457,45 +457,30 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
-            const modal = bootstrap.Modal.getInstance(modalElement);
-            if (modal) {
-                modal.hide();
-            }
+            // Fermer la modal
+            closeModal();
             
             if (data.success) {
                 updateUIAfterCancellation();
-                const successDiv = document.createElement('div');
-                successDiv.className = 'alert alert-success';
-                successDiv.style.position = 'fixed';
-                successDiv.style.top = '20px';
-                successDiv.style.right = '20px';
-                successDiv.style.zIndex = '9999';
-                successDiv.style.borderRadius = '10px';
-                successDiv.style.maxWidth = '400px';
-                successDiv.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
-                successDiv.style.border = 'none';
-                successDiv.style.margin = '0';
-                successDiv.style.transform = 'translateZ(0)';
-                successDiv.innerHTML = `
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-check-circle me-2"></i>
-                        Le rendez-vous a été annulé avec succès.
-                    </div>
-                `;
-                document.body.appendChild(successDiv);
                 
-                setTimeout(() => {
-                    successDiv.style.transition = 'opacity 0.5s ease-out';
-                    successDiv.style.opacity = '0';
-                    setTimeout(() => successDiv.remove(), 500);
-                }, 4000);
+                // Utiliser AlertManager pour afficher le succès
+                if (window.AlertManager) {
+                    AlertManager.show('Le rendez-vous a été annulé avec succès', 'success');
+                }
             } else {
-                alert(data.message || 'L\'annulation a échoué');
+                // Utiliser AlertManager pour afficher l'erreur
+                if (window.AlertManager) {
+                    AlertManager.show(data.message || 'L\'annulation a échoué', 'error');
+                }
             }
         })
         .catch(error => {
             closeModal();
-            alert('Une erreur est survenue lors de l\'annulation du rendez-vous.');
+            
+            // Utiliser AlertManager pour afficher l'erreur
+            if (window.AlertManager) {
+                AlertManager.show('Une erreur est survenue lors de l\'annulation du rendez-vous.', 'error');
+            }
         })
         .finally(() => {
             confirmButton.disabled = false;

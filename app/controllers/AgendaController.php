@@ -195,8 +195,11 @@ class AgendaController extends Controller {
      * Reprogramme un rendez-vous (appel AJAX)
      */
     public function reschedule() {
+        error_log("RESCHEDULE appelé - Session user_id: " . ($_SESSION['user_id'] ?? 'non défini') . ", user_role: " . ($_SESSION['user_role'] ?? 'non défini'));
+        
         // Vérifie si l'utilisateur est connecté et est un médecin
         if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'MEDECIN') {
+            error_log("RESCHEDULE - Accès refusé!");
             http_response_code(403);
             echo json_encode(['error' => 'Accès non autorisé']);
             return;
@@ -213,17 +216,15 @@ class AgendaController extends Controller {
             return;
         }
 
-        // Vérifie la disponibilité
-        if (!$this->agendaModel->verifierDisponibilite($date, $heureDebut, $heureFin)) {
-            http_response_code(409);
-            echo json_encode(['error' => 'Créneau déjà occupé']);
-            return;
+        try {
+            $success = $this->agendaModel->reprogrammerRendezVous($id, $date, $heureDebut, $heureFin);
+            header('Content-Type: application/json');
+            echo json_encode(['success' => $success]);
+        } catch (\Exception $e) {
+            http_response_code(400);
+            header('Content-Type: application/json');
+            echo json_encode(['error' => $e->getMessage()]);
         }
-
-        $success = $this->agendaModel->reprogrammerRendezVous($id, $date, $heureDebut, $heureFin);
-
-        header('Content-Type: application/json');
-        echo json_encode(['success' => $success]);
     }
 
     /**

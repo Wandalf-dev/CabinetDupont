@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : sql210.infinityfree.com
--- Généré le :  lun. 20 oct. 2025 à 02:44
+-- Généré le :  lun. 20 oct. 2025 à 07:32
 -- Version du serveur :  11.4.7-MariaDB
 -- Version de PHP :  7.2.22
 
@@ -173,7 +173,7 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (866, 1, NULL, '2025-10-22 08:30:00', '2025-10-22 09:00:00', 0, 'disponible'),
 (867, 1, NULL, '2025-10-22 09:00:00', '2025-10-22 09:30:00', 0, 'disponible'),
 (868, 1, NULL, '2025-10-22 09:30:00', '2025-10-22 10:00:00', 0, 'disponible'),
-(869, 1, 4, '2025-10-22 10:00:00', '2025-10-22 10:30:00', 1, 'disponible'),
+(869, 1, NULL, '2025-10-22 10:00:00', '2025-10-22 10:30:00', 0, 'disponible'),
 (870, 1, NULL, '2025-10-22 10:30:00', '2025-10-22 11:00:00', 0, 'disponible'),
 (871, 1, NULL, '2025-10-22 11:00:00', '2025-10-22 11:30:00', 0, 'disponible'),
 (872, 1, NULL, '2025-10-22 11:30:00', '2025-10-22 12:00:00', 0, 'disponible'),
@@ -182,7 +182,7 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (875, 1, NULL, '2025-10-22 15:00:00', '2025-10-22 15:30:00', 0, 'disponible'),
 (876, 1, NULL, '2025-10-22 15:30:00', '2025-10-22 16:00:00', 0, 'disponible'),
 (877, 1, NULL, '2025-10-22 16:00:00', '2025-10-22 16:30:00', 0, 'disponible'),
-(878, 1, NULL, '2025-10-22 16:30:00', '2025-10-22 17:00:00', 0, 'disponible'),
+(878, 1, 4, '2025-10-22 16:30:00', '2025-10-22 17:00:00', 1, 'disponible'),
 (879, 1, NULL, '2025-10-22 17:00:00', '2025-10-22 17:30:00', 0, 'disponible'),
 (880, 1, NULL, '2025-10-22 17:30:00', '2025-10-22 18:00:00', 0, 'disponible'),
 (881, 1, NULL, '2025-10-22 18:00:00', '2025-10-22 18:30:00', 0, 'disponible'),
@@ -331,14 +331,14 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (1024, 1, NULL, '2025-10-30 19:30:00', '2025-10-30 20:00:00', 0, 'disponible'),
 (1065, 1, NULL, '2025-10-20 08:00:00', '2025-10-20 08:30:00', 0, 'disponible'),
 (1066, 1, NULL, '2025-10-20 08:30:00', '2025-10-20 09:00:00', 0, 'disponible'),
-(1067, 1, 2, '2025-10-20 09:00:00', '2025-10-20 09:30:00', 1, 'disponible'),
+(1067, 1, NULL, '2025-10-20 09:00:00', '2025-10-20 09:30:00', 0, 'disponible'),
 (1068, 1, 1, '2025-10-20 09:30:00', '2025-10-20 10:00:00', 1, 'disponible'),
 (1069, 1, 8, '2025-10-20 10:00:00', '2025-10-20 10:30:00', 1, 'disponible'),
-(1070, 1, 8, '2025-10-20 10:30:00', '2025-10-20 11:00:00', 1, 'disponible'),
+(1070, 1, NULL, '2025-10-20 10:30:00', '2025-10-20 11:00:00', 0, 'disponible'),
 (1071, 1, 8, '2025-10-20 11:00:00', '2025-10-20 11:30:00', 1, 'disponible'),
 (1072, 1, NULL, '2025-10-20 11:30:00', '2025-10-20 12:00:00', 0, 'disponible'),
 (1073, 1, 8, '2025-10-20 14:00:00', '2025-10-20 14:30:00', 1, 'disponible'),
-(1074, 1, 8, '2025-10-20 14:30:00', '2025-10-20 15:00:00', 1, 'disponible'),
+(1074, 1, NULL, '2025-10-20 14:30:00', '2025-10-20 15:00:00', 0, 'disponible'),
 (1075, 1, 2, '2025-10-20 15:00:00', '2025-10-20 15:30:00', 1, 'disponible'),
 (1076, 1, NULL, '2025-10-20 15:30:00', '2025-10-20 16:00:00', 0, 'disponible'),
 (1077, 1, NULL, '2025-10-20 16:00:00', '2025-10-20 16:30:00', 0, 'disponible'),
@@ -421,7 +421,7 @@ CREATE TABLE `rendezvous` (
 --
 
 INSERT INTO `rendezvous` (`id`, `creneau_id`, `patient_id`, `medecin_id`, `secretaire_id`, `statut`, `duree`, `commentaire`) VALUES
-(69, 1067, 6, 3, NULL, 'CONFIRME', 30, NULL),
+(69, 1083, 6, 3, NULL, 'ANNULE', 30, NULL),
 (70, 807, 5, 3, NULL, 'HONORE', 30, NULL),
 (71, 933, 5, 3, NULL, 'CONFIRME', 30, NULL),
 (72, 1079, 6, 3, NULL, 'CONFIRME', 30, NULL),
@@ -439,7 +439,7 @@ INSERT INTO `rendezvous` (`id`, `creneau_id`, `patient_id`, `medecin_id`, `secre
 (84, 952, 13, 3, NULL, 'CONFIRME', 30, NULL),
 (85, 1075, 14, 3, NULL, 'CONFIRME', 30, NULL),
 (86, 970, 14, 3, NULL, 'CONFIRME', 30, NULL),
-(87, 869, 15, 3, NULL, 'CONFIRME', 30, NULL),
+(87, 878, 15, 3, NULL, 'CONFIRME', 30, NULL),
 (88, 995, 15, 3, NULL, 'CONFIRME', 30, NULL),
 (89, 897, 16, 3, NULL, 'CONFIRME', 30, NULL),
 (90, 926, 16, 3, NULL, 'CONFIRME', 60, NULL),
@@ -449,7 +449,8 @@ INSERT INTO `rendezvous` (`id`, `creneau_id`, `patient_id`, `medecin_id`, `secre
 (94, 1100, 6, 3, NULL, 'HONORE', 60, NULL),
 (95, 914, 6, 3, NULL, 'CONFIRME', 120, NULL),
 (96, 1073, 6, 3, NULL, 'CONFIRME', 60, NULL),
-(97, 1069, 6, 3, NULL, 'CONFIRME', 60, NULL);
+(97, 1069, 6, 3, NULL, 'CONFIRME', 60, NULL),
+(98, 1081, 6, 3, NULL, 'ANNULE', 30, NULL);
 
 -- --------------------------------------------------------
 
@@ -473,12 +474,12 @@ CREATE TABLE `service` (
 --
 
 INSERT INTO `service` (`id`, `titre`, `description`, `statut`, `image`, `ordre`, `duree`, `couleur`) VALUES
-(1, 'Consultation générale', 'Examen complet, diagnostic et plan de traitement personnalisé.', 'PUBLIE', '68e6b348707a8_femme-patiente-chez-dentiste.jpg', 3, 30, '#4caf50'),
-(2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', '68e7d49939d82_19475 (1).jpg', 2, 30, '#2196f3'),
-(3, 'Implantologie', 'Pose d’implants pour remplacer les dents manquantes.', 'PUBLIE', '68e7d3d2412bf_5510224.jpg', 5, 90, '#9c27b0'),
-(4, 'Orthodontie', 'Alignement des dents : appareils fixes ou aligneurs transparents.', 'PUBLIE', '68e7d541958fd_17722.jpg', 1, 30, '#00c9cc'),
-(7, 'Parodontologie', 'Soins des gencives et traitement des maladies parodontales.', 'PUBLIE', '68ee48ae76743_5536487.jpg', 4, 120, '#a35f00'),
-(8, 'Urgences dentaires', 'Prise en charge rapide des douleurs et traumatismes dentaires.', 'PUBLIE', '68ee4d73cf020_ChatGPT Image 14 oct. 2025, 15_13_39.png', 0, 60, '#ed0202');
+(1, 'Consultation générale', 'Examen complet, diagnostic et plan de traitement personnalisé.', 'PUBLIE', '68e6b348707a8_femme-patiente-chez-dentiste.jpg', 2, 30, '#4caf50'),
+(2, 'Détartrage', 'Nettoyage professionnel des dents pour éliminer la plaque et le tartre.', 'PUBLIE', '68e7d49939d82_19475 (1).jpg', 1, 30, '#2196f3'),
+(3, 'Implantologie', 'Pose d’implants pour remplacer les dents manquantes.', 'PUBLIE', '68e7d3d2412bf_5510224.jpg', 4, 90, '#9c27b0'),
+(4, 'Orthodontie', 'Alignement des dents : appareils fixes ou aligneurs transparents.', 'PUBLIE', '68e7d541958fd_17722.jpg', 0, 30, '#00c9cc'),
+(7, 'Parodontologie', 'Soins des gencives et traitement des maladies parodontales.', 'PUBLIE', '68ee48ae76743_5536487.jpg', 3, 120, '#a35f00'),
+(8, 'Urgences dentaires', 'Prise en charge rapide des douleurs et traumatismes dentaires.', 'PUBLIE', '68ee4d73cf020_ChatGPT Image 14 oct. 2025, 15_13_39.png', 5, 60, '#a9be09');
 
 -- --------------------------------------------------------
 
@@ -627,7 +628,7 @@ ALTER TABLE `horaire_cabinet`
 -- AUTO_INCREMENT pour la table `rendezvous`
 --
 ALTER TABLE `rendezvous`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
 
 --
 -- AUTO_INCREMENT pour la table `service`

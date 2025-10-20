@@ -8,10 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Construire le chemin correct (éviter les doubles slashes)
         const animationPath = baseUrl ? baseUrl + "/assets/Doctor.json" : "/assets/Doctor.json";
         
-        console.log('Tentative de chargement Lottie:', animationPath);
-        
         try {
-            const animation = lottie.loadAnimation({
+            lottie.loadAnimation({
                 container: lottieContainer,
                 renderer: "svg",
                 loop: true,
@@ -23,16 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     hideOnTransparent: true
                 }
             });
-            
-            animation.addEventListener('data_ready', function() {
-                console.log('✅ Animation Lottie chargée avec succès');
-            });
-            
-            animation.addEventListener('data_failed', function() {
-                console.error('❌ Échec du chargement de l\'animation Lottie');
-            });
         } catch (error) {
-            console.error('❌ Erreur Lottie:', error);
+            console.error('Erreur de chargement de l\'animation:', error);
         }
     }
 

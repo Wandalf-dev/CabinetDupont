@@ -121,6 +121,7 @@ class App {
 
         } catch (\Exception $e) {
             // En cas d'erreur, log l'exception détaillée pour le débogage
+            error_log("Exception dans App.php: " . $e->getMessage());
 
             // Affiche une page d'erreur 404 à l'utilisateur
             http_response_code(404);

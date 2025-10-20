@@ -2,14 +2,21 @@
 .actions-header {
     text-align: left !important;
     padding: 16px 24px !important;
-    min-width: 260px !important;
+    min-width: 200px !important;
+    width: 200px !important;
+}
+
+/* Forcer l'arrondi du coin supérieur droit pour la colonne Actions */
+.admin-table thead tr:first-child th.actions-header {
+    border-top-right-radius: 14px !important;
 }
 
 .actions-cell {
     text-align: right !important;
     padding: 16px 24px !important;
     white-space: nowrap !important;
-    min-width: 260px !important;
+    min-width: 200px !important;
+    width: 200px !important;
 }
 
 /* Style spécifique pour les lignes des tableaux */

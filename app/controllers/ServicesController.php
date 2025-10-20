@@ -76,7 +76,7 @@ class ServicesController {
 
             // Gestion de l'upload d'image (SÉCURISÉE)
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $uploadDir = 'C:/xampp/htdocs/CabinetDupont/public/uploads/';
+                $uploadDir = __DIR__ . '/../../public/uploads/';
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0755, true); // Permissions plus sécurisées (0755 au lieu de 0777)
                 }
@@ -120,8 +120,20 @@ class ServicesController {
                 if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
                     // SÉCURITÉ 5 : Définir les permissions du fichier (lecture seule pour les autres)
                     chmod($uploadFile, 0644);
-                    $data['image'] = $fileName;
+                    
+                    // VÉRIFICATION : S'assurer que le fichier existe vraiment après l'upload
+                    if (file_exists($uploadFile)) {
+                        $data['image'] = $fileName;
+                        error_log("Image uploadée avec succès : $fileName");
+                    } else {
+                        error_log("ERREUR : Fichier uploadé mais introuvable : $uploadFile");
+                        $_SESSION['error'] = "Erreur : le fichier a été uploadé mais est introuvable.";
+                        $_SESSION['form_data'] = $data;
+                        header('Location: index.php?page=services&action=create');
+                        exit();
+                    }
                 } else {
+                    error_log("ERREUR move_uploaded_file : " . print_r(error_get_last(), true));
                     $_SESSION['error'] = "Erreur lors de l'upload de l'image.";
                     $_SESSION['form_data'] = $data;
                     header('Location: index.php?page=services&action=create');
@@ -192,25 +204,53 @@ class ServicesController {
                     header('Location: index.php?page=services&action=edit&id=' . $id);
                     exit();
                 }
-                $uploadDir = 'C:/xampp/htdocs/CabinetDupont/public/uploads/';
+                
+                $uploadDir = __DIR__ . '/../../public/uploads/';
                 if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
+                    mkdir($uploadDir, 0755, true);
                 }
-                $fileName = uniqid() . '_' . basename($_FILES['image']['name']);
-                $uploadFile = $uploadDir . $fileName;
+                
+                // Récupérer le nom original du fichier
+                $originalFileName = $_FILES['image']['name'];
+                
+                // SÉCURITÉ : Vérifier le type MIME réel du fichier
                 $fileType = mime_content_type($_FILES['image']['tmp_name']);
                 $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-                if (in_array($fileType, $allowedTypes)) {
-                    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
+                
+                if (!in_array($fileType, $allowedTypes)) {
+                    $_SESSION['error'] = "Format d'image non autorisé (jpg, png, gif, webp uniquement).";
+                    $_SESSION['form_data'] = $data;
+                    header('Location: index.php?page=services&action=edit&id=' . $id);
+                    exit();
+                }
+                
+                // SÉCURITÉ : Générer un nom de fichier sécurisé
+                $fileName = \App\Core\Security::generateSecureFilename($originalFileName);
+                $uploadFile = $uploadDir . $fileName;
+                
+                // Upload du fichier
+                if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
+                    // Définir les permissions
+                    chmod($uploadFile, 0644);
+                    
+                    // VÉRIFICATION : S'assurer que le fichier existe vraiment
+                    if (file_exists($uploadFile)) {
+                        // Supprimer l'ancienne image si elle existe
+                        if (!empty($service['image']) && file_exists($uploadDir . $service['image'])) {
+                            unlink($uploadDir . $service['image']);
+                        }
                         $data['image'] = $fileName;
+                        error_log("Image modifiée avec succès : $fileName");
                     } else {
-                        $_SESSION['error'] = "Erreur lors de l'upload de l'image.";
+                        error_log("ERREUR : Fichier uploadé mais introuvable : $uploadFile");
+                        $_SESSION['error'] = "Erreur : le fichier a été uploadé mais est introuvable.";
                         $_SESSION['form_data'] = $data;
                         header('Location: index.php?page=services&action=edit&id=' . $id);
                         exit();
                     }
                 } else {
-                    $_SESSION['error'] = "Format d'image non autorisé (jpg, png, gif, webp uniquement).";
+                    error_log("ERREUR move_uploaded_file lors de l'édition : " . print_r(error_get_last(), true));
+                    $_SESSION['error'] = "Erreur lors de l'upload de l'image.";
                     $_SESSION['form_data'] = $data;
                     header('Location: index.php?page=services&action=edit&id=' . $id);
                     exit();

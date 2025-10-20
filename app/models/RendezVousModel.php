@@ -69,9 +69,14 @@ class RendezVousModel extends Model {
             $sql = "UPDATE rendezvous SET statut = 'ANNULE' WHERE id = ?";
             $stmt = $this->db->prepare($sql);
             $success = $stmt->execute([$rdvId]);
+            $rowsAffected = $stmt->rowCount();
 
             if (!$success) {
-                throw new \Exception("Erreur lors de l'annulation du rendez-vous");
+                throw new \Exception("Erreur lors de l'annulation du rendez-vous: échec de l'UPDATE");
+            }
+            
+            if ($rowsAffected === 0) {
+                throw new \Exception("Aucun rendez-vous n'a été modifié (ID: $rdvId). Vérifiez que le RDV existe.");
             }
 
             // 3. Libérer tous les créneaux associés
@@ -219,23 +224,27 @@ class RendezVousModel extends Model {
             }
 
             // 6. Vérifier qu'il n'y a pas de chevauchement avec d'autres rendez-vous
+            // On doit vérifier si les créneaux nécessaires sont déjà occupés par un autre RDV
+            // en excluant les créneaux du RDV qu'on est en train de modifier
+            $placeholdersExclus = implode(',', array_fill(0, count($creneauxActuelsRdv), '?'));
             $sql = "SELECT COUNT(*) 
-                   FROM rendezvous r
-                   INNER JOIN creneau c ON r.creneau_id = c.id
-                   WHERE r.statut != 'ANNULE'
-                   AND r.id != ?
-                   AND DATE(c.debut) = ?
-                   AND (
-                       (c.debut >= ? AND c.debut < DATE_ADD(?, INTERVAL ? MINUTE))
-                       OR (c.debut < ? AND DATE_ADD(c.debut, INTERVAL ? MINUTE) > ?)
-                   )";
+                   FROM creneau c
+                   INNER JOIN rendezvous r ON r.creneau_id = c.id
+                   WHERE c.agenda_id = ?
+                   AND c.est_reserve = 1
+                   AND c.debut >= ?
+                   AND c.debut < DATE_ADD(?, INTERVAL ? MINUTE)
+                   AND r.statut != 'ANNULE'
+                   AND c.id NOT IN ($placeholdersExclus)";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([
-                $rdvId,
-                $nouvelleDate,
-                $nouvelleDateTime, $nouvelleDateTime, $duree,
-                $nouvelleDateTime, $duree, $nouvelleDateTime
-            ]);
+            $params = [
+                $rendezvous['agenda_id'],
+                $nouvelleDateTime,
+                $nouvelleDateTime,
+                $duree
+            ];
+            $params = array_merge($params, $creneauxActuelsRdv);
+            $stmt->execute($params);
             
             if ($stmt->fetchColumn() > 0) {
                 throw new \Exception("Un autre rendez-vous chevauche cet horaire");

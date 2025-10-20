@@ -71,7 +71,7 @@ class ActusController {
 
             // Gestion de l'upload d'image (SÉCURISÉE)
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $uploadDir = 'C:/xampp/htdocs/CabinetDupont/public/uploads/';
+                $uploadDir = __DIR__ . '/../../public/uploads/';
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0755, true); // Permissions sécurisées
                 }
@@ -219,11 +219,14 @@ class ActusController {
                     header('Location: index.php?page=actus&action=edit&id=' . $id);
                     exit();
                 }
-                $uploadDir = 'C:/xampp/htdocs/CabinetDupont/public/uploads/';
+                $uploadDir = __DIR__ . '/../../public/uploads/';
                 if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
+                    mkdir($uploadDir, 0755, true);
                 }
-                $fileName = uniqid() . '_' . basename($_FILES['image']['name']);
+                
+                // SÉCURITÉ : Générer un nom de fichier sécurisé
+                $originalFileName = $_FILES['image']['name'];
+                $fileName = \App\Core\Security::generateSecureFilename($originalFileName);
                 $uploadFile = $uploadDir . $fileName;
                 $fileType = mime_content_type($_FILES['image']['tmp_name']);
                 $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
