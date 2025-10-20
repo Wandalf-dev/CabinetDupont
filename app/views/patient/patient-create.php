@@ -107,8 +107,8 @@ include __DIR__ . '/../templates/flash-messages.php';
 </main>
 
 <!-- Style pour le formulaire -->
-<link rel="stylesheet" href="/CabinetDupont/css/pages/admin.css">
-<link rel="stylesheet" href="/CabinetDupont/css/modules/actu/actu-create.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/admin.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/actu/actu-create.css">
 
 <!-- Flatpickr CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">

@@ -3,8 +3,8 @@
 require_once __DIR__ . '/../templates/header.php';
 require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
-<link rel="stylesheet" href="/CabinetDupont/css/modules/service/service-update.css">
-<link rel="stylesheet" href="/CabinetDupont/css/components/color-picker.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/service/service-update.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/color-picker.css">
 
 <section class="service-update-section">
     <!-- Formulaire pour modifier un service existant -->
@@ -59,7 +59,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
             <?php if (!empty($service['image'])): ?>
                 <!-- Affichage de l'image actuelle du service -->
                 <div style="margin-top:1em;">
-                    <img src="/cabinetdupont/public/uploads/<?php echo htmlspecialchars($service['image']); ?>" alt="Image actuelle" loading="lazy" style="max-width:320px;max-height:240px;border-radius:8px;box-shadow:0 2px 8px #0001;">
+                    <img src="<?php echo BASE_URL; ?>/public/uploads/<?php echo htmlspecialchars($service['image']); ?>" alt="Image actuelle" loading="lazy" style="max-width:320px;max-height:240px;border-radius:8px;box-shadow:0 2px 8px #0001;">
                     <br><small>Image actuelle</small>
                 </div>
                 <!-- Champ caché pour conserver l'image actuelle -->

@@ -17,7 +17,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
             <?php foreach ($services as $service) : ?>
                 <div class="service-card" data-service-id="<?= $service['id'] ?>">
                     <div class="service-image">
-                        <img src="/CabinetDupont/public/uploads/<?= htmlspecialchars($service['image']) ?>" 
+                        <img src="<?php echo BASE_URL; ?>/public/uploads/<?= htmlspecialchars($service['image']) ?>" 
                              alt="<?= htmlspecialchars($service['titre']) ?>">
                     </div>
                     <div class="service-content">

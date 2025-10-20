@@ -5,12 +5,12 @@ include __DIR__ . '/templates/flash-messages.php';
 ?>
 
 <!-- CSS spécifiques à la page admin -->
-<link rel="stylesheet" href="/cabinetdupont/css/pages/admin.css">
-<link rel="stylesheet" href="/cabinetdupont/css/components/tabs.css">
-<link rel="stylesheet" href="/cabinetdupont/css/components/table-sort.css">
-<link rel="stylesheet" href="/cabinetdupont/css/components/table-actions.css">
-<link rel="stylesheet" href="/cabinetdupont/css/modules/horaires/horaires.css">
-<link rel="stylesheet" href="/cabinetdupont/css/modules/horaires/horaires-admin.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/admin.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/tabs.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/table-sort.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/table-actions.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/horaires/horaires.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/horaires/horaires-admin.css">
 
 <main class="container">
 

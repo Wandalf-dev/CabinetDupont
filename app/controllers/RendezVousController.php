@@ -83,11 +83,6 @@ class RendezVousController extends Controller {
     }
 
     public function selectTime() {
-        $logFile = __DIR__ . '/../../logs/debug_rdv.log';
-        file_put_contents($logFile, "\n=== " . date('Y-m-d H:i:s') . " - Début selectTime() ===\n", FILE_APPEND);
-        file_put_contents($logFile, "GET params: " . print_r($_GET, true) . "\n", FILE_APPEND);
-        file_put_contents($logFile, "Session: " . print_r($_SESSION, true) . "\n", FILE_APPEND);
-
         // Vérifier la session
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['error'] = "Vous devez être connecté pour prendre un rendez-vous.";
@@ -134,10 +129,8 @@ class RendezVousController extends Controller {
                 throw new \Exception("Le service demandé n'existe pas.");
             }
 
-            file_put_contents($logFile, "Récupération des créneaux disponibles pour la date " . $date . " et le service " . $serviceId . "\n", FILE_APPEND);
             // Récupérer les créneaux disponibles
             $availableSlots = $this->creneauModel->getAvailableSlots($date, $serviceId);
-            file_put_contents($logFile, "Créneaux disponibles trouvés : " . print_r($availableSlots, true) . "\n", FILE_APPEND);
             
             // Afficher la vue
             $this->view('rendezvous/select-time', [
@@ -154,24 +147,17 @@ class RendezVousController extends Controller {
     }
 
     public function confirmation() {
-        $logFile = __DIR__ . '/../../logs/debug_rdv.log';
-        file_put_contents($logFile, "\n=== " . date('Y-m-d H:i:s') . " - Début confirmation() ===\n", FILE_APPEND);
         try {
             // Vérification des paramètres requis
             if (!isset($_SESSION['user_id'])) {
-                file_put_contents($logFile, "Erreur: Utilisateur non connecté\n", FILE_APPEND);
                 throw new \Exception("Vous devez être connecté pour prendre un rendez-vous.");
             }
             if (!isset($_GET['creneau_id'])) {
-                file_put_contents($logFile, "Erreur: Créneau non sélectionné\n", FILE_APPEND);
                 throw new \Exception("Aucun créneau sélectionné.");
             }
             if (!isset($_GET['service_id'])) {
-                file_put_contents($logFile, "Erreur: Service non sélectionné\n", FILE_APPEND);
                 throw new \Exception("Aucun service sélectionné.");
             }
-            file_put_contents($logFile, "GET params: " . print_r($_GET, true) . "\n", FILE_APPEND);
-            file_put_contents($logFile, "Session: " . print_r($_SESSION, true) . "\n", FILE_APPEND);
 
             $creneauId = (int)$_GET['creneau_id'];
             $serviceId = (int)$_GET['service_id'];
@@ -249,7 +235,7 @@ class RendezVousController extends Controller {
             }
 
             // Vérifier que le créneau n'est pas dans moins de 4 heures (délai minimum)
-            $dateHeureCreneau = new \DateTime($creneau['date'] . ' ' . $creneau['heure_debut']);
+            $dateHeureCreneau = new \DateTime($creneau['debut']);
             $maintenant = new \DateTime();
             $maintenant->modify('+4 hours'); // Ajoute 4 heures à l'heure actuelle
             

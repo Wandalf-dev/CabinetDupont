@@ -11,7 +11,10 @@ class App {
         ini_set('display_startup_errors', 1);
         error_reporting(E_ALL);
         
-        session_start(); // Démarre la session PHP pour gérer les utilisateurs et les messages
+        // Démarre la session si elle n'est pas déjà démarrée
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         
 
         

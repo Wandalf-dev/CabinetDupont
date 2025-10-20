@@ -39,7 +39,12 @@ include __DIR__ . '/../templates/flash-messages.php';
       <input type="hidden" name="csrf_token" value="<?php echo isset($csrf_token) ? $csrf_token : ''; ?>">
       <div class="login-field">
         <label for="password">Mot de passe</label>
-        <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Mot de passe" />
+        <div class="password-wrapper">
+          <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Mot de passe" />
+          <span class="toggle-password" onclick="togglePassword('password', this)">
+            <i class="fas fa-eye"></i>
+          </span>
+        </div>
       </div>
       <button type="submit" class="btn-login">Se connecter</button>
       <div class="login-links">
@@ -50,4 +55,5 @@ include __DIR__ . '/../templates/flash-messages.php';
   </section>
 </main>
 
+<script src="<?php echo BASE_URL; ?>/js/components/password-toggle.js"></script>
 <?php include __DIR__ . '/../templates/footer.php'; ?>

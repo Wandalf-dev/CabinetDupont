@@ -9,19 +9,22 @@ class Database {
     private $connection;
 
     private function __construct() {
-        $host = 'localhost';
-        $dbname = 'bdd_dupont';
-        $user = 'root';
-        $pass = '';
+        // Utiliser les constantes définies dans config.php
+        $host = DB_HOST;
+        $dbname = DB_NAME;
+        $user = DB_USER;
+        $pass = DB_PASS;
+        $charset = DB_CHARSET;
+        
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Active les exceptions PDO
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, // Retourne les résultats sous forme de tableau associatif
-            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4' // Force l'encodage UTF-8
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES $charset" // Force l'encodage
         ];
 
         try {
             $this->connection = new PDO(
-                "mysql:host=$host;dbname=$dbname",
+                "mysql:host=$host;dbname=$dbname;charset=$charset",
                 $user,
                 $pass,
                 $options

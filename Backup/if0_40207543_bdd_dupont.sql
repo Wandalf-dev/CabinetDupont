@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 4.9.0.1
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1
--- Généré le : dim. 19 oct. 2025 à 22:15
--- Version du serveur : 10.4.32-MariaDB
--- Version de PHP : 8.2.12
+-- Hôte : sql210.infinityfree.com
+-- Généré le :  lun. 20 oct. 2025 à 02:44
+-- Version du serveur :  11.4.7-MariaDB
+-- Version de PHP :  7.2.22
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -18,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `bdd_dupont`
+-- Base de données :  `if0_40207543_bdd_dupont`
 --
 
 -- --------------------------------------------------------
@@ -332,12 +333,12 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (1066, 1, NULL, '2025-10-20 08:30:00', '2025-10-20 09:00:00', 0, 'disponible'),
 (1067, 1, 2, '2025-10-20 09:00:00', '2025-10-20 09:30:00', 1, 'disponible'),
 (1068, 1, 1, '2025-10-20 09:30:00', '2025-10-20 10:00:00', 1, 'disponible'),
-(1069, 1, NULL, '2025-10-20 10:00:00', '2025-10-20 10:30:00', 0, 'disponible'),
-(1070, 1, NULL, '2025-10-20 10:30:00', '2025-10-20 11:00:00', 0, 'disponible'),
+(1069, 1, 8, '2025-10-20 10:00:00', '2025-10-20 10:30:00', 1, 'disponible'),
+(1070, 1, 8, '2025-10-20 10:30:00', '2025-10-20 11:00:00', 1, 'disponible'),
 (1071, 1, 8, '2025-10-20 11:00:00', '2025-10-20 11:30:00', 1, 'disponible'),
 (1072, 1, NULL, '2025-10-20 11:30:00', '2025-10-20 12:00:00', 0, 'disponible'),
-(1073, 1, NULL, '2025-10-20 14:00:00', '2025-10-20 14:30:00', 0, 'disponible'),
-(1074, 1, NULL, '2025-10-20 14:30:00', '2025-10-20 15:00:00', 0, 'disponible'),
+(1073, 1, 8, '2025-10-20 14:00:00', '2025-10-20 14:30:00', 1, 'disponible'),
+(1074, 1, 8, '2025-10-20 14:30:00', '2025-10-20 15:00:00', 1, 'disponible'),
 (1075, 1, 2, '2025-10-20 15:00:00', '2025-10-20 15:30:00', 1, 'disponible'),
 (1076, 1, NULL, '2025-10-20 15:30:00', '2025-10-20 16:00:00', 0, 'disponible'),
 (1077, 1, NULL, '2025-10-20 16:00:00', '2025-10-20 16:30:00', 0, 'disponible'),
@@ -446,7 +447,9 @@ INSERT INTO `rendezvous` (`id`, `creneau_id`, `patient_id`, `medecin_id`, `secre
 (92, 1102, 6, 3, NULL, 'HONORE', 30, NULL),
 (93, 940, 6, 3, NULL, 'CONFIRME', 30, NULL),
 (94, 1100, 6, 3, NULL, 'HONORE', 60, NULL),
-(95, 914, 6, 3, NULL, 'CONFIRME', 120, NULL);
+(95, 914, 6, 3, NULL, 'CONFIRME', 120, NULL),
+(96, 1073, 6, 3, NULL, 'CONFIRME', 60, NULL),
+(97, 1069, 6, 3, NULL, 'CONFIRME', 60, NULL);
 
 -- --------------------------------------------------------
 
@@ -624,7 +627,7 @@ ALTER TABLE `horaire_cabinet`
 -- AUTO_INCREMENT pour la table `rendezvous`
 --
 ALTER TABLE `rendezvous`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
 
 --
 -- AUTO_INCREMENT pour la table `service`

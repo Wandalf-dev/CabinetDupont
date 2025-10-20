@@ -25,6 +25,7 @@ use App\Core\Seo;
 <head>
     <meta charset="UTF-8" />
     <meta name="csrf-token" content="<?php echo \App\Core\Csrf::generateToken(); ?>" />
+    <meta name="base-url" content="<?php echo BASE_URL; ?>" />
     
     <!-- Titre dynamique SEO -->
     <title><?php echo Seo::getTitle($currentPage, $currentAction); ?></title>

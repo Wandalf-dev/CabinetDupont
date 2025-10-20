@@ -36,7 +36,7 @@ include __DIR__ . '/templates/flash-messages.php'; ?>
       <div class="doctor-section">
         <div class="doctor-image">
           <img
-            src="/cabinetdupont/assets/pharmacien-au-travail.jpg"
+            src="<?php echo BASE_URL; ?>/assets/pharmacien-au-travail.jpg"
             alt="Dr Dupont au cabinet"
             loading="lazy"
           />

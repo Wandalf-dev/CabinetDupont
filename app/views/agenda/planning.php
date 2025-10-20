@@ -1,18 +1,19 @@
 <?php
 require_once __DIR__ . '/../templates/header.php';
 require_once __DIR__ . '/../templates/flash-messages.php';
+$v = time(); // Version pour forcer le rechargement du cache
 ?>
-<link rel="stylesheet" href="/CabinetDupont/css/modules/service/services-legend.css">
-<link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/agenda.css">
-<link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/agenda-appointments.css">
-<link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/agenda-unavailable.css">
-<link rel="stylesheet" href="/CabinetDupont/css/components/tooltip.css">
-<link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/agenda-grid.css">
-<link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/agenda-slots.css">
-<link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/agenda-day-view.css">
-<link rel="stylesheet" href="/CabinetDupont/css/components/context-menu.css">
-<link rel="stylesheet" href="/CabinetDupont/css/components/confirmation-popup.css">
-<link rel="stylesheet" href="/CabinetDupont/css/modules/agenda/edit-appointment.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/service/services-legend.css?v=<?php echo $v; ?>">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/agenda/agenda.css?v=<?php echo $v; ?>">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/agenda/agenda-appointments.css?v=<?php echo $v; ?>">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/agenda/agenda-unavailable.css?v=<?php echo $v; ?>">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/tooltip.css?v=<?php echo $v; ?>">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/agenda/agenda-grid.css?v=<?php echo $v; ?>">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/agenda/agenda-slots.css?v=<?php echo $v; ?>">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/agenda/agenda-day-view.css?v=<?php echo $v; ?>">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/context-menu.css?v=<?php echo $v; ?>">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/confirmation-popup.css?v=<?php echo $v; ?>">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/agenda/edit-appointment.css?v=<?php echo $v; ?>">
 
 <main class="calendar-container">
     <div class="calendar-header">

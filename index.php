@@ -10,7 +10,25 @@ require_once __DIR__ . '/config/config.php';
 // Autoloader
 spl_autoload_register(function ($class) {
     // Conversion du namespace en chemin de fichier
-    $path = __DIR__ . '/' . str_replace('\\', '/', $class) . '.php';
+    // App\Core\App devient app/core/App.php
+    $classPath = str_replace('\\', '/', $class);
+    
+    // Séparer les parties du namespace
+    $parts = explode('/', $classPath);
+    
+    // Le premier élément (App) devient 'app' en minuscule
+    if (isset($parts[0]) && $parts[0] === 'App') {
+        $parts[0] = 'app';
+    }
+    
+    // Le deuxième élément (Core, Controllers, Models) devient minuscule
+    if (isset($parts[1])) {
+        $parts[1] = strtolower($parts[1]);
+    }
+    
+    // Reconstituer le chemin
+    $path = __DIR__ . '/' . implode('/', $parts) . '.php';
+    
     if (file_exists($path)) {
         require_once $path;
     }

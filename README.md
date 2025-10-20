@@ -9,6 +9,19 @@
 
 Application web complète de gestion de cabinet dentaire développée en PHP natif avec architecture MVC.
 
+## 🌐 Site en ligne
+
+Le site est actuellement **déployé et accessible en ligne** à l'adresse :
+
+### 🔗 **[https://dupontcare.wuaze.com](https://dupontcare.wuaze.com)**
+
+**Hébergement :** InfinityFree (hébergement gratuit)  
+**Statut :** ✅ En production  
+**SSL/HTTPS :** ✅ Certificat SSL actif  
+**Base de données :** MySQL (sql210.infinityfree.com)
+
+> **Note :** Le site a été migré avec succès depuis un environnement local (XAMPP) vers InfinityFree en octobre 2025. Toutes les fonctionnalités sont opérationnelles en production.
+
 ## 📋 Table des matières
 
 - [Aperçu](#-aperçu)
@@ -168,13 +181,119 @@ Ouvrir un navigateur et accéder à :
 
 ### Configuration de la base URL
 
-Si le projet n'est pas dans le dossier racine `CabinetDupont`, modifier `config.php` :
+Le fichier `config/config.php` détecte automatiquement l'environnement (local vs production) :
 
 ```php
 <?php
-// Si le projet est dans un sous-dossier différent
-define('BASE_URL', '/mon-dossier');
+// Détection automatique
+$isLocal = ($host === 'localhost' || strpos($host, '127.0.0.1') !== false);
+
+if ($isLocal) {
+    // En local (XAMPP)
+    define('BASE_URL', $protocol . '://' . $host . '/cabinetdupont-1');
+} else {
+    // En production (InfinityFree)
+    define('BASE_URL', $protocol . '://' . $host);
+}
 ```
+
+Si votre dossier local a un nom différent, ajustez la ligne `BASE_URL` en local.
+
+## 🚀 Déploiement en production (Migration vers InfinityFree)
+
+Le site a été migré avec succès depuis un environnement local vers l'hébergement gratuit InfinityFree. Voici le processus complet :
+
+### Étape 1 : Préparation de l'hébergement
+
+1. **Créer un compte sur [InfinityFree](https://infinityfree.com)**
+2. **Créer un site web** avec le sous-domaine choisi (ex: `dupontcare.wuaze.com`)
+3. **Créer une base de données MySQL** via le panneau de contrôle
+   - Nom : `if0_40207543_bdd_dupont`
+   - Hôte : `sql210.infinityfree.com`
+   - Utilisateur : Fourni par InfinityFree
+   - Mot de passe : Fourni par InfinityFree
+
+### Étape 2 : Configuration des fichiers
+
+1. **Mettre à jour `app/config/database.php`** avec les credentials de production :
+```php
+<?php
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$isLocal = ($host === 'localhost' || strpos($host, '127.0.0.1') !== false);
+
+if ($isLocal) {
+    return [
+        'host' => 'localhost',
+        'dbname' => 'bdd_dupont',
+        'username' => 'root',
+        'password' => '',
+        'charset' => 'utf8mb4'
+    ];
+} else {
+    return [
+        'host' => 'sql210.infinityfree.com',
+        'dbname' => 'if0_40207543_bdd_dupont',
+        'username' => 'if0_40207543',
+        'password' => 'VOTRE_MOT_DE_PASSE',
+        'charset' => 'utf8mb4'
+    ];
+}
+```
+
+2. **Vérifier `config/config.php`** pour la détection automatique de l'environnement
+
+### Étape 3 : Upload des fichiers
+
+1. **Se connecter via FTP** (FileZilla recommandé)
+   - Hôte : `ftpupload.net`
+   - Utilisateur : Compte InfinityFree
+   - Port : 21
+2. **Uploader tous les fichiers** dans le dossier `htdocs/`
+3. **Vérifier les permissions** du dossier `public/uploads/` (chmod 755)
+
+### Étape 4 : Import de la base de données
+
+1. **Accéder à phpMyAdmin** depuis le panneau InfinityFree
+2. **Sélectionner la base de données**
+3. **Importer le fichier** `Backup/if0_40207543_bdd_dupont.sql`
+4. **Vérifier** que toutes les tables sont créées
+
+### Étape 5 : Tests post-migration
+
+- ✅ Page d'accueil accessible
+- ✅ Connexion administrateur fonctionnelle
+- ✅ Chargement des CSS/JS
+- ✅ Animations Lottie affichées
+- ✅ Images chargées depuis `/assets/`
+- ✅ Système de réservation opérationnel
+- ✅ Planning agenda fonctionnel
+- ✅ Upload d'images opérationnel
+
+### Problèmes courants et solutions
+
+#### Problème 1 : Chemin sensible à la casse
+**Symptôme :** Erreur "Class App\Core\App not found"  
+**Solution :** Les serveurs Linux sont sensibles à la casse. Vérifier que :
+- Les noms de fichiers correspondent exactement aux noms de classes
+- `Database.php` (pas `database.php`)
+- Chemins en minuscules : `app/core/App.php`
+
+#### Problème 2 : Images/CSS ne se chargent pas
+**Symptôme :** Affichage cassé, images manquantes  
+**Solution :** Vérifier que tous les chemins utilisent `<?php echo BASE_URL; ?>` au lieu de chemins en dur
+
+#### Problème 3 : Erreur de connexion base de données
+**Symptôme :** "Connection failed: Access denied"  
+**Solution :** Vérifier les credentials dans `app/config/database.php`
+
+### Performances et limitations InfinityFree
+
+- ✅ **SSL/HTTPS gratuit** (Let's Encrypt)
+- ✅ **Espace disque illimité**
+- ✅ **Bande passante illimitée**
+- ⚠️ **Limite de 50 000 hits/jour**
+- ⚠️ **Temps d'inactivité** : Le site peut être suspendu après plusieurs jours d'inactivité
+- ⚠️ **Performance** : Plus lent qu'un hébergement payant
 
 ### Configuration des chemins
 
@@ -440,10 +559,11 @@ Les contributions sont les bienvenues ! Pour contribuer :
 
 ## 🔗 Liens
 
-- **GitHub** : [https://github.com/Wandalf-dev/CabinetDupont.git](https://github.com/Wandalf-dev/CabinetDupont.git)
-- **Site web** : [http://localhost/CabinetDupont](http://localhost/CabinetDupont)
-- **Documentation** : Ce README
-- **Issues** : [GitHub Issues](https://github.com/Wandalf-dev/CabinetDupont/issues)
+- **🌐 Site en production** : [https://dupontcare.wuaze.com](https://dupontcare.wuaze.com)
+- **💻 Dépôt GitHub** : [https://github.com/Wandalf-dev/CabinetDupont](https://github.com/Wandalf-dev/CabinetDupont)
+- **🐛 Signaler un bug** : [GitHub Issues](https://github.com/Wandalf-dev/CabinetDupont/issues)
+- **📖 Documentation** : Ce README
+- **🏠 Version locale** : [http://localhost/cabinetdupont-1](http://localhost/cabinetdupont-1)
 
 ## 📞 Support
 
@@ -460,7 +580,40 @@ Pour toute question ou problème :
 - GitHub : [@Wandalf-dev](https://github.com/Wandalf-dev)
 - Projet : Cabinet Dupont
 
-## 📄 License
+## � Changelog
+
+### Version 1.0.0 - Octobre 2025
+
+#### 🎉 Mise en production
+- ✅ **Migration vers InfinityFree** : Site déployé sur https://dupontcare.wuaze.com
+- ✅ **Certificat SSL** : HTTPS activé automatiquement
+- ✅ **Base de données en production** : MySQL sur sql210.infinityfree.com
+
+#### 🐛 Corrections post-migration
+- ✅ **Chemins dynamiques** : Remplacement des chemins en dur par `BASE_URL`
+- ✅ **Case-sensitivity** : Correction des noms de fichiers pour compatibilité Linux
+- ✅ **Autoloader** : Conversion des namespaces en chemins minuscules
+- ✅ **Encodage CSS** : Correction du fichier `agenda-grid.css` corrompu
+- ✅ **Animations Lottie** : Remplacement de `Dentist.json` par `Doctor.json`
+- ✅ **Système de réservation** : 
+  - Correction de la vérification des créneaux consécutifs
+  - Ajout de la validation de consécutivité (espacés de 30 min exactement)
+  - Correction de la vérification du délai de 4h
+  - Amélioration des messages d'erreur pour le diagnostic
+
+#### 🎨 Améliorations UI/UX
+- ✅ **Responsive** : Réduction de l'écart entre animation et titre sur mobile
+- ✅ **Taille animation** : Réduction de l'animation Lottie (500px → mobile optimisé)
+- ✅ **Toggle mot de passe** : Ajout de l'icône œil sur la page de connexion
+- ✅ **CSS Grid** : Correction de l'affichage des bordures de l'agenda
+
+#### 🔧 Optimisations techniques
+- ✅ **Détection automatique environnement** : Local vs Production
+- ✅ **Suppression des logs debug** : Nettoyage du code de production
+- ✅ **Gestion d'erreurs** : Amélioration des messages d'erreur en production
+- ✅ **Vérification chevauchement RDV** : Utilisation de la vraie durée des RDV existants
+
+## �📄 License
 
 Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 

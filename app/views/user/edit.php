@@ -1,5 +1,5 @@
 <?php include __DIR__ . '/../templates/header.php'; ?>
-<link rel="stylesheet" href="/CabinetDupont/css/pages/edit-profile.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/edit-profile.css">
 <!-- Font Awesome pour les icônes -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <!-- Flatpickr CSS -->
@@ -212,9 +212,9 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
-<script src="/CabinetDupont/js/components/password-toggle.js"></script>
-<script src="/CabinetDupont/js/utils/phone-formatter.js"></script>
-<script src="/CabinetDupont/js/utils/date-formatter.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/components/password-toggle.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/utils/phone-formatter.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/utils/date-formatter.js"></script>
 
 <script>
 // Calcul des dates limites

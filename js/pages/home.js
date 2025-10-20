@@ -2,8 +2,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     const lottieContainer = document.getElementById("lottie-animation");
     if (lottieContainer) {
-        // Récupère l'URL de base depuis une balise meta ou utilise un chemin relatif
-        const baseUrl = document.querySelector('meta[name="base-url"]')?.content || window.location.origin + '/cabinetdupont';
+        // Récupère l'URL de base depuis la balise meta
+        const baseUrl = document.querySelector('meta[name="base-url"]')?.content || '';
+        
+        // Construire le chemin correct (éviter les doubles slashes)
+        const animationPath = baseUrl ? baseUrl + "/assets/Doctor.json" : "/assets/Doctor.json";
+        
+        console.log('Tentative de chargement Lottie:', animationPath);
         
         try {
             const animation = lottie.loadAnimation({
@@ -11,14 +16,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 renderer: "svg",
                 loop: true,
                 autoplay: true,
-                path: baseUrl + "/assets/Dentist.json",
+                path: animationPath,
                 rendererSettings: {
                     preserveAspectRatio: 'xMidYMid slice',
                     progressiveLoad: true,
                     hideOnTransparent: true
                 }
             });
+            
+            animation.addEventListener('data_ready', function() {
+                console.log('✅ Animation Lottie chargée avec succès');
+            });
+            
+            animation.addEventListener('data_failed', function() {
+                console.error('❌ Échec du chargement de l\'animation Lottie');
+            });
         } catch (error) {
+            console.error('❌ Erreur Lottie:', error);
         }
     }
 

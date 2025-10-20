@@ -3,8 +3,8 @@
 require_once __DIR__ . '/../templates/header.php';
 require_once __DIR__ . '/../templates/flash-messages.php';
 ?>
-<link rel="stylesheet" href="/CabinetDupont/css/modules/service/service-create.css">
-<link rel="stylesheet" href="/CabinetDupont/css/components/color-picker.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/service/service-create.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/components/color-picker.css">
 <style>
 /* Style pour limiter la largeur du formulaire */
 .actu-create-section {

@@ -341,26 +341,12 @@ class CreneauModel extends Model
                       SELECT 1 FROM rendezvous r
                       WHERE r.creneau_id = c.id AND r.statut != :annule
                   )
-                  AND NOT EXISTS (
-                      SELECT 1
-                      FROM rendezvous r2
-                      JOIN creneau c2 ON r2.creneau_id = c2.id
-                      WHERE r2.statut != :annule2
-                        AND DATE(c2.debut) = DATE(c.debut)
-                        AND (
-                             (c2.debut >= c.debut AND c2.debut < DATE_ADD(c.debut, INTERVAL :d1 MINUTE))
-                          OR (c2.debut < c.debut AND DATE_ADD(c2.debut, INTERVAL :d2 MINUTE) > c.debut)
-                        )
-                  )
                 ORDER BY c.debut ASC";
 
         $params = [
             ':d'              => $date,
             ':indispo'        => self::STATUT_INDISPONIBLE,
             ':annule'         => self::STATUT_ANNULE,
-            ':annule2'        => self::STATUT_ANNULE,
-            ':d1'             => $duree,
-            ':d2'             => $duree,
         ];
         
         // Ajouter le paramètre de délai uniquement si c'est le jour actuel
@@ -385,6 +371,10 @@ class CreneauModel extends Model
                            AND c2.debut <  DATE_ADD((SELECT debut FROM creneau WHERE id = :id2), INTERVAL :d MINUTE)
                            AND c2.est_reserve = 0
                            AND c2.statut != :indispo
+                           AND NOT EXISTS (
+                               SELECT 1 FROM rendezvous r
+                               WHERE r.creneau_id = c2.id AND r.statut != :annule_range
+                           )
                          ORDER BY c2.debut ASC";
             $stmtRange = $this->db->prepare($sqlRange);
             $stmtRange->execute([
@@ -392,12 +382,31 @@ class CreneauModel extends Model
                 ':id1' => $slot['id'], 
                 ':id2' => $slot['id'], 
                 ':d' => $duree,
-                ':indispo' => self::STATUT_INDISPONIBLE
+                ':indispo' => self::STATUT_INDISPONIBLE,
+                ':annule_range' => self::STATUT_ANNULE
             ]);
             $range = $stmtRange->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
+            // Vérifier que les créneaux sont consécutifs (espacés de 30 minutes)
             if (count($range) >= $needCount) {
-                $result[] = $slot;
+                $isConsecutive = true;
+                for ($i = 0; $i < $needCount - 1; $i++) {
+                    if (!isset($range[$i]) || !isset($range[$i + 1])) {
+                        $isConsecutive = false;
+                        break;
+                    }
+                    $time1 = strtotime($range[$i]['debut']);
+                    $time2 = strtotime($range[$i + 1]['debut']);
+                    // Vérifier que l'écart est exactement 30 minutes (1800 secondes)
+                    if ($time2 - $time1 !== 1800) {
+                        $isConsecutive = false;
+                        break;
+                    }
+                }
+                
+                if ($isConsecutive) {
+                    $result[] = $slot;
+                }
             }
         }
 
@@ -564,7 +573,7 @@ class CreneauModel extends Model
                           AND DATE(c.debut) = DATE(:debut)
                           AND (
                               (c.debut >= :debut AND c.debut < DATE_ADD(:debut2, INTERVAL :duree MINUTE))
-                           OR (c.debut < :debut3 AND DATE_ADD(c.debut, INTERVAL :duree2 MINUTE) > :debut4)
+                           OR (c.debut < :debut3 AND DATE_ADD(c.debut, INTERVAL r.duree MINUTE) > :debut4)
                           )";
             $stmtChev = $this->db->prepare($sqlChev);
             $stmtChev->execute([
@@ -575,7 +584,6 @@ class CreneauModel extends Model
                 ':debut3' => $start['debut'],
                 ':debut4' => $start['debut'],
                 ':duree'  => $duree,
-                ':duree2' => $duree,
             ]);
             $chevauchement = (int)$stmtChev->fetchColumn();
             if ($chevauchement > 0) {
@@ -588,6 +596,11 @@ class CreneauModel extends Model
                            AND debut >= :debut
                            AND debut <  DATE_ADD(:debut2, INTERVAL :duree MINUTE)
                            AND est_reserve = 0
+                           AND statut != :indispo
+                           AND NOT EXISTS (
+                               SELECT 1 FROM rendezvous r
+                               WHERE r.creneau_id = creneau.id AND r.statut != :annule_range
+                           )
                          ORDER BY debut ASC";
             $stmtRange = $this->db->prepare($sqlRange);
             $stmtRange->execute([
@@ -595,12 +608,32 @@ class CreneauModel extends Model
                 ':debut'  => $start['debut'],
                 ':debut2' => $start['debut'],
                 ':duree'  => $duree,
+                ':indispo' => self::STATUT_INDISPONIBLE,
+                ':annule_range' => self::STATUT_ANNULE
             ]);
             $range = $stmtRange->fetchAll(PDO::FETCH_COLUMN) ?: [];
 
             $needCount = max(1, (int)ceil($duree / 30));
             if (count($range) < $needCount) {
-                throw new \Exception("Pas assez de créneaux consécutifs disponibles");
+                throw new \Exception("Pas assez de créneaux consécutifs disponibles (trouvés: " . count($range) . ", requis: " . $needCount . ")");
+            }
+            
+            // Vérifier que les créneaux sont vraiment consécutifs (espacés de 30 minutes)
+            if ($needCount > 1) {
+                $stmtVerif = $this->db->prepare("SELECT debut FROM creneau WHERE id IN (" . implode(',', array_fill(0, count($range), '?')) . ") ORDER BY debut ASC");
+                $stmtVerif->execute($range);
+                $times = $stmtVerif->fetchAll(PDO::FETCH_COLUMN);
+                
+                for ($i = 0; $i < $needCount - 1; $i++) {
+                    if (!isset($times[$i]) || !isset($times[$i + 1])) {
+                        throw new \Exception("Créneaux manquants pour la vérification de consécutivité");
+                    }
+                    $time1 = strtotime($times[$i]);
+                    $time2 = strtotime($times[$i + 1]);
+                    if ($time2 - $time1 !== 1800) {
+                        throw new \Exception("Les créneaux ne sont pas consécutifs (écart: " . ($time2 - $time1) . "s au lieu de 1800s)");
+                    }
+                }
             }
 
             $stmtCheck = $this->db->prepare("SELECT id FROM rendezvous WHERE creneau_id = ? AND statut = 'ANNULE'");
@@ -625,11 +658,13 @@ class CreneauModel extends Model
             return true;
         } catch (\Exception $e) {
             if ($this->db->inTransaction()) $this->db->rollBack();
+            $this->logDebug("Erreur createRendezVous", ['error' => $e->getMessage()]);
+            error_log("Erreur createRendezVous: " . $e->getMessage());
             return false;
         }
     }
 
-    /** Génère des créneaux sur une période d’après les horaires */
+    /** Génère des créneaux sur une période d'après les horaires */
     public function genererCreneaux(int $agendaId, string $dateDebut, string $dateFin): bool
     {
         try {

@@ -110,8 +110,8 @@ include __DIR__ . '/../templates/flash-messages.php';
 </main>
 
 <!-- Style pour le formulaire -->
-<link rel="stylesheet" href="/CabinetDupont/css/pages/admin.css">
-<link rel="stylesheet" href="/CabinetDupont/css/modules/actu/actu-create.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/pages/admin.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/css/modules/actu/actu-create.css">
 
 <!-- Flatpickr CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -120,11 +120,11 @@ include __DIR__ . '/../templates/flash-messages.php';
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
 
 <!-- Script pour le toggle du mot de passe -->
-<script src="/CabinetDupont/js/components/password-toggle.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/components/password-toggle.js"></script>
 <!-- Script pour formater le numéro de téléphone -->
-<script src="/CabinetDupont/js/utils/phone-formatter.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/utils/phone-formatter.js"></script>
 <!-- Script pour formater la date -->
-<script src="/CabinetDupont/js/utils/date-formatter.js"></script>
+<script src="<?php echo BASE_URL; ?>/js/utils/date-formatter.js"></script>
 
 <!-- JS: Flatpickr -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
