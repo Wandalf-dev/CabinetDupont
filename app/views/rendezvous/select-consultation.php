@@ -10,7 +10,7 @@ require_once __DIR__ . '/../templates/flash-messages.php';
     <section class="select-consultation">
         <h1 class="page-title">
             <i class="fas fa-stethoscope"></i>
-            Choisissez votre motif de consultation
+            Choisissez le motif de consultation
         </h1>
         
         <div class="services-grid">

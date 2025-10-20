@@ -1,6 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Fonction pour formater la date pendant la saisie
     function initializeDateFormatter(element) {
+        // Ne pas appliquer Cleave sur les input[type="date"] (natifs en responsive)
+        if (element.type === 'date') {
+            return;
+        }
+        
         new Cleave(element, {
             date: true,
             datePattern: ['d', 'm', 'Y'],

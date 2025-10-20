@@ -123,8 +123,7 @@ include __DIR__ . '/../templates/flash-messages.php';
 <script src="<?php echo BASE_URL; ?>/js/components/password-toggle.js"></script>
 <!-- Script pour formater le numéro de téléphone -->
 <script src="<?php echo BASE_URL; ?>/js/utils/phone-formatter.js"></script>
-<!-- Script pour formater la date -->
-<script src="<?php echo BASE_URL; ?>/js/utils/date-formatter.js"></script>
+<!-- date-formatter.js retiré : Flatpickr gère déjà le formatage des dates -->
 
 <!-- JS: Flatpickr -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -137,12 +136,23 @@ minDate.setFullYear(today.getFullYear() - 120); // Maximum 120 ans
 const maxDate = new Date();
 maxDate.setFullYear(today.getFullYear() - 3); // Minimum 3 ans
 
+// Initialiser Flatpickr
 flatpickr(".flatpickr", {
     locale: "fr",
     dateFormat: "d/m/Y",
     allowInput: true,
     maxDate: maxDate, // Ne peut pas être plus récent que 3 ans
-    minDate: minDate, // Ne peut pas être plus ancien que 120 ans
-    defaultDate: new Date(today.getFullYear() - 30, today.getMonth(), today.getDate()) // Défaut: 30 ans
+    minDate: minDate // Ne peut pas être plus ancien que 120 ans
+    // defaultDate retiré : on garde la valeur du champ (date réelle du patient)
 });
+
+// Initialiser Cleave.js pour le formatage automatique des / (desktop uniquement)
+const dateInput = document.querySelector('.flatpickr');
+if (dateInput && dateInput.type !== 'date') {
+    new Cleave(dateInput, {
+        date: true,
+        datePattern: ['d', 'm', 'Y'],
+        delimiter: '/'
+    });
+}
 </script>

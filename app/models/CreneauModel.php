@@ -384,6 +384,35 @@ class CreneauModel extends Model
         $needCount = max(1, (int)ceil($duree / 30));
 
         foreach ($departSlots as $slot) {
+            // VÉRIFICATION DE CHEVAUCHEMENT : vérifier qu'aucun RDV existant ne chevauche la période [slot.debut, slot.debut + duree]
+            $sqlChev = "SELECT COUNT(*)
+                        FROM rendezvous r
+                        JOIN creneau c ON r.creneau_id = c.id
+                        WHERE r.statut != :annule
+                          AND c.agenda_id = (SELECT agenda_id FROM creneau WHERE id = :slot_id)
+                          AND DATE(c.debut) = DATE(:slot_debut)
+                          AND (
+                              (c.debut >= :slot_debut1 AND c.debut < DATE_ADD(:slot_debut2, INTERVAL :duree MINUTE))
+                           OR (c.debut < :slot_debut3 AND DATE_ADD(c.debut, INTERVAL r.duree MINUTE) > :slot_debut4)
+                          )";
+            $stmtChev = $this->db->prepare($sqlChev);
+            $stmtChev->execute([
+                ':annule' => self::STATUT_ANNULE,
+                ':slot_id' => $slot['id'],
+                ':slot_debut' => $slot['debut'],
+                ':slot_debut1' => $slot['debut'],
+                ':slot_debut2' => $slot['debut'],
+                ':slot_debut3' => $slot['debut'],
+                ':slot_debut4' => $slot['debut'],
+                ':duree' => $duree,
+            ]);
+            $chevauchement = (int)$stmtChev->fetchColumn();
+            
+            // Si chevauchement détecté, passer au créneau suivant
+            if ($chevauchement > 0) {
+                continue;
+            }
+            
             $sqlRange = "SELECT c2.id, c2.debut
                          FROM creneau c2
                          WHERE c2.agenda_id = (SELECT agenda_id FROM creneau WHERE id = :id0)

@@ -27,6 +27,10 @@ use App\Core\Seo;
     <meta name="csrf-token" content="<?php echo \App\Core\Csrf::generateToken(); ?>" />
     <meta name="base-url" content="<?php echo BASE_URL; ?>" />
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="<?php echo BASE_URL; ?>/assets/favicon.svg" />
+    <link rel="alternate icon" href="<?php echo BASE_URL; ?>/assets/favicon.svg" />
+    
     <!-- Titre dynamique SEO -->
     <title><?php echo Seo::getTitle($currentPage, $currentAction); ?></title>
     

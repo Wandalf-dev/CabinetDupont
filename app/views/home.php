@@ -17,6 +17,13 @@ include __DIR__ . '/templates/flash-messages.php'; ?>
           <h1 class="hero-title">
             Bienvenue chez <span class="hero-highlight">DupontCare</span>
           </h1>
+        </div>
+        
+        <div class="hero-visual">
+          <div id="lottie-animation"></div>
+        </div>
+        
+        <div class="hero-text-content">
           <p class="hero-subtitle">
             Un <strong>cabinet dentaire</strong> humain et à votre écoute, pour prendre soin de votre sourire avec expertise et bienveillance.
           </p>
@@ -25,10 +32,6 @@ include __DIR__ . '/templates/flash-messages.php'; ?>
              <i class="fas fa-calendar-check"></i>
              Prendre rendez-vous
           </a>
-        </div>
-        
-        <div class="hero-visual">
-          <div id="lottie-animation"></div>
         </div>
       </div>
 
@@ -79,21 +82,6 @@ include __DIR__ . '/templates/flash-messages.php'; ?>
               <article class="service-card">
                 <?php if (!empty($service['image'])): ?>
                   <!-- Affiche l'image du service si elle existe -->
-                  <img
-                    src="<?php echo BASE_URL; ?>/public/uploads/<?php echo htmlspecialchars($service['image']); ?>"
-                    alt="<?php echo htmlspecialchars($service['titre'] ?? 'Service'); ?>"
-                    class="service-icon"
-                    loading="lazy"
-                  />
-                <?php endif; ?>
-                <h3><?php echo htmlspecialchars($service['titre'] ?? ''); ?></h3>
-                <p><?php echo htmlspecialchars($service['description'] ?? ''); ?></p>
-              </article>
-            <?php endforeach; ?>
-            <!-- Duplication des cartes pour effet infini -->
-            <?php foreach ($services as $service): ?>
-              <article class="service-card" aria-hidden="true">
-                <?php if (!empty($service['image'])): ?>
                   <img
                     src="<?php echo BASE_URL; ?>/public/uploads/<?php echo htmlspecialchars($service['image']); ?>"
                     alt="<?php echo htmlspecialchars($service['titre'] ?? 'Service'); ?>"

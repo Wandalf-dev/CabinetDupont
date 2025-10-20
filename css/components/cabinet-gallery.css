@@ -108,6 +108,10 @@
     padding: 40px 0;
   }
 
+  .cabinet-gallery .container {
+    padding: 0 16px;
+  }
+
   .gallery-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -119,6 +123,7 @@
 
   .cabinet-gallery h2 {
     font-size: 1.60rem;
+    text-align: center;
   }
 
   .gallery-caption {
@@ -140,6 +145,8 @@
   .cabinet-gallery-intro {
     font-size: 1rem;
     margin-bottom: 32px;
+    text-align: center;
+    padding: 0 16px;
   }
 
   .cabinet-gallery::before {

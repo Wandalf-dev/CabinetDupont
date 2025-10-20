@@ -258,6 +258,12 @@ body {
   gap: 42px;
 }
 
+.home-page .hero-text-content {
+  display: flex;
+  flex-direction: column;
+  gap: 42px;
+}
+
 .home-page .hero-badge {
   display: inline-block;
   background: rgba(58, 110, 165, 0.1);
@@ -435,13 +441,48 @@ body {
 
   .home-page .hero-main {
     grid-template-columns: 1fr;
-    gap: 0px;
+    gap: 32px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Ordre : titre (1) → image (2) → texte + bouton (3) */
+  .home-page .hero-content {
+    order: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 0 !important;
   }
 
   .home-page .hero-visual {
-    order: -1;
-    margin-bottom: -60px;
-    margin-top: 0px;
+    order: 2;
+    margin-bottom: 0px;
+  }
+
+  .home-page .hero-text-content {
+    order: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+  }
+
+  .home-page .hero-title {
+    margin-bottom: 0px;
+  }
+
+  .home-page .hero-subtitle {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0px;
+  }
+  
+  .btn-hero {
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 
   #lottie-animation {
@@ -472,21 +513,6 @@ body {
     margin-left: auto;
     margin-right: auto;
   }
-
-  .home-page .hero-content {
-    align-items: center;
-    text-align: center;
-  }
-
-  .home-page .hero-subtitle {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  .btn-hero {
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
 }
 
 @media (max-width: 640px) {
@@ -497,12 +523,20 @@ body {
 
   .home-page .hero-main {
     margin-bottom: 48px;
-    gap: 0px;
+    gap: 24px;
+  }
+
+  .home-page .hero-title {
+    margin-bottom: 0px;
   }
 
   .home-page .hero-visual {
-    margin-bottom: -70px;
+    margin-bottom: 0px;
     margin-top: 0px;
+  }
+
+  .home-page .hero-text-content {
+    gap: 20px;
   }
 
   #lottie-animation {
@@ -658,30 +692,119 @@ body {
 
 /* ========== CAROUSEL SERVICES ANIMATION CSS ========== */
 .services-carousel {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   width: 100%;
   position: relative;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  
+  /* Pas de snap pour permettre le scroll infini fluide */
+  scroll-snap-type: none;
+  
+  /* Masquer la scrollbar sur desktop ET mobile */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Masquer scrollbar webkit (Chrome, Safari) */
+.services-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Effet de fade sur les bords */
+.services-carousel::before,
+.services-carousel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.3s;
+}
+
+.services-carousel::before {
+  left: 0;
+  background: linear-gradient(to right, #f8f9fa, transparent);
+}
+
+.services-carousel::after {
+  right: 0;
+  background: linear-gradient(to left, #f8f9fa, transparent);
 }
 
 .services-track {
   display: flex;
   gap: 32px;
-  will-change: transform;
+  padding: 20px 40px 30px 40px;
+  width: fit-content;
 }
 
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-@media (max-width: 600px) {
+/* ========== RESPONSIVE MOBILE ========== */
+@media (max-width: 768px) {
+  .services-carousel {
+    overflow-x: scroll;
+    scroll-padding: 20px;
+  }
+  
+  .services-carousel::before,
+  .services-carousel::after {
+    width: 20px;
+  }
+  
+  .services-track {
+    gap: 16px;
+    padding: 15px 20px 25px 20px;
+  }
+  
+  /* Cartes optimisées pour mobile */
+  .service-card {
+    min-width: 280px;
+    max-width: 280px;
+    flex: 0 0 280px;
+    min-height: 300px;
+    padding: 20px 16px;
+    scroll-snap-align: center;
+  }
+  
   .service-card img {
     width: 100%;
-    height: 120px;
+    height: 140px;
+    margin-bottom: 16px;
   }
+  
+  .service-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+  
+  .service-card p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    max-height: 70px;
+  }
+}
+
+/* Pour très petits écrans */
+@media (max-width: 480px) {
+  .services-track {
+    gap: 12px;
+    padding: 15px 16px 25px 16px;
+  }
+  
   .service-card {
-    min-height: 260px;
-    padding: 16px 8px;
+    min-width: calc(100vw - 80px);
+    max-width: calc(100vw - 80px);
+    flex: 0 0 calc(100vw - 80px);
+    min-height: 280px;
+  }
+  
+  .service-card img {
+    height: 130px;
   }
 }
 
@@ -813,13 +936,19 @@ body {
     padding: 48px 0;
   }
   
+  .hours .container {
+    padding: 0 20px;
+  }
+  
   .hours h2 {
     font-size: 1.75rem;
+    text-align: center;
   }
   
   .hours-intro {
     font-size: 1rem;
     margin-bottom: 32px;
+    text-align: center;
   }
   
   .hours-grid {
@@ -855,11 +984,18 @@ body {
 
   .services h2 {
     font-size: 1.75rem;
+    text-align: center;
   }
 
   .services-intro {
     font-size: 1rem;
     margin-bottom: 32px;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .services .container {
+    padding: 0 20px;
   }
 
   /* Footer */
@@ -885,14 +1021,22 @@ body {
     padding: 40px 0;
   }
   
+  .services .container {
+    padding: 0 16px;
+    text-align: center;
+  }
+  
   .services h2 {
     font-size: 1.5rem;
     margin-bottom: 6px;
+    text-align: center;
   }
   
   .services-intro {
     font-size: 0.95rem;
     margin-bottom: 24px;
+    text-align: center;
+    padding: 0 16px;
   }
   
   .service-card {
@@ -907,12 +1051,14 @@ body {
   .hours h2 {
     font-size: 1.5rem;
     margin-bottom: 6px;
+    text-align: center;
   }
   
   .hours-intro {
     font-size: 0.95rem;
     margin-bottom: 24px;
     padding: 0 16px;
+    text-align: center;
   }
   
   .hours .container {
@@ -1011,7 +1157,11 @@ body {
 
 @media (max-width: 480px) {
   .home-page .hero-title {
-    font-size: 2.4rem;
+    font-size: 2.1rem;
+  }
+
+  .home-page .hero-subtitle {
+    font-size: 1.2rem;
   }
 }
 
