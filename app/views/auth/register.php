@@ -7,7 +7,7 @@ include __DIR__ . '/../templates/header.php'; ?>
 <!-- Font Awesome pour les icônes -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- Flatpickr pour le calendrier -->
+<!-- Flatpickr CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 <main>
@@ -113,16 +113,17 @@ include __DIR__ . '/../templates/header.php'; ?>
                 </div>
             </div>
 
-            <!-- Champ date de naissance avec Flatpickr -->
+            <!-- Champ date de naissance avec Flatpickr (desktop) ou input natif (mobile) -->
             <div class="form-group">
                 <label for="date_naissance">Date de naissance</label>
                 <div class="date-input-container">
                     <input type="text" 
                            id="date_naissance" 
                            name="date_naissance" 
-                           class="flatpickr" 
+                           class="flatpickr date-input-field" 
                            placeholder="JJ/MM/AAAA"
                            autocomplete="off"
+                           data-format="d/m/Y"
                            value="<?php 
                                $date_value = $form_data['date_naissance'] ?? '';
                                if (!empty($date_value) && $date_value !== '0000-00-00') {
@@ -169,45 +170,23 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="<?php echo BASE_URL; ?>/js/utils/phone-formatter.js"></script>
 <script src="<?php echo BASE_URL; ?>/js/utils/date-formatter.js"></script>
 
-<!-- Initialisation Flatpickr -->
+<!-- Flatpickr initialization -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // Vérifier si Flatpickr est chargé
-    if (typeof flatpickr === 'undefined') {
-        return;
-    }
-    
-    // Vérifier si l'élément existe
-    const dateInput = document.querySelector('.flatpickr');
-    if (!dateInput) {
-        return;
-    }
-    
-    // Calcul des dates limites
     const today = new Date();
     const minDate = new Date();
     minDate.setFullYear(today.getFullYear() - 120); // Maximum 120 ans
     const maxDate = new Date();
     maxDate.setFullYear(today.getFullYear() - 3); // Minimum 3 ans
-    
-    // Initialiser Flatpickr
-    try {
-        const fp = flatpickr(".flatpickr", {
-            locale: "fr",
-            dateFormat: "d/m/Y",
-            allowInput: true,
-            maxDate: maxDate, // Ne peut pas être plus récent que 3 ans
-            minDate: minDate, // Ne peut pas être plus ancien que 120 ans
-            defaultDate: new Date(today.getFullYear() - 30, today.getMonth(), today.getDate()), // Défaut: 30 ans
-            disableMobile: false,
-            static: false,
-            clickOpens: true,
-            onChange: function(selectedDates, dateStr, instance) {
-            }
-        });
-    } catch(error) {
-    }
+
+    flatpickr(".flatpickr", {
+        locale: "fr",
+        dateFormat: "d/m/Y",
+        allowInput: true,
+        maxDate: maxDate,
+        minDate: minDate,
+        defaultDate: new Date(today.getFullYear() - 30, today.getMonth(), today.getDate())
+    });
 });
 </script>
 

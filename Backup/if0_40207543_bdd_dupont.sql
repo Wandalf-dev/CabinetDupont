@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : sql210.infinityfree.com
--- Généré le :  lun. 20 oct. 2025 à 07:32
+-- Généré le :  lun. 20 oct. 2025 à 12:44
 -- Version du serveur :  11.4.7-MariaDB
 -- Version de PHP :  7.2.22
 
@@ -225,7 +225,7 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (918, 1, 4, '2025-10-24 16:30:00', '2025-10-24 17:00:00', 1, 'disponible'),
 (919, 1, NULL, '2025-10-24 17:00:00', '2025-10-24 17:30:00', 0, 'disponible'),
 (920, 1, NULL, '2025-10-24 17:30:00', '2025-10-24 18:00:00', 0, 'disponible'),
-(921, 1, NULL, '2025-10-24 18:00:00', '2025-10-24 18:30:00', 0, 'disponible'),
+(921, 1, 8, '2025-10-24 18:00:00', '2025-10-24 18:30:00', 1, 'disponible'),
 (922, 1, NULL, '2025-10-24 18:30:00', '2025-10-24 19:00:00', 0, 'disponible'),
 (923, 1, NULL, '2025-10-24 19:00:00', '2025-10-24 19:30:00', 0, 'disponible'),
 (924, 1, NULL, '2025-10-24 19:30:00', '2025-10-24 20:00:00', 0, 'disponible'),
@@ -329,10 +329,10 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (1022, 1, NULL, '2025-10-30 18:30:00', '2025-10-30 19:00:00', 0, 'disponible'),
 (1023, 1, NULL, '2025-10-30 19:00:00', '2025-10-30 19:30:00', 0, 'disponible'),
 (1024, 1, NULL, '2025-10-30 19:30:00', '2025-10-30 20:00:00', 0, 'disponible'),
-(1065, 1, NULL, '2025-10-20 08:00:00', '2025-10-20 08:30:00', 0, 'disponible'),
+(1065, 1, NULL, '2025-10-20 08:00:00', '2025-10-20 08:30:00', 0, 'indisponible'),
 (1066, 1, NULL, '2025-10-20 08:30:00', '2025-10-20 09:00:00', 0, 'disponible'),
 (1067, 1, NULL, '2025-10-20 09:00:00', '2025-10-20 09:30:00', 0, 'disponible'),
-(1068, 1, 1, '2025-10-20 09:30:00', '2025-10-20 10:00:00', 1, 'disponible'),
+(1068, 1, NULL, '2025-10-20 09:30:00', '2025-10-20 10:00:00', 0, 'disponible'),
 (1069, 1, 8, '2025-10-20 10:00:00', '2025-10-20 10:30:00', 1, 'disponible'),
 (1070, 1, NULL, '2025-10-20 10:30:00', '2025-10-20 11:00:00', 0, 'disponible'),
 (1071, 1, 8, '2025-10-20 11:00:00', '2025-10-20 11:30:00', 1, 'disponible'),
@@ -341,7 +341,7 @@ INSERT INTO `creneau` (`id`, `agenda_id`, `service_id`, `debut`, `fin`, `est_res
 (1074, 1, NULL, '2025-10-20 14:30:00', '2025-10-20 15:00:00', 0, 'disponible'),
 (1075, 1, 2, '2025-10-20 15:00:00', '2025-10-20 15:30:00', 1, 'disponible'),
 (1076, 1, NULL, '2025-10-20 15:30:00', '2025-10-20 16:00:00', 0, 'disponible'),
-(1077, 1, NULL, '2025-10-20 16:00:00', '2025-10-20 16:30:00', 0, 'disponible'),
+(1077, 1, 1, '2025-10-20 16:00:00', '2025-10-20 16:30:00', 1, 'disponible'),
 (1078, 1, NULL, '2025-10-20 16:30:00', '2025-10-20 17:00:00', 0, 'disponible'),
 (1079, 1, 4, '2025-10-20 17:00:00', '2025-10-20 17:30:00', 1, 'disponible'),
 (1080, 1, NULL, '2025-10-20 17:30:00', '2025-10-20 18:00:00', 0, 'disponible'),
@@ -427,7 +427,7 @@ INSERT INTO `rendezvous` (`id`, `creneau_id`, `patient_id`, `medecin_id`, `secre
 (72, 1079, 6, 3, NULL, 'CONFIRME', 30, NULL),
 (73, 976, 6, 3, NULL, 'CONFIRME', 30, NULL),
 (74, 957, 7, 3, NULL, 'CONFIRME', 30, NULL),
-(75, 1068, 8, 3, NULL, 'CONFIRME', 30, NULL),
+(75, 1077, 8, 3, NULL, 'CONFIRME', 30, NULL),
 (76, 989, 8, 3, NULL, 'CONFIRME', 30, NULL),
 (77, 874, 9, 3, NULL, 'CONFIRME', 120, NULL),
 (78, 1011, 9, 3, NULL, 'ABSENT', 30, NULL),
@@ -443,14 +443,16 @@ INSERT INTO `rendezvous` (`id`, `creneau_id`, `patient_id`, `medecin_id`, `secre
 (88, 995, 15, 3, NULL, 'CONFIRME', 30, NULL),
 (89, 897, 16, 3, NULL, 'CONFIRME', 30, NULL),
 (90, 926, 16, 3, NULL, 'CONFIRME', 60, NULL),
-(91, 1071, 6, 3, NULL, 'CONFIRME', 60, NULL),
+(91, 1071, 6, 3, NULL, 'ABSENT', 60, NULL),
 (92, 1102, 6, 3, NULL, 'HONORE', 30, NULL),
 (93, 940, 6, 3, NULL, 'CONFIRME', 30, NULL),
 (94, 1100, 6, 3, NULL, 'HONORE', 60, NULL),
 (95, 914, 6, 3, NULL, 'CONFIRME', 120, NULL),
 (96, 1073, 6, 3, NULL, 'CONFIRME', 60, NULL),
-(97, 1069, 6, 3, NULL, 'CONFIRME', 60, NULL),
-(98, 1081, 6, 3, NULL, 'ANNULE', 30, NULL);
+(97, 1069, 6, 3, NULL, 'HONORE', 60, NULL),
+(98, 1081, 6, 3, NULL, 'ANNULE', 30, NULL),
+(99, 881, 20, 3, NULL, 'ANNULE', 120, NULL),
+(100, 921, 20, 3, NULL, 'CONFIRME', 60, NULL);
 
 -- --------------------------------------------------------
 
@@ -505,7 +507,7 @@ CREATE TABLE `utilisateur` (
 --
 
 INSERT INTO `utilisateur` (`id`, `role`, `nom`, `prenom`, `email`, `telephone`, `avatar`, `password_hash`, `date_inscription`, `date_naissance`) VALUES
-(3, 'MEDECIN', 'ADMIN', 'Dupont', 'admin@demo.fr', '+33-7-00-00-00-25', NULL, '$2y$10$QgebtCj.A6H2EiY0mK/wNuxUVG/8gkNxxqCzxC4hwqsc/lEAjuUhS', '2025-10-06 22:03:33', '1990-01-04'),
+(3, 'MEDECIN', 'ADMIN', 'Dupont', 'admin@demo.fr', '+33-7-00-00-00-25', NULL, '$2y$10$BKPYG2vu8Q3To.6x9dtqEOvi.zJvKVDHjEXpyReO28gTZHQMo7l3K', '2025-10-06 22:03:33', '1995-10-20'),
 (4, 'SECRETAIRE', 'DUPONT', 'Secretaire', 'secretaire@demo.fr', NULL, NULL, '$2y$10$leMn12WIQu9fTzcW.zGS4ePJsiEQC8DQVWXiXw4gGyxKop7ILSEnC', '2025-10-10 11:44:31', '1995-10-03'),
 (5, 'PATIENT', 'PATIENT', 'Jean', 'patient@demo.fr', '+33-6-85-99-66-33', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 13:26:16', '1988-10-13'),
 (6, 'PATIENT', 'PATIENT', 'Hugues', 'patient1@demo.fr', '+33-4-55-88-99-99', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:21:11', '2001-12-04'),
@@ -521,7 +523,8 @@ INSERT INTO `utilisateur` (`id`, `role`, `nom`, `prenom`, `email`, `telephone`, 
 (16, 'PATIENT', 'Faure', 'Antoine', 'antoine.faure@email.com', '+33-6-11-12-13-14', NULL, '$2y$10$mo8f4e7HCiOxYerUVK1WB.8zvi8rT3JvBrEFofyLRwfVZcOd8nDYi', '2025-10-10 22:27:14', '1983-05-08'),
 (17, 'PATIENT', 'WALK', 'James', 'walkjames@orange.fr', '6-66-66-66-66', NULL, '$2y$10$8.n08wayraozB/eITblyGO/pm15yTsJ0rNlrp25mktkSrKpq9e.Ma', '2025-10-19 18:10:28', '1995-10-19'),
 (18, 'PATIENT', 'BECHE', 'Jules', 'bechejules@orange.fr', '+33-7-78-88-88-78', NULL, '$2y$10$aG0M4EXt7Az/4Irk64jdA.MNQ2kZFkHnA48Pip7GaDOOBtDeOia6K', '2025-10-19 18:13:18', '1990-10-19'),
-(19, 'PATIENT', 'SAINT-LAURENT', 'Yves', 'ysl@gmail.com', '6-55-55-55-55', NULL, '$2y$10$Y5JEt7kBxE/Dst78jWNyNuepSqalNMpIhLqGH0i8qPQ2gy24chjna', '2025-10-19 18:39:28', '1991-11-11');
+(19, 'PATIENT', 'SAINT-LAURENT', 'Yves', 'ysl@gmail.com', '6-55-55-55-55', NULL, '$2y$10$Y5JEt7kBxE/Dst78jWNyNuepSqalNMpIhLqGH0i8qPQ2gy24chjna', '2025-10-19 18:39:28', '1991-11-11'),
+(20, 'PATIENT', 'VERNE', 'Jules', 'jules.verne@gmail.com', '7-77-77-77-77', NULL, '$2y$10$WXR1mbdim58Axlmx5AFAjeqRY2UyTsCz0JDEEJDLCwMYcqbdTKYEC', '2025-10-20 08:09:07', '1989-06-20');
 
 --
 -- Index pour les tables déchargées
@@ -628,7 +631,7 @@ ALTER TABLE `horaire_cabinet`
 -- AUTO_INCREMENT pour la table `rendezvous`
 --
 ALTER TABLE `rendezvous`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
 -- AUTO_INCREMENT pour la table `service`
@@ -640,7 +643,7 @@ ALTER TABLE `service`
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Contraintes pour les tables déchargées
