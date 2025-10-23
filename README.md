@@ -666,50 +666,41 @@ Thank you for using Cabinet Dupont! Don't hesitate to ⭐ the project on GitHub 
 
 ## �📄 License
 
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
-
+This project is licensed under MIT. See the `LICENSE` file for more details.
 ---
+## 🚨 Troubleshooting
+### Issue: Blank page
+**Solution**:
+1. Check that Apache and MySQL are started
+2. Check PHP error logs in `C:\xampp\apache\logs\error.log`
+3. Enable error display in `php.ini`: `display_errors = On`
 
-## 🚨 Dépannage
-
-### Problème : Page blanche
-
-**Solution** :
-1. Vérifier que Apache et MySQL sont démarrés
-2. Vérifier les logs d'erreur PHP dans `C:\xampp\apache\logs\error.log`
-3. Activer l'affichage des erreurs dans `php.ini` : `display_errors = On`
-
-### Problème : Erreur de connexion à la base de données
-
-**Solution** :
-1. Vérifier que la base `bdd_dupont` existe
-2. Vérifier les identifiants dans `app/config/database.php`
-3. Vérifier que MySQL est bien démarré
-
-### Problème : Images ne s'affichent pas
-
-**Solution** :
-1. Vérifier que le dossier `public/uploads/` existe
-2. Vérifier les permissions du dossier (755)
-3. Vérifier le chemin dans le code (relatif ou absolu)
-
-### Problème : CSS/JS ne se chargent pas
-
-**Solution** :
-1. Vérifier la `BASE_URL` dans `config.php`
-2. Vider le cache du navigateur (Ctrl + F5)
-3. Vérifier la console du navigateur pour les erreurs 404
-
-### Problème : Erreur 404 sur les routes
-
-**Solution** :
-1. Vérifier que le fichier `.htaccess` est présent à la racine
-2. Vérifier que `mod_rewrite` est activé dans Apache
-3. Vérifier la `BASE_URL` dans `config.php`
-
+### Issue: Database connection error
+**Solution**:
+1. Check that the `bdd_dupont` database exists
+2. Check credentials in `app/config/database.php`
+3. Check that MySQL is running
+   
+### Issue: Images not displaying
+**Solution**:
+1. Check that the `public/uploads/` folder exists
+2. Check folder permissions (755)
+3. Check the path in the code (relative or absolute)
+   
+### Issue: CSS/JS not loading
+**Solution**:
+1. Check the `BASE_URL` in `config.php`
+2. Clear browser cache (Ctrl + F5)
+3. Check browser console for 404 errors
+   
+### Issue: 404 error on routes
+**Solution**:
+1. Check that the `.htaccess` file is present at the root
+2. Check that `mod_rewrite` is enabled in Apache
+3. Check the `BASE_URL` in `config.php`
+   
 ---
-
-## 🎉 Remerciements
+## 🎉 Acknowledgments
 
 Merci d'utiliser Cabinet Dupont ! N'hésitez pas à ⭐ le projet sur GitHub si vous l'appréciez.
 
